@@ -31,6 +31,9 @@ jobs:
         shell: bash
         run: cp .env.example .env
 
+      - name: Generate prisma client
+        run: pnpm db:generate
+
       - name: Lint
         run: pnpm lint && pnpm lint:ws
 
