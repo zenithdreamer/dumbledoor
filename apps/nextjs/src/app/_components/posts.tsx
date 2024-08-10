@@ -1,7 +1,8 @@
 "use client";
 
-import type { RouterOutputs } from "@dumbledoor/api";
 import { use } from "react";
+
+import type { RouterOutputs } from "@dumbledoor/api";
 import { cn } from "@dumbledoor/ui";
 import { Button } from "@dumbledoor/ui/button";
 import {
@@ -105,9 +106,9 @@ export function PostList(props: {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      {posts.map((p) => {
+      {/* {posts.map((p) => {
         return <PostCard key={p.id} post={p} />;
-      })}
+      })} */}
     </div>
   );
 }
@@ -131,7 +132,7 @@ export function PostCard(props: {
 
   return (
     <div className="flex flex-row rounded-lg bg-muted p-4">
-      <div className="flex-grow">
+      {/* <div className="flex-grow">
         <h2 className="text-2xl font-bold text-primary">{props.post.title}</h2>
         <p className="mt-2 text-sm">{props.post.content}</p>
       </div>
@@ -143,7 +144,7 @@ export function PostCard(props: {
         >
           Delete
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -4,8 +4,9 @@ import type {
   Session as NextAuthSession,
 } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@dumbledoor/db";
 import Discord from "next-auth/providers/discord";
+
+import { prisma } from "@dumbledoor/db";
 
 declare module "next-auth" {
   interface Session {
