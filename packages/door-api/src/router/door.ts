@@ -2,7 +2,6 @@ import type { TRPCRouterRecord } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { env } from "@dumbledoor/auth/env";
 import { prisma } from "@dumbledoor/door-db";
 
 import { accessClient, protectedProcedure } from "../trpc";
@@ -16,13 +15,11 @@ export const doorRouter = {
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // TODO: Check if user is admin
-
-      const isAllowed = await accessClient.user.isAdmin.mutate({
+      const isAdmin = await accessClient.user.isAdmin.mutate({
         userId: ctx.session.userId,
       });
 
-      if (!isAllowed)
+      if (!isAdmin)
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "You are not allowed to create a door",
