@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/access-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("ACCESS_DATABASE_URL")
+}
+
+model UserAccess {
+  id           String  @id @default(cuid())
+  user_id      String
+  access_level Int
+  admin        Boolean
+}
+
+model Role {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  description String
+  role_doors  RoleDoor[]
+  role_users  RoleUser[]
+}
+
+model RoleUser {
+  id      String @id @default(cuid())
+  user_id String
+  role    Role   @relation(fields: [role_id], references: [id])
+  role_id String
+}
+
+model RoleDoor {
+  id                   String @id @default(cuid())
+  door_id              String
+  granted_access_level Int
+  role                 Role   @relation(fields: [role_id], references: [id])
+  role_id              String
+}

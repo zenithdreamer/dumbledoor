@@ -1,9 +1,10 @@
 "use client";
 
+import type { TRPCClientError } from "@trpc/client";
 import { useState } from "react";
-import { TRPCClientError } from "@trpc/client";
+import { useRouter } from "next/navigation";
 
-import { AppRouter } from "@dumbledoor/user-api";
+import type { AppRouter } from "@dumbledoor/user-api";
 
 import { api } from "~/trpc/react";
 
@@ -11,12 +12,17 @@ export const runtime = "nodejs";
 
 export default function LoginPage() {
   const login = api.auth.signIn.useMutation();
+  const router = useRouter();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [disabled, setDisabled] = useState(false);
   const [bannerMessage, setBannerMessage] = useState({ type: "", message: "" });
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    setDisabled(true);
 
     login
       .mutateAsync({
@@ -26,14 +32,21 @@ export default function LoginPage() {
       .then(() => {
         setBannerMessage({
           type: "success",
-          message: "Successfully logged in",
+          message: "Successfully logged in... Redirecting to admin panel",
         });
+        setDisabled(true);
+
+        setTimeout(() => {
+          void router.push("/admin");
+        }, 1000);
       })
       .catch((error: TRPCClientError<AppRouter>) => {
         setBannerMessage({
           type: "error",
           message: error.message,
         });
+
+        setDisabled(false);
       });
 
     setPassword("");
@@ -69,6 +82,7 @@ export default function LoginPage() {
             <input
               name="username"
               type="text"
+              disabled={disabled}
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -86,6 +100,7 @@ export default function LoginPage() {
               id="password"
               name="password"
               type="password"
+              disabled={disabled}
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -95,6 +110,7 @@ export default function LoginPage() {
           <div>
             <button
               type="submit"
+              disabled={disabled}
               className="hover:bg-primary-dark w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               Login
