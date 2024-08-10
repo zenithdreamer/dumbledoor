@@ -1,21 +1,37 @@
 import type { TRPCRouterRecord } from "@trpc/server";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
-import { invalidateSessionToken } from "@dumbledoor/auth";
-
-import { protectedProcedure, publicProcedure } from "../trpc";
+import { publicProcedure } from "../trpc";
 
 export const authRouter = {
-  getSession: publicProcedure.query(({ ctx }) => {
-    return ctx.session;
-  }),
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can see this secret message!";
-  }),
-  signOut: protectedProcedure.mutation(async (opts) => {
-    if (!opts.ctx.token) {
-      return { success: false };
-    }
-    await invalidateSessionToken(opts.ctx.token);
-    return { success: true };
-  }),
+  signIn: publicProcedure
+    .input(
+      z.object({
+        username: z.string(),
+        password: z.string(),
+      }),
+    )
+    .mutation(({ input }) => {
+      const { username, password } = input;
+
+      if (username !== "admin" || password !== "admin")
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Invalid username or password",
+        });
+
+      //ctx.session = "nyan";
+      return { success: true };
+    }),
+  // getSession: publicProcedure.query(({ ctx }) => {
+  //   return ctx.session;
+  // }),
+  // signOut: protectedProcedure.mutation(async (opts) => {
+  //   if (!opts.ctx.token) {
+  //     return { success: false };
+  //   }
+  //   await invalidateSessionToken(opts.ctx.token);
+  //   return { success: true };
+  // }),
 } satisfies TRPCRouterRecord;

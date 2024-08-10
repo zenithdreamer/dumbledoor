@@ -2,7 +2,10 @@ import NextAuth from "next-auth";
 
 import { authConfig } from "./config";
 
-export type { Session } from "next-auth";
+//export type { Session } from "next-auth";
+export interface Session {
+  token: string;
+}
 
 const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
 

@@ -18,6 +18,7 @@
     "@dumbledoor/tsconfig": "workspace:*",
     "@swc/core": "^1.4.17",
     "@swc/helpers": "^0.5.11",
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "ts-custom-error": "^3.3.1",
     "tsconfig-paths": "^4.2.0",
@@ -25,9 +26,10 @@
   },
   "dependencies": {
     "@dumbledoor/auth": "workspace:*",
-    "@dumbledoor/user-db": "workspace:*",
     "@dumbledoor/user-api": "workspace:*",
+    "@dumbledoor/user-db": "workspace:*",
     "@dumbledoor/validators": "workspace:*",
+    "cors": "^2.8.5",
     "express": "^4.19.2",
     "ts-node-dev": "^2.0.0",
     "tsx": "^4.17.0"

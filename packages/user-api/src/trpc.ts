@@ -12,21 +12,26 @@
  * - Expo requests will have a session token in the Authorization header
  * - Next.js requests will have a session token in cookies
  */
-import type * as trpcExpress from "@trpc/server/adapters/express";
+//import type * as trpcExpress from "@trpc/server/adapters/express";
 import type { IncomingHttpHeaders } from "http";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
 //import type { Session } from "@dumbledoor/auth";
-import { auth, validateToken } from "@dumbledoor/auth";
+import type { Session } from "@dumbledoor/auth";
 import { prisma } from "@dumbledoor/user-db";
 
-const isomorphicGetSession = async (headers: IncomingHttpHeaders) => {
-  const authToken = headers.authorization ?? null;
-  if (authToken) return validateToken(authToken);
-  return auth();
-};
+// const isomorphicGetSession = async (headers: IncomingHttpHeaders) => {
+//   const authToken = headers.authorization ?? null;
+//   if (authToken) return validateToken(authToken);
+//   return auth();
+// };
+// const isomorphicGetSession = async (headers: Headers) => {
+//   const authToken = headers.get("Authorization") ?? null;
+//   if (authToken) return validateToken(authToken);
+//   return auth();
+// };
 
 /**
  * 1. CONTEXT
@@ -40,20 +45,34 @@ const isomorphicGetSession = async (headers: IncomingHttpHeaders) => {
  *
  * @see https://trpc.io/docs/server/context
  */
+// export const createTRPCContext = async (opts: {
+//   headers: Headers;
+//   session: Session | null;
+// }) => {
+//   console.log(">>> createTRPCContext", opts);
+//   const authToken = opts.headers.get("Authorization") ?? null;
+//   const session = await isomorphicGetSession(opts.headers);
 
-export const createTRPCContext = async ({
-  req,
-  res,
-}: trpcExpress.CreateExpressContextOptions) => {
-  const authToken = req.headers.authorization ?? null;
-  const session = await isomorphicGetSession(req.headers);
+//   const source = opts.headers.get("x-trpc-source") ?? "unknown";
+//   console.log(">>> tRPC Request from", source, "by", session?.user);
 
-  const source = req.headers["x-trpc-source"] ?? "unknown";
-  console.log(">>> tRPC Request from", source, "by", session?.user);
+//   return {
+//     session,
+//     token: authToken,
+//   };
+// };
+
+export const createTRPCContext = (opts: {
+  headers: IncomingHttpHeaders;
+  session: Session | null;
+}) => {
+  const authToken = opts.headers.authorization ?? null;
+  const session = null;
+
+  const source = opts.headers["x-trpc-source"] ?? "unknown";
+  console.log(">>> tRPC Request from", source, "by", session);
 
   return {
-    req,
-    res,
     session,
     prisma,
     token: authToken,
@@ -114,14 +133,17 @@ export const publicProcedure = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.session?.user) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-  return next({
-    ctx: {
-      // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
-    },
-  });
+  throw new TRPCError({ code: "UNAUTHORIZED" });
+
+  // if (!ctx.session?.user) {
+  //   throw new TRPCError({ code: "UNAUTHORIZED" });
+  // }
+  // return next({
+  //   ctx: {
+  //     // infers the `session` as non-nullable
+  //     session: { ...ctx.session, user: ctx.session.user },
+  //   },
+  // });
 });
