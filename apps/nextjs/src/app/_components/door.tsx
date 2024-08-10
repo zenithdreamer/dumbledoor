@@ -1,25 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef } from 'react';
 
-const Door = ({
-  isOpen,
-  toggle,
-  position,
-}: {
+interface DoorProps {
   isOpen: boolean;
-  toggle: () => void;
-  position: "left" | "right";
-}) => {
+  position: 'left' | 'right';
+}
+
+const Door = ({ isOpen, position }: DoorProps) => {
   const transform = isOpen
-    ? position === "left"
-      ? "translateX(-100px)"
-      : "translateX(100px)"
-    : "translateX(0) rotateY(0deg)";
+    ? position === 'left'
+      ? 'translateX(-100px)'
+      : 'translateX(100px)'
+    : 'translateX(0) rotateY(0deg)';
 
   return (
     <div
-      onClick={toggle}
       style={{
         width: "200px",
         height: "300px",
@@ -52,47 +48,66 @@ const Door = ({
   );
 };
 
-const Scanner = () => (
-  <div
-    style={{
-      width: "100px",
-      height: "100px",
-      backgroundColor: "lightblue",
-      border: "3px solid blue",
-      position: "absolute",
-      bottom: "-110px",
-      left: "50%",
-      transform: "translateX(-50%)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: "5px",
-      userSelect: "none",
-    }}
-  >
-    <p style={{ margin: 0, color: "black" }}>Scanner</p>
-  </div>
-);
+interface ScannerProps {
+  keycardPosition: { x: number; y: number };
+  onScan: (isScanned: boolean) => void;
+}
 
-export default function FunctionalDoors() {
-  const [areDoorsOpen, setDoorsOpen] = useState(false);
+const Scanner = ({ keycardPosition, onScan }: ScannerProps) => {
+  const scannerRef = useRef<HTMLDivElement>(null);
 
-  const toggleDoors = () => {
-    setDoorsOpen((prev) => !prev);
-  };
+  useEffect(() => {
+    if (scannerRef.current) {
+      const rect = scannerRef.current.getBoundingClientRect();
+      const scannerPosition = { x: rect.left, y: rect.top };
+      const scannerSize = { width: rect.width, height: rect.height };
+
+      const isCardOnScanner =
+        keycardPosition.x >= scannerPosition.x &&
+        keycardPosition.x <= scannerPosition.x + scannerSize.width &&
+        keycardPosition.y >= scannerPosition.y &&
+        keycardPosition.y <= scannerPosition.y + scannerSize.height;
+
+      console.log(keycardPosition.x, keycardPosition.y, scannerPosition.x, scannerPosition.y);
+      onScan(isCardOnScanner);
+    }
+  }, [keycardPosition, onScan]);
 
   return (
     <div
+      ref={scannerRef}
       style={{
-        position: "relative",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        width: '100px',
+        height: '100px',
+        backgroundColor: 'lightblue',
+        border: '3px solid blue',
+        marginTop: '20px', // Add margin to position scanner below the doors
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: '5px',
+        userSelect: 'none',
       }}
     >
-      <Door isOpen={areDoorsOpen} toggle={toggleDoors} position="left" />
-      <Door isOpen={areDoorsOpen} toggle={toggleDoors} position="right" />
-      <Scanner />
+      <p style={{ margin: 0, color: 'black' }}>Scanner</p>
+    </div>
+  );
+};
+
+export default function FunctionalDoors({ keycardPosition }: { keycardPosition: { x: number; y: number } }) {
+  const [areDoorsOpen, setDoorsOpen] = React.useState(false);
+
+  const handleScan = (isScanned: boolean) => {
+    setDoorsOpen(isScanned);
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', position: 'relative' }}>
+        <Door isOpen={areDoorsOpen} position="left" />
+        <Door isOpen={areDoorsOpen} position="right" />
+      </div>
+      <Scanner keycardPosition={keycardPosition} onScan={handleScan} />
     </div>
   );
 }

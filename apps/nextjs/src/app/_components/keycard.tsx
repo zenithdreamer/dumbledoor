@@ -7,14 +7,10 @@ interface MovableKeycardProps {
   role: string;
   id: string;
   level: number;
+  onMove: (position: { x: number; y: number }) => void;
 }
 
-export default function MovableKeycard({
-  name,
-  role,
-  id,
-  level,
-}: MovableKeycardProps) {
+export default function MovableKeycard({ name, role, id, level, onMove }: MovableKeycardProps) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -25,18 +21,21 @@ export default function MovableKeycard({
       x: e.clientX - position.x,
       y: e.clientY - position.y,
     });
+    console.log(position.x, position.y)
   };
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       if (dragging) {
-        setPosition({
+        const newPos = {
           x: e.clientX - offset.x,
           y: e.clientY - offset.y,
-        });
+        };
+        setPosition(newPos);
+        onMove(newPos);
       }
     },
-    [dragging, offset],
+    [dragging, offset, onMove]
   );
 
   const handleMouseUp = useCallback(() => {
@@ -80,9 +79,7 @@ export default function MovableKeycard({
       <p className="text-base font-bold">{name}</p>
       <p className="text-base">{role}</p>
       <p className="text-xs">{id}</p>
-      <p className="text-xs" style={{ marginTop: "15px" }}>
-        Level: {level}
-      </p>
+      <p className="text-xs" style={{ marginTop: '15px' }}>Level: {level}</p>
     </div>
   );
 }
