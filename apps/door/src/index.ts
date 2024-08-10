@@ -4,9 +4,7 @@ import cors from "cors";
 import express from "express";
 import createJiti from "jiti";
 
-import { appRouter, createTRPCContext } from "@dumbledoor/access-api";
-
-import { internalAppRouter } from "../../../packages/access-api/src/root";
+import { appRouter, createTRPCContext } from "@dumbledoor/door-api";
 
 // Import env files to validate at build time. Use jiti so we can load .ts files in here.
 createJiti(fileURLToPath(import.meta.url))("./env");
@@ -32,20 +30,8 @@ app.use(
   }),
 );
 
-app.use(
-  "/api/trpc-internal",
-  trpcExpress.createExpressMiddleware({
-    router: internalAppRouter,
-    createContext: ({ req }) =>
-      createTRPCContext({
-        headers: req.headers,
-        session: null,
-      }),
-  }),
-);
-
-app.listen(process.env.ACCESS_SERVICE_PORT, () => {
+app.listen(process.env.DOOR_SERVICE_PORT, () => {
   console.log(
-    "Server started on http://localhost:" + process.env.ACCESS_SERVICE_PORT,
+    "Server started on http://localhost:" + process.env.DOOR_SERVICE_PORT,
   );
 });

@@ -5,6 +5,11 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     AUTH_SECRET: z.string().min(1),
+    ACCESS_SERVICE_PORT: z
+      .string()
+      .transform((val) => parseInt(val, 10))
+      .default("4001"),
+    INTERNAL_API_SECRET: z.string().min(1),
     NODE_ENV: z.enum(["development", "production"]).optional(),
   },
   client: {},
