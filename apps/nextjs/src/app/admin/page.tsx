@@ -1,24 +1,25 @@
 "use client";
 
-import React, { useState } from 'react';
-import Sidebar from '../_components/sidebar';
-import User from '../_components/user';
-import Card from '../_components/card';
-import Edit_access from '../_components/edit-access';
-import Log from '../_components/log';
+import React, { useState } from "react";
+
+import Card from "../_components/card";
+import Edit_access from "../_components/edit-access";
+import Log from "../_components/log";
+import Sidebar from "../_components/sidebar";
+import User from "../_components/user";
 
 const App: React.FC = () => {
-  const [selectedSection, setSelectedSection] = useState('user');
+  const [selectedSection, setSelectedSection] = useState("user");
 
   const renderContent = () => {
     switch (selectedSection) {
-      case 'user':
+      case "user":
         return <User />;
-      case 'card':
+      case "card":
         return <Card />;
-      case 'edit-access':
+      case "edit-access":
         return <Edit_access />;
-      case 'log':
+      case "log":
         return <Log />;
       default:
         return <div>Select an option from the sidebar.</div>;
@@ -27,12 +28,10 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen">
-      <div className="w-[15%] bg-pink-700 h-full">
+      <div className="h-full w-[15%] bg-pink-700">
         <Sidebar onSelect={setSelectedSection} />
       </div>
-      <div className="flex-1 p-4">
-        {renderContent()}
-      </div>
+      <div className="flex-1 p-4">{renderContent()}</div>
     </div>
   );
 };

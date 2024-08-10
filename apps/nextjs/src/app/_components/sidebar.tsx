@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface SidebarProps {
   onSelect: (section: string) => void;
@@ -6,7 +6,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ onSelect }) => {
   return (
-	<div className="h-screen  bg-pink-700 text-white">
+    <div className="h-screen  bg-pink-700 text-white">
       <div className="p-6">
         <h2 className="text-2xl font-semibold">Admin</h2>
       </div>
@@ -14,27 +14,27 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelect }) => {
         <li
           className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
           onClick={() => {
-            console.log('User clicked');
-            onSelect('user');
+            console.log("User clicked");
+            onSelect("user");
           }}
         >
           <span className="text-sm font-medium">User</span>
         </li>
         <li
           className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
-          onClick={() => onSelect('card')}
+          onClick={() => onSelect("card")}
         >
           <span className="text-sm font-medium">Card</span>
         </li>
         <li
           className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
-          onClick={() => onSelect('edit-access')}
+          onClick={() => onSelect("edit-access")}
         >
           <span className="text-sm font-medium">Edit Access</span>
         </li>
         <li
           className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
-          onClick={() => onSelect('log')}
+          onClick={() => onSelect("log")}
         >
           <span className="text-sm font-medium">Log</span>
         </li>

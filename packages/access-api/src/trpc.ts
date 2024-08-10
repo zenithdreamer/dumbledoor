@@ -21,8 +21,8 @@ import { ZodError } from "zod";
 
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
-import { env } from "@dumbledoor/auth/env";
 import { prisma } from "@dumbledoor/access-db";
+import { env } from "@dumbledoor/auth/env";
 
 // const isomorphicGetSession = async (headers: IncomingHttpHeaders) => {
 //   const authToken = headers.authorization ?? null;

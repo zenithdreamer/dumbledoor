@@ -4,8 +4,8 @@ import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 
-import { env } from "@dumbledoor/auth/env";
 import { prisma } from "@dumbledoor/access-db";
+import { env } from "@dumbledoor/auth/env";
 
 import { protectedProcedure } from "../trpc";
 
@@ -44,5 +44,4 @@ export const authRouter = {
       // ctx.session = { userId: user.id };
       return { success: true };
     }),
-
 } satisfies TRPCRouterRecord;

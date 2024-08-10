@@ -1,7 +1,7 @@
-import react from 'react';
+import react from "react";
 
-const Log = () =>{
-    return <div>Log-data</div>
-}
+const Log = () => {
+  return <div>Log-data</div>;
+};
 
-export default Log
+export default Log;
