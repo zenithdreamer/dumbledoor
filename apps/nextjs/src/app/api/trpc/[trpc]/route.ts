@@ -36,9 +36,9 @@ const handler = auth(async (req) => {
         session: req.auth,
         headers: req.headers,
       }),
-    onError({ error, path }: { error: unknown; path: string }) {
-      console.error(`>>> tRPC Error on '${path}'`, error);
-    },
+    // onError({ error: any, path }) {
+    //   console.error(`>>> tRPC Error on '${path}'`, error);
+    // },
   });
 
   setCorsHeaders(response);
