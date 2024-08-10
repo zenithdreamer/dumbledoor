@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from "react";
 
 interface MovableKeycardProps {
   name: string;
@@ -9,7 +9,12 @@ interface MovableKeycardProps {
   level: number;
 }
 
-export default function MovableKeycard({ name, role, id, level }: MovableKeycardProps) {
+export default function MovableKeycard({
+  name,
+  role,
+  id,
+  level,
+}: MovableKeycardProps) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -22,14 +27,17 @@ export default function MovableKeycard({ name, role, id, level }: MovableKeycard
     });
   };
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (dragging) {
-      setPosition({
-        x: e.clientX - offset.x,
-        y: e.clientY - offset.y,
-      });
-    }
-  }, [dragging, offset]);
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (dragging) {
+        setPosition({
+          x: e.clientX - offset.x,
+          y: e.clientY - offset.y,
+        });
+      }
+    },
+    [dragging, offset],
+  );
 
   const handleMouseUp = useCallback(() => {
     setDragging(false);
@@ -37,42 +45,44 @@ export default function MovableKeycard({ name, role, id, level }: MovableKeycard
 
   useEffect(() => {
     if (dragging) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
     } else {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
     }
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [dragging, handleMouseMove, handleMouseUp]);
 
   return (
     <div
-      className="p-4 bg-yellow-500 rounded-lg shadow-md"
+      className="rounded-lg bg-yellow-500 p-4 shadow-md"
       style={{
-        position: 'absolute',
+        position: "absolute",
         top: `${position.y}px`,
         left: `${position.x}px`,
-        width: '200px',
-        height: '120px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        paddingLeft: '15px',
-        cursor: dragging ? 'move' : 'default',
-        userSelect: 'none',
+        width: "200px",
+        height: "120px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        paddingLeft: "15px",
+        cursor: dragging ? "move" : "default",
+        userSelect: "none",
       }}
       onMouseDown={handleMouseDown}
     >
       <p className="text-base font-bold">{name}</p>
       <p className="text-base">{role}</p>
       <p className="text-xs">{id}</p>
-      <p className="text-xs" style={{marginTop: '15px'}}>Level: {level}</p>
+      <p className="text-xs" style={{ marginTop: "15px" }}>
+        Level: {level}
+      </p>
     </div>
   );
 }
