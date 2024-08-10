@@ -113,11 +113,12 @@ export function PostList(props: {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function PostCard(props: {
   post: RouterOutputs["post"]["all"][number];
 }) {
   const utils = api.useUtils();
-  const deletePost = api.post.delete.useMutation({
+  const _deletePost = api.post.delete.useMutation({
     onSuccess: async () => {
       await utils.post.invalidate();
     },

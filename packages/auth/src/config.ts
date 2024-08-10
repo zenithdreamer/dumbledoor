@@ -8,6 +8,8 @@ import Discord from "next-auth/providers/discord";
 
 import { prisma } from "@dumbledoor/db";
 
+import { env } from "../env";
+
 declare module "next-auth" {
   interface Session {
     user: {
@@ -16,14 +18,15 @@ declare module "next-auth" {
   }
 }
 
-export const isSecureContext = process.env.NODE_ENV !== "development";
+export const isSecureContext = env.NODE_ENV !== "development";
 
 export const authConfig = {
   adapter: PrismaAdapter(prisma),
   providers: [Discord],
   callbacks: {
     session: (opts) => {
-      if (!("user" in opts)) throw "unreachable with session strategy";
+      if (!("user" in opts))
+        throw new Error("Unreachable with session strategy");
 
       return {
         ...opts.session,
