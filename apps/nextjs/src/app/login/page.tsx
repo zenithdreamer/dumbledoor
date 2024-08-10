@@ -32,7 +32,7 @@ export default function LoginPage() {
       .catch((error: TRPCClientError<AppRouter>) => {
         setBannerMessage({
           type: "error",
-          message: "Failed to login. " + error.message,
+          message: error.message,
         });
       });
 

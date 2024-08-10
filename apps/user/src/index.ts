@@ -1,8 +1,13 @@
+import { fileURLToPath } from "url";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import cors from "cors";
 import express from "express";
+import createJiti from "jiti";
 
 import { appRouter, createTRPCContext } from "@dumbledoor/user-api";
+
+// Import env files to validate at build time. Use jiti so we can load .ts files in here.
+createJiti(fileURLToPath(import.meta.url))("./env");
 
 // created for each request
 
@@ -25,6 +30,6 @@ app.use(
   }),
 );
 
-app.listen(4000, () => {
+app.listen(process.env.USER_SERVICE_PORT, () => {
   console.log("Server started on http://localhost:4000");
 });
