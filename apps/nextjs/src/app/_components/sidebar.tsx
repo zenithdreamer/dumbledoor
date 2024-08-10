@@ -26,6 +26,12 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelect }) => {
         >
           <span className="text-sm font-medium">Card</span>
         </li>
+		<li
+          className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
+          onClick={() => onSelect("door")}
+        >
+          <span className="text-sm font-medium">Door</span>
+        </li>
         <li
           className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
           onClick={() => onSelect("edit-access")}
