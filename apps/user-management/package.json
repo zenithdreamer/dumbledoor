@@ -1,0 +1,30 @@
+{
+  "name": "@dumbledoor/user-management",
+  "private": true,
+  "devDependencies": {
+    "@dumbledoor/eslint-config": "workspace:*",
+    "@dumbledoor/prettier-config": "workspace:*",
+    "@dumbledoor/tailwind-config": "workspace:*",
+    "@dumbledoor/tsconfig": "workspace:*",
+    "ts-custom-error": "^3.3.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.4.5",
+    "@swc/core": "^1.4.17",
+    "@swc/helpers": "^0.5.11"
+  },
+  "scripts": {
+    "build": "pnpm with-env tsc -b",
+    "clean": "git clean -xdf .next .turbo node_modules",
+    "dev": "pnpm with-env ts-node --swc src/index.ts",
+    "tsc": "tsc",
+    "typecheck": "tsc --noEmit",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "dependencies": {
+    "@dumbledoor/api": "workspace:*",
+    "@dumbledoor/auth": "workspace:*",
+    "@dumbledoor/db": "workspace:*",
+    "@dumbledoor/validators": "workspace:*"
+  },
+  "prettier": "@dumbledoor/prettier-config"
+}
