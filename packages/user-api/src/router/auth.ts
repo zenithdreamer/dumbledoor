@@ -17,7 +17,7 @@ export const authRouter = {
         password: z.string(),
       }),
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       const { username, password } = input;
       const user = await prisma.user.findUnique({
         where: { username },
@@ -42,6 +42,7 @@ export const authRouter = {
       // Issue JWT token
       const token = jwt.sign({ userId: user.id }, env.AUTH_SECRET);
 
+      ctx.session = { userId: user.id };
       return { success: true, token };
     }),
   // getSession: publicProcedure.query(({ ctx }) => {
