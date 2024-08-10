@@ -5,6 +5,7 @@ const sample_data = [
     id: "#1",
     name: "Dtto",
     status: "Good",
+    role: "My Goat",
     createDate: "8/10/2024",
     assignedBy: "Me",
   },
@@ -12,6 +13,7 @@ const sample_data = [
     id: "#2",
     name: "Aqua",
     status: "Bad",
+    role: "My Goat",
     createDate: "8/10/2024",
     assignedBy: "Me",
   },
@@ -19,20 +21,20 @@ const sample_data = [
 
 const UserTable: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
-  const [newUser, setNewUser] = useState({ id: "", name: "", assignedBy: "" });
+  const [newUser, setNewUser] = useState({ id: "", name: "", assignedBy: "", role: "" });
 
   const handleCreateUser = () => {
-    const today = new Date().toLocaleDateString(); 
-    const newUserData = { ...newUser, createDate: today, status: "Good" }; 
-	//new user data here
-    console.log(newUserData); 
+    const today = new Date().toLocaleDateString();
+    const newUserData = { ...newUser, createDate: today, status: "Good" };
+	//NewUserdata here
+    console.log(newUserData);
 
 
     setShowModal(false);
   };
 
   const openModal = () => {
-    setNewUser({ id: "", name: "", assignedBy: "" }); 
+    setNewUser({ id: "", name: "", assignedBy: "", role: "" });
     setShowModal(true);
   };
 
@@ -47,6 +49,9 @@ const UserTable: React.FC = () => {
               </th>
               <th scope="col" className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                 Name
+              </th>
+              <th scope="col" className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                Role
               </th>
               <th scope="col" className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                 Status
@@ -67,6 +72,7 @@ const UserTable: React.FC = () => {
               <tr key={user.id}>
                 <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">{user.id}</td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">{user.name}</td>
+                <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">{user.role}</td>
                 <td className="whitespace-nowrap px-4 py-2">
                   <span
                     className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
@@ -95,7 +101,6 @@ const UserTable: React.FC = () => {
       >
         Create New User
       </button>
-
 
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -126,6 +131,20 @@ const UserTable: React.FC = () => {
                   onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
                   required
                 />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Role</label>
+                <select
+                  className="w-full px-3 py-2 border rounded"
+                  value={newUser.role}
+                  onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                  required
+                >
+                  <option value="">Select Role</option>
+				  //Add role here
+                  <option value="My Goat">My Goat</option>
+
+                </select>
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700">Assigned By</label>
