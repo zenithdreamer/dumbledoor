@@ -1,5 +1,5 @@
 {
-  "name": "create-t3-turbo-prisma",
+  "name": "dumbledoor",
   "private": true,
   "engines": {
     "node": ">=20.12.0"
