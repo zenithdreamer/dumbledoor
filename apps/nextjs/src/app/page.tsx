@@ -1,21 +1,15 @@
-//import { api } from "~/trpc/server";
-import { AuthShowcase } from "./_components/auth-showcase";
+import MovableKeycard from "./_components/keycard";
+import DoorWithScanner from "./_components/door";
 
-export const runtime = "nodejs";
 
 export default function HomePage() {
   // You can await this here if you don't want to show Suspense fallback below
-  //const posts = api.post.all();
 
   return (
     <main className="container h-screen py-16">
       <div className="flex flex-col items-center justify-center gap-4">
-        <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-          Create <span className="text-primary">T3</span> Turbo
-        </h1>
-        <AuthShowcase />
-
-        <div className="w-full max-w-2xl overflow-y-scroll"></div>
+        <DoorWithScanner />
+        <MovableKeycard name="John Doe" role="SCP Manager" id="65011353" level={3}/>
       </div>
     </main>
   );
