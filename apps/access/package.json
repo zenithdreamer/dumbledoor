@@ -1,5 +1,5 @@
 {
-  "name": "@dumbledoor/user",
+  "name": "@dumbledoor/access",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -27,8 +27,8 @@
   },
   "dependencies": {
     "@dumbledoor/auth": "workspace:*",
-    "@dumbledoor/user-api": "workspace:*",
-    "@dumbledoor/user-db": "workspace:*",
+    "@dumbledoor/access-api": "workspace:*",
+    "@dumbledoor/access-db": "workspace:*",
     "@dumbledoor/validators": "workspace:*",
     "cors": "^2.8.5",
     "express": "^4.19.2",

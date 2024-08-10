@@ -1,5 +1,5 @@
 {
-  "name": "@dumbledoor/user-api",
+  "name": "@dumbledoor/access-api",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@dumbledoor/auth": "workspace:*",
-    "@dumbledoor/user-db": "workspace:*",
+    "@dumbledoor/access-db": "workspace:*",
     "@dumbledoor/validators": "workspace:*",
     "@trpc/server": "11.0.0-rc.364",
     "argon2": "^0.40.3",

@@ -1,21 +1,58 @@
 import type { TRPCRouterRecord } from "@trpc/server";
+import { TRPCError } from "@trpc/server";
+import argon2 from "argon2";
+import jwt from "jsonwebtoken";
+import { z } from "zod";
 
-import { invalidateSessionToken } from "@dumbledoor/auth";
+import { env } from "@dumbledoor/auth/env";
+import { prisma } from "@dumbledoor/user-db";
 
-import { protectedProcedure, publicProcedure } from "../trpc";
+import { publicProcedure } from "../trpc";
 
 export const authRouter = {
-  getSession: publicProcedure.query(({ ctx }) => {
-    return ctx.session;
-  }),
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can see this secret message!";
-  }),
-  signOut: protectedProcedure.mutation(async (opts) => {
-    if (!opts.ctx.token) {
-      return { success: false };
-    }
-    await invalidateSessionToken(opts.ctx.token);
-    return { success: true };
-  }),
+  signIn: publicProcedure
+    .input(
+      z.object({
+        username: z.string(),
+        password: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { username, password } = input;
+      const user = await prisma.user.findUnique({
+        where: { username },
+      });
+
+      if (!user) {
+        // Perform a fake verification to consume the same amount of time for security reasons
+        await argon2.verify("fake-hash", password);
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Invalid username or password",
+        });
+      }
+      const isCredentialsValid = await argon2.verify(user.password, password);
+
+      if (!isCredentialsValid)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Invalid username or password",
+        });
+
+      // Issue JWT token
+      const token = jwt.sign({ userId: user.id }, env.AUTH_SECRET);
+
+      ctx.session = { userId: user.id };
+      return { success: true, token };
+    }),
+  // getSession: publicProcedure.query(({ ctx }) => {
+  //   return ctx.session;
+  // }),
+  // signOut: protectedProcedure.mutation(async (opts) => {
+  //   if (!opts.ctx.token) {
+  //     return { success: false };
+  //   }
+  //   await invalidateSessionToken(opts.ctx.token);
+  //   return { success: true };
+  // }),
 } satisfies TRPCRouterRecord;

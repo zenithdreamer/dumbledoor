@@ -1,9 +1,9 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { z } from "zod";
 
-import { CreatePostSchema } from "@dumbledoor/validators";
+//import { CreatePostSchema } from "@dumbledoor/validators";
 
-import { protectedProcedure, publicProcedure } from "../trpc";
+import { publicProcedure } from "../trpc";
 
 export const postRouter = {
   all: publicProcedure.query(() => {
@@ -27,7 +27,7 @@ export const postRouter = {
       return null;
     }),
 
-  create: protectedProcedure.input(CreatePostSchema).mutation(() => {
-    return true;
-  }),
+  // create: protectedProcedure.input(CreatePostSchema).mutation(() => {
+  //   return true;
+  // }),
 } satisfies TRPCRouterRecord;
