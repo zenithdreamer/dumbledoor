@@ -33,11 +33,18 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelect }) => {
           <span className="text-sm font-medium">Edit Access</span>
         </li>
         <li
-          className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
-          onClick={() => onSelect("log")}
+        	className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
+        	onClick={() => onSelect("log")}
         >
-          <span className="text-sm font-medium">Log</span>
+        	<span className="text-sm font-medium">Log</span>
         </li>
+        <li 
+		
+			className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
+			onClick={ () => onSelect("log-out")}
+		>
+			<span className="text-sm font-medium">Logout</span>
+		</li>
       </ul>
     </div>
   );
