@@ -15,11 +15,13 @@
 //import type * as trpcExpress from "@trpc/server/adapters/express";
 import type { IncomingHttpHeaders } from "http";
 import { initTRPC, TRPCError } from "@trpc/server";
+import jwt from "jsonwebtoken";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
+import { env } from "@dumbledoor/auth/env";
 import { prisma } from "@dumbledoor/user-db";
 
 // const isomorphicGetSession = async (headers: IncomingHttpHeaders) => {
@@ -67,7 +69,25 @@ export const createTRPCContext = (opts: {
   session: Session | null;
 }) => {
   const authToken = opts.headers.authorization ?? null;
-  const session = null;
+  let session = null;
+
+  if (authToken) {
+    // Remove "Bearer " from the token if it exists
+    const token = authToken.replace("Bearer ", "");
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, env.AUTH_SECRET) as Session;
+    } catch {
+      session = null;
+    }
+
+    if (decoded) {
+      session = { userId: decoded.userId };
+    }
+  }
+
+  console.log(session);
 
   const source = opts.headers["x-trpc-source"] ?? "unknown";
   console.log(">>> tRPC Request from", source, "by", session);
@@ -135,15 +155,16 @@ export const publicProcedure = t.procedure;
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  throw new TRPCError({ code: "UNAUTHORIZED" });
+  //throw new TRPCError({ code: "UNAUTHORIZED" });
 
-  // if (!ctx.session?.user) {
-  //   throw new TRPCError({ code: "UNAUTHORIZED" });
-  // }
-  // return next({
-  //   ctx: {
-  //     // infers the `session` as non-nullable
-  //     session: { ...ctx.session, user: ctx.session.user },
-  //   },
-  // });
+  if (!ctx.session) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session },
+    },
+  });
 });

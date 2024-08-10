@@ -46,7 +46,7 @@ export default function LoginPage() {
           Login
         </h1>
 
-        {bannerMessage.message && (
+        {!login.isPending && bannerMessage.message && (
           <div
             className={`rounded-md px-4 py-2 text-sm font-medium ${
               login.isError

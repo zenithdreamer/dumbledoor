@@ -9,7 +9,7 @@ export const env = createEnv({
     AUTH_SECRET:
       process.env.NODE_ENV === "production"
         ? z.string().min(1)
-        : z.string().min(1).optional(),
+        : z.string().min(1),
     NODE_ENV: z.enum(["development", "production"]).optional(),
   },
   client: {},
