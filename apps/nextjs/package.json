@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@dumbledoor/api": "workspace:*",
+    "@dumbledoor/user-api": "workspace:*",
     "@dumbledoor/auth": "workspace:*",
     "@dumbledoor/db": "workspace:*",
     "@dumbledoor/ui": "workspace:*",

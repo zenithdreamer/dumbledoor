@@ -27,6 +27,8 @@ export const OPTIONS = () => {
 const handler = auth(async (req) => {
   const response = await fetchRequestHandler({
     endpoint: "/api/trpc",
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     router: appRouter,
     req,
     createContext: () =>
@@ -34,7 +36,7 @@ const handler = auth(async (req) => {
         session: req.auth,
         headers: req.headers,
       }),
-    onError({ error, path }) {
+    onError({ error, path }: { error: unknown; path: string }) {
       console.error(`>>> tRPC Error on '${path}'`, error);
     },
   });

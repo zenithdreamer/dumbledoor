@@ -1,18 +1,13 @@
-import { PrismaClient } from "@prisma/client";
+/* eslint-disable no-restricted-properties */
+import { PrismaClient } from "../node_modules/.prisma/user-client";
 
-export * from "@prisma/client";
+export * from "../node_modules/.prisma/user-client";
 
-const globalPrisma = globalThis as { prisma?: PrismaClient };
+const globalClient: PrismaClient = new PrismaClient({
+  log:
+    process.env.NODE_ENV === "_development"
+      ? ["query", "error", "warn"]
+      : ["error"],
+});
 
-export const prisma =
-  globalPrisma.prisma ??
-  new PrismaClient({
-    log:
-      // eslint-disable-next-line no-restricted-properties
-      process.env.NODE_ENV === "development"
-        ? ["query", "error", "warn"]
-        : ["error"],
-  });
-
-// eslint-disable-next-line no-restricted-properties
-if (process.env.NODE_ENV !== "production") globalPrisma.prisma = prisma;
+export const prisma = globalClient;

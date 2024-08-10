@@ -14,24 +14,20 @@ export const postRouter = {
 
   byId: publicProcedure
     .input(z.object({ id: z.string() }))
-    .query(({ ctx, input }) => {
+    //.query(({ ctx, input }) => {
+    .query(() => {
       // return ctx.db
       //   .select()
       //   .from(schema.post)
       //   .where(eq(schema.post.id, input.id));
 
-      return ctx.prisma.post.findFirst({
-        where: { id: input.id },
-      });
+      // return ctx.prisma.post.findFirst({
+      //   where: { id: input.id },
+      // });
+      return null;
     }),
 
-  create: protectedProcedure
-    .input(CreatePostSchema)
-    .mutation(({ ctx, input }) => {
-      return ctx.prisma.post.create({ data: input });
-    }),
-
-  delete: protectedProcedure.input(z.string()).mutation(({ ctx, input }) => {
-    return ctx.prisma.post.delete({ where: { id: input } });
+  create: protectedProcedure.input(CreatePostSchema).mutation(() => {
+    return true;
   }),
 } satisfies TRPCRouterRecord;

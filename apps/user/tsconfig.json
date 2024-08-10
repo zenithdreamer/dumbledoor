@@ -3,9 +3,8 @@
   "include": ["src"],
   "compilerOptions": {
     "esModuleInterop": true,
-    "lib": ["es2020"],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "paths": {
       "@/*": ["./src/*"]
     }

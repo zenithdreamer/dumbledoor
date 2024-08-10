@@ -1,11 +1,14 @@
 {
   "extends": "@dumbledoor/tsconfig/internal-package.json",
   "compilerOptions": {
-    "outDir": "dist",
     "declarationMap": false,
     "declaration": false,
     "emitDeclarationOnly": false,
-    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
+    "outDir": "dist",
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules"]
