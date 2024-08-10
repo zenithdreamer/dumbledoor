@@ -4,7 +4,6 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
     "paths": {
       "@/*": ["./src/*"]
     }
