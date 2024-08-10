@@ -1,4 +1,0 @@
-{
-  "extends": "@dumbledoor/tsconfig/base.json",
-  "include": ["routes"]
-}
