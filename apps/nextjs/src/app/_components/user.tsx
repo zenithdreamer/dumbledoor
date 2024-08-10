@@ -17,6 +17,15 @@ const sample_data = [
     createDate: "8/10/2024",
     assignedBy: "Me",
   },
+  {
+	id: "3",
+	name: "Ayame",
+	status: "Good",
+	role: "My love",
+	createDate: "8/10/2024",
+	assignedBy: "Me",
+
+  }
 ];
 
 const UserTable: React.FC = () => {
@@ -183,6 +192,8 @@ const UserTable: React.FC = () => {
                   <option value="">Select Role</option>
                   //Add role here
                   <option value="My Goat">My Goat</option>
+				  <option value="My Goat">My Love</option>
+
                 </select>
               </div>
               <div className="mb-4">
