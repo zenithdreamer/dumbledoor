@@ -101,6 +101,30 @@ export const createTRPCContext = (opts: {
   };
 };
 
+export const createInternalTRPCContext = (opts: {
+  headers: IncomingHttpHeaders;
+}) => {
+  const authToken = opts.headers.authorization ?? null;
+
+  if (!authToken) {
+    throw new TRPCError({ code: "BAD_REQUEST" });
+  }
+
+  const source = opts.headers["x-trpc-source"] ?? "unknown";
+  console.log(">>> Internal tRPC Request from", source);
+
+  // Remove "Bearer " from the token if it exists
+  const token = authToken.replace("Bearer ", "");
+
+  if (token !== env.INTERNAL_API_SECRET) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return {
+    token: authToken,
+  };
+};
+
 /**
  * 2. INITIALIZATION
  *
@@ -109,6 +133,18 @@ export const createTRPCContext = (opts: {
  */
 export type Context = Awaited<ReturnType<typeof createTRPCContext>>;
 const t = initTRPC.context<Context>().create({
+  transformer: superjson,
+  errorFormatter: ({ shape, error }) => ({
+    ...shape,
+    data: {
+      ...shape.data,
+      zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
+    },
+  }),
+});
+
+type InternalContext = Awaited<ReturnType<typeof createInternalTRPCContext>>;
+const tInternal = initTRPC.context<InternalContext>().create({
   transformer: superjson,
   errorFormatter: ({ shape, error }) => ({
     ...shape,
@@ -137,6 +173,7 @@ export const createCallerFactory = t.createCallerFactory;
  * @see https://trpc.io/docs/router
  */
 export const createTRPCRouter = t.router;
+export const createInternalTRPCRouter = tInternal.router;
 
 /**
  * Public (unauthed) procedure
@@ -166,6 +203,27 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
     ctx: {
       // infers the `session` as non-nullable
       session: { ...ctx.session },
+    },
+  });
+});
+
+/**
+ * Internal (authenticated) procedure
+ *
+ * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
+ * the session is valid and guarantees `ctx.session.user` is not null.
+ *
+ * @see https://trpc.io/docs/procedures
+ */
+export const internalProcedure = tInternal.procedure.use(({ ctx, next }) => {
+  if (!ctx.token) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return next({
+    ctx: {
+      // infers the `token` as non-nullable
+      token: ctx.token,
     },
   });
 });

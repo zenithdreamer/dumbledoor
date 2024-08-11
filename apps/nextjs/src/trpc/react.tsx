@@ -7,6 +7,7 @@ import { createTRPCReact } from "@trpc/react-query";
 import SuperJSON from "superjson";
 
 import type { AppRouter as AccessAppRouter } from "@dumbledoor/access-api";
+import type { AppRouter as CardAppRouter } from "@dumbledoor/card-api";
 import type { AppRouter as DoorAppRouter } from "@dumbledoor/door-api";
 import type { AppRouter as LogAppRouter } from "@dumbledoor/log-api";
 import type { AppRouter as UserAppRouter } from "@dumbledoor/user-api";
@@ -41,6 +42,7 @@ export const trpc = {
   access: createTRPCReact<AccessAppRouter>(),
   door: createTRPCReact<DoorAppRouter>(),
   log: createTRPCReact<LogAppRouter>(),
+  card: createTRPCReact<CardAppRouter>(),
 };
 
 export function AccessTRPCReactProvider(props: { children: React.ReactNode }) {
@@ -207,6 +209,47 @@ export function LogTRPCReactProvider(props: { children: React.ReactNode }) {
   );
 }
 
+export function CardTRPCReactProvider(props: { children: React.ReactNode }) {
+  const queryClient = getQueryClient();
+
+  const [cardTrpcClient] = useState(() =>
+    trpc.card.createClient({
+      links: [
+        loggerLink({
+          enabled: (op) =>
+            env.NODE_ENV === "development" ||
+            (op.direction === "down" && op.result instanceof Error),
+        }),
+        unstable_httpBatchStreamLink({
+          transformer: SuperJSON,
+          url: getCardBaseUrl() + "/api/trpc",
+          headers() {
+            console.log("cardTrpcClient headers");
+            const headers = new Headers();
+            headers.set("x-trpc-source", "nextjs-react");
+            const savedToken = localStorage.getItem("token");
+            if (savedToken) {
+              headers.set(
+                "authorization",
+                `Bearer ${localStorage.getItem("token")}`,
+              );
+            }
+            return headers;
+          },
+        }),
+      ],
+    }),
+  );
+
+  return (
+    <trpc.card.Provider client={cardTrpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        {props.children}
+      </QueryClientProvider>
+    </trpc.card.Provider>
+  );
+}
+
 export function TRPCReactProvider(props: { children: React.ReactNode }) {
   // const queryClient = getQueryClient();
 
@@ -285,6 +328,10 @@ const getAccessBaseUrl = () => {
 
 const getLogBaseUrl = () => {
   return `http://localhost:4003`;
+};
+
+const getCardBaseUrl = () => {
+  return `http://localhost:4004`;
 };
 
 const _getBaseUrl = () => {

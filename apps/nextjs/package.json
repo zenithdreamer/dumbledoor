@@ -18,6 +18,7 @@
     "@dumbledoor/access-api": "workspace:*",
     "@dumbledoor/log-api": "workspace:*",
     "@dumbledoor/door-api": "workspace:*",
+    "@dumbledoor/card-api": "workspace:*",
     "@dumbledoor/auth": "workspace:*",
     "@dumbledoor/db": "workspace:*",
     "@dumbledoor/ui": "workspace:*",

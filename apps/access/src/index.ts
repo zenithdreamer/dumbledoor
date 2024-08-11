@@ -5,11 +5,13 @@ import express from "express";
 import createJiti from "jiti";
 import { Connection } from "rabbitmq-client";
 
-import { appRouter, createTRPCContext } from "@dumbledoor/access-api";
+import {
+  appRouter,
+  createInternalTRPCContext,
+  createTRPCContext,
+  internalAppRouter,
+} from "@dumbledoor/access-api";
 import { prisma } from "@dumbledoor/access-db";
-
-import { internalAppRouter } from "../../../packages/access-api/src/root";
-import { createInternalTRPCContext } from "../../../packages/access-api/src/trpc";
 
 // Import env files to validate at build time. Use jiti so we can load .ts files in here.
 createJiti(fileURLToPath(import.meta.url))("./env");

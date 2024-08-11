@@ -9,6 +9,10 @@ export const env = createEnv({
       .string()
       .transform((val) => parseInt(val, 10))
       .default("4001"),
+    USER_SERVICE_PORT: z
+      .string()
+      .transform((val) => parseInt(val, 10))
+      .default("4000"),
     INTERNAL_API_SECRET: z.string().min(1),
     NODE_ENV: z.enum(["development", "production"]).optional(),
   },
