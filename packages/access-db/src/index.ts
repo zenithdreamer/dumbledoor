@@ -1,6 +1,6 @@
-import { PrismaClient } from "../node_modules/.prisma/user-client";
+import { PrismaClient } from "../node_modules/.prisma/access-client";
 
-export * from "../node_modules/.prisma/user-client";
+export * from "../node_modules/.prisma/access-client";
 
 const globalClient: PrismaClient = new PrismaClient();
 

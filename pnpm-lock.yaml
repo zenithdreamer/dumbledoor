@@ -47,6 +47,9 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
+      rabbitmq-client:
+        specifier: ^4.6.0
+        version: 4.6.0
       ts-node-dev:
         specifier: ^2.0.0
         version: 2.0.0(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)
@@ -275,6 +278,9 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
+      rabbitmq-client:
+        specifier: ^4.6.0
+        version: 4.6.0
       ts-node-dev:
         specifier: ^2.0.0
         version: 2.0.0(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)
@@ -3663,6 +3669,10 @@ packages:
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
+
+  rabbitmq-client@4.6.0:
+    resolution: {integrity: sha512-RHt6Vz+nCzsMlSJ5HbMgxR1SMej1LtRVYCmbIWXfUhgeej3HshByQdVOirF195V3RVCRI3UHEec9PzgDQQtS8Q==}
+    engines: {node: '>=16'}
 
   range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
@@ -7284,6 +7294,8 @@ snapshots:
       side-channel: 1.0.6
 
   queue-microtask@1.2.3: {}
+
+  rabbitmq-client@4.6.0: {}
 
   range-parser@1.2.1: {}
 

@@ -25,6 +25,15 @@ export const adminRouter = {
         updated_at: true,
       },
     });
-    return users;
+
+    const userIds = users.map((user) => user.id);
+    const isAdminBatch = await accessClient.user.isAdminBatch.mutate(userIds);
+
+    type UserWithAdmin = (typeof users)[number] & { admin: boolean };
+    const usersWithAdmin: UserWithAdmin[] = users.map((user, index) => {
+      return { ...user, admin: isAdminBatch[index] ?? false };
+    });
+
+    return usersWithAdmin;
   }),
 } satisfies TRPCRouterRecord;

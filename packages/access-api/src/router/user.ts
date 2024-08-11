@@ -21,4 +21,13 @@ export const userRouter = {
 
     return user.admin;
   }),
+  isAdminBatch: internalProcedure
+    .input(z.array(z.string()))
+    .mutation(async ({ input }) => {
+      const users = await prisma.userAccess.findMany({
+        where: { user_id: { in: input } },
+      });
+
+      return users.map((user) => user.admin);
+    }),
 } satisfies TRPCRouterRecord;

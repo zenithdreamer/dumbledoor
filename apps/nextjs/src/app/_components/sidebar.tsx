@@ -14,11 +14,18 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelect }) => {
         <li
           className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
           onClick={() => {
-            console.log("User clicked");
-            onSelect("user");
+            onSelect("users");
           }}
         >
           <span className="text-sm font-medium">User</span>
+        </li>
+        <li
+          className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
+          onClick={() => {
+            onSelect("roles");
+          }}
+        >
+          <span className="text-sm font-medium">Roles</span>
         </li>
         <li
           className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
@@ -26,7 +33,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelect }) => {
         >
           <span className="text-sm font-medium">Card</span>
         </li>
-		<li
+        <li
           className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
           onClick={() => onSelect("door")}
         >

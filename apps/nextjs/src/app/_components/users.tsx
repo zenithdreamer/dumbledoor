@@ -6,6 +6,7 @@ const UserTable: React.FC = () => {
   const users = api.admin.getUsers.useQuery();
   const [showModal, setShowModal] = useState(false);
   const [newUser, setNewUser] = useState({
+    userName: "",
     firstName: "",
     lastName: "",
     accessLevel: 0,
@@ -15,7 +16,7 @@ const UserTable: React.FC = () => {
 
   const handleCreateUser = () => {
     const today = new Date().toLocaleDateString();
-    const newUserData = { ...newUser, createDate: today, status: "Good" };
+    const newUserData = { ...newUser, createDate: today };
     //NewUserdata here
     console.log(newUserData);
 
@@ -24,6 +25,7 @@ const UserTable: React.FC = () => {
 
   const openModal = () => {
     setNewUser({
+      userName: "",
       firstName: "",
       lastName: "",
       accessLevel: 0,
@@ -36,6 +38,15 @@ const UserTable: React.FC = () => {
   return (
     <div className="relative flex-1 bg-gray-100 p-8">
       <div className="overflow-x-auto">
+        <div className="mb-4 flex justify-between">
+          <h1 className="text-2xl font-bold">Users</h1>
+          <button
+            className="rounded bg-blue-600 px-4 py-1 text-white hover:bg-pink-600"
+            onClick={openModal}
+          >
+            Create New User
+          </button>
+        </div>
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -43,7 +54,7 @@ const UserTable: React.FC = () => {
                 scope="col"
                 className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
               >
-                ID
+                Username
               </th>
               <th
                 scope="col"
@@ -57,12 +68,12 @@ const UserTable: React.FC = () => {
               >
                 Role
               </th>
-              <th
+              {/* <th
                 scope="col"
                 className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
               >
                 Status
-              </th>
+              </th> */}
               <th
                 scope="col"
                 className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
@@ -73,10 +84,19 @@ const UserTable: React.FC = () => {
                 scope="col"
                 className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
               >
-                Assigned By
+                Flags
               </th>
-              <th scope="col" className="relative px-4 py-2">
-                <span className="sr-only">Action</span>
+              <th
+                scope="col"
+                className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+              >
+                ID
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+              >
+                Action
               </th>
             </tr>
           </thead>
@@ -100,7 +120,7 @@ const UserTable: React.FC = () => {
             {users.data?.map((user) => (
               <tr key={user.id}>
                 <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
-                  {user.id}
+                  {user.username}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
                   {user.first_name} {user.last_name}
@@ -108,8 +128,8 @@ const UserTable: React.FC = () => {
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
                   {"Role"}
                 </td>
-                <td className="whitespace-nowrap px-4 py-2">
-                  {/* <span
+                {/* <td className="whitespace-nowrap px-4 py-2">
+                  <span
                       className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
                         user.status === "Good"
                           ? "bg-green-100 text-green-800"
@@ -117,21 +137,32 @@ const UserTable: React.FC = () => {
                       }`}
                     >
                       {user.status} 
-                    </span>*/}
+                    </span>
                   Nyan
-                </td>
+                </td> */}
                 <td
                   className="whitespace-nowrap px-4 py-2 text-sm text-gray-500"
                   suppressHydrationWarning
                 >
-                  {new Date(user.created_at).toLocaleDateString()}
+                  {new Date(user.created_at).toLocaleString()}
+                </td>
+                <td className="whitespace-nowrap px-4 py-2">
+                  <span
+                    className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
+                      !user.admin
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {user.admin ? "Admin" : "User"}
+                  </span>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
-                  {""}
+                  {user.id}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-right text-sm font-medium">
                   <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                    delete
+                    Delete
                   </a>
                 </td>
               </tr>
@@ -139,13 +170,6 @@ const UserTable: React.FC = () => {
           </tbody>
         </table>
       </div>
-
-      <button
-        className="absolute bottom-0 right-0 rounded bg-blue-600 px-4 py-1 text-white hover:bg-pink-600"
-        onClick={openModal}
-      >
-        Create New User
-      </button>
 
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

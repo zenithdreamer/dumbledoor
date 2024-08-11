@@ -75,12 +75,7 @@
       "interactive": true
     }
   },
-  "globalEnv": [
-    "POSTGRES_URL",
-    "AUTH_REDIRECT_PROXY_URL",
-    "AUTH_SECRET",
-    "PORT"
-  ],
+  "globalEnv": ["POSTGRES_URL", "RABBITMQ_URL", "AUTH_SECRET", "PORT"],
   "globalPassThroughEnv": [
     "NODE_ENV",
     "CI",

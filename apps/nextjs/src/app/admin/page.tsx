@@ -7,8 +7,9 @@ import Door from "../_components/add_door";
 import Card from "../_components/card";
 import Edit_access from "../_components/edit-access";
 import Log from "../_components/log";
+import Roles from "../_components/roles";
 import Sidebar from "../_components/sidebar";
-import User from "../_components/user";
+import Users from "../_components/users";
 
 const App: React.FC = () => {
   const [selectedSection, setSelectedSection] = useState("user");
@@ -23,8 +24,10 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     switch (selectedSection) {
-      case "user":
-        return <User />;
+      case "users":
+        return <Users />;
+      case "roles":
+        return <Roles />;
       case "card":
         return <Card />;
       case "edit-access":
