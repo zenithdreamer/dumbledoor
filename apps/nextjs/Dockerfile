@@ -76,6 +76,5 @@ COPY --from=installer /app/apps/nextjs/package.json .
 COPY --from=installer --chown=nextjs:nodejs /app/apps/nextjs/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/nextjs/.next/static ./apps/nextjs/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/nextjs/public ./apps/nextjs/public
-COPY --from=installer --chown=nextjs:nodejs /app/apps/nextjs/src/rich_menus ./apps/nextjs/src/rich_menus
 
 CMD node apps/nextjs/server.js
