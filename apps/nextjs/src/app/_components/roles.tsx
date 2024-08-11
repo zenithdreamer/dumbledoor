@@ -36,7 +36,28 @@ const RoleTable: React.FC = () => {
   return (
     <div className="relative flex-1 bg-gray-100 p-8">
       <div className="overflow-x-auto">
-        <h1 className="text-2xl font-bold">Roles</h1>
+      <div className="mb-4 flex justify-between">
+          <h1 className="text-2xl font-bold">Role</h1>
+          <button
+            className="rounded bg-blue-600 p-2 text-white hover:bg-pink-600"
+            onClick={openModal}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+          </button>
+        </div>
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -141,12 +162,6 @@ const RoleTable: React.FC = () => {
         </table>
       </div>
 
-      <button
-        className="absolute bottom-0 right-0 rounded bg-blue-600 px-4 py-1 text-white hover:bg-pink-600"
-        onClick={openModal}
-      >
-        Create New User
-      </button>
 
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
