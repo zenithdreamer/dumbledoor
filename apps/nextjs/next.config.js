@@ -7,6 +7,7 @@ createJiti(fileURLToPath(import.meta.url))("./src/env");
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
+  output: "standalone",
 
   /** Enables hot reloading for local packages without a build step */
   transpilePackages: [
