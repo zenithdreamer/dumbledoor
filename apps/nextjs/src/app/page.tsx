@@ -11,8 +11,8 @@ const Doortable: React.FC = () => {
   const { data: doors, isLoading, error } = trpc.door.admin.getAllDoors.useQuery();
 
   const [keycards, setKeycards] = useState([
-    { level: 4, position: { x: 0, y: 0 } },
-    { level: 2, position: { x: 0, y: 0 } },
+    { level: 4, position: { x: 0, y: 0 }, width: 200, height: 120 }, // Added width and height
+    { level: 2, position: { x: 0, y: 0 }, width: 200, height: 120 }, // Added width and height
   ]);
 
   const updateKeycardPosition = (index: number, position: { x: number; y: number }) => {
@@ -49,6 +49,8 @@ const Doortable: React.FC = () => {
             role={index === 0 ? "SCP Manager" : "SCP Catcher"}
             id={index === 0 ? "65011353" : "65012333"}
             level={keycard.level}
+            width={keycard.width} // Passing width
+            height={keycard.height} // Passing height
             onMove={(pos) => updateKeycardPosition(index, pos)}
           />
         ))}

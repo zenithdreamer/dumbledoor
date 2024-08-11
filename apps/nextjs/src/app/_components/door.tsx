@@ -5,6 +5,8 @@ import React, { useEffect, useRef } from "react";
 interface Keycard {
   level: number;
   position: { x: number; y: number };
+  width: number;  // Added width
+  height: number; // Added height
 }
 
 interface DoorProps {
@@ -58,7 +60,6 @@ interface ScannerProps {
   scannerLevel: number;
   onScan: (isScanned: boolean) => void;
 }
-
 const Scanner = ({ keycards, scannerLevel, onScan }: ScannerProps) => {
   const scannerRef = useRef<HTMLDivElement>(null);
 
@@ -76,9 +77,9 @@ const Scanner = ({ keycards, scannerLevel, onScan }: ScannerProps) => {
 
       const canAccess = keycards.some((keycard) => {
         const isCardOnScanner =
-          keycard.position.x >= scannerPosition.x &&
+          keycard.position.x + keycard.width >= scannerPosition.x &&
           keycard.position.x <= scannerPosition.x + scannerSize.width &&
-          keycard.position.y >= scannerPosition.y &&
+          keycard.position.y + keycard.height >= scannerPosition.y &&
           keycard.position.y <= scannerPosition.y + scannerSize.height;
 
         console.log("scanner: ", scannerPosition.x, scannerPosition.y);

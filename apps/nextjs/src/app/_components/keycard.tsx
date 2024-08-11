@@ -7,6 +7,8 @@ interface MovableKeycardProps {
   role: string;
   id: string;
   level: number;
+  width: number;  // Added width
+  height: number; // Added height
   onMove: (position: { x: number; y: number }) => void;
 }
 
@@ -15,6 +17,8 @@ export default function MovableKeycard({
   role,
   id,
   level,
+  width,  // Added width
+  height, // Added height
   onMove,
 }: MovableKeycardProps) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -70,8 +74,8 @@ export default function MovableKeycard({
         position: "absolute",
         top: `${position.y}px`,
         left: `${position.x}px`,
-        width: "200px",
-        height: "120px",
+        width: `${width}px`,  // Use width prop
+        height: `${height}px`, // Use height prop
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
