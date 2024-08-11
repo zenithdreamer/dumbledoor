@@ -21,7 +21,7 @@ export default function MovableKeycard({ name, role, id, level, onMove }: Movabl
       x: e.clientX - position.x,
       y: e.clientY - position.y,
     });
-    console.log(position.x, position.y)
+    console.log("card: ", position.x, position.y)
   };
 
   const handleMouseMove = useCallback(

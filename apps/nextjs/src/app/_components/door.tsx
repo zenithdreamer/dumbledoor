@@ -1,6 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
+
+interface Keycard {
+  level: number;
+  position: { x: number; y: number };
+}
 
 interface DoorProps {
   isOpen: boolean;
@@ -49,56 +54,78 @@ const Door = ({ isOpen, position }: DoorProps) => {
 };
 
 interface ScannerProps {
-  keycardPosition: { x: number; y: number };
+  keycards: Keycard[];
+  scannerLevel: number;
   onScan: (isScanned: boolean) => void;
 }
 
-const Scanner = ({ keycardPosition, onScan }: ScannerProps) => {
+const Scanner = ({ keycards, scannerLevel, onScan }: ScannerProps) => {
   const scannerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (scannerRef.current) {
-      const rect = scannerRef.current.getBoundingClientRect();
-      const scannerPosition = { x: rect.left, y: rect.top };
-      const scannerSize = { width: rect.width, height: rect.height };
+      const scannerElement = scannerRef.current;
+      const scannerPosition = {
+        x: scannerElement.offsetLeft,
+        y: scannerElement.offsetTop,
+      };
+      const scannerSize = {
+        width: scannerElement.offsetWidth,
+        height: scannerElement.offsetHeight,
+      };
 
-      const isCardOnScanner =
-        keycardPosition.x >= scannerPosition.x &&
-        keycardPosition.x <= scannerPosition.x + scannerSize.width &&
-        keycardPosition.y >= scannerPosition.y &&
-        keycardPosition.y <= scannerPosition.y + scannerSize.height;
+      const canAccess = keycards.some((keycard) => {
+        const isCardOnScanner =
+          keycard.position.x >= scannerPosition.x &&
+          keycard.position.x <= scannerPosition.x + scannerSize.width &&
+          keycard.position.y >= scannerPosition.y &&
+          keycard.position.y <= scannerPosition.y + scannerSize.height;
 
-      console.log(keycardPosition.x, keycardPosition.y, scannerPosition.x, scannerPosition.y);
-      onScan(isCardOnScanner);
+        console.log("scanner: ", scannerPosition.x, scannerPosition.y);
+        console.log("keycard: ", keycard.position.x, keycard.position.y);
+        console.log("isCardOnScanner: ", isCardOnScanner);
+
+        return isCardOnScanner && keycard.level >= scannerLevel;
+      });
+
+      onScan(canAccess);
     }
-  }, [keycardPosition, onScan]);
+  }, [keycards, scannerLevel, onScan]);
 
   return (
     <div
       ref={scannerRef}
       style={{
-        width: '100px',
-        height: '100px',
-        backgroundColor: 'lightblue',
-        border: '3px solid blue',
-        marginTop: '20px', // Add margin to position scanner below the doors
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: '5px',
-        userSelect: 'none',
+        width: "100px",
+        height: "100px",
+        backgroundColor: "lightblue",
+        border: "3px solid blue",
+        marginTop: "20px",
+        display: "flex",
+        alignItems: "center",
+        textAlign: "center",
+        justifyContent: "center",
+        borderRadius: "5px",
+        userSelect: "none",
       }}
     >
-      <p style={{ margin: 0, color: 'black' }}>Scanner</p>
+      <p style={{ margin: 0, color: "black" }}>Scanner Level {scannerLevel}</p>
     </div>
   );
 };
 
-export default function FunctionalDoors({ keycardPosition }: { keycardPosition: { x: number; y: number } }) {
+
+export default function FunctionalDoors({
+  keycards,
+  level,
+}: {
+  keycards: Keycard[];
+  level: number;
+}) {
   const [areDoorsOpen, setDoorsOpen] = React.useState(false);
 
-  const handleScan = (isScanned: boolean) => {
-    setDoorsOpen(isScanned);
+  const handleScan = (canAccess: boolean) => {
+    setDoorsOpen(canAccess);
   };
 
   return (
@@ -107,7 +134,7 @@ export default function FunctionalDoors({ keycardPosition }: { keycardPosition: 
         <Door isOpen={areDoorsOpen} position="left" />
         <Door isOpen={areDoorsOpen} position="right" />
       </div>
-      <Scanner keycardPosition={keycardPosition} onScan={handleScan} />
+      <Scanner keycards={keycards} scannerLevel={level} onScan={handleScan} />
     </div>
   );
 }
