@@ -89,12 +89,12 @@ export const adminRouter = {
           message: "You are not authorized to perform this action",
         });
       }
-      
+
       const role = await prisma.role.update({
         where: { id: input.id },
         data: input,
       });
-      
+
       ctx.queueLog(
         ctx.session.userId,
         `Updated a role: ${role.name} (${role.id}) with a name: ${input.name} and description: ${input.description}`,
@@ -102,7 +102,6 @@ export const adminRouter = {
 
       return role;
     }),
-
 
   deleteRole: protectedProcedure
     .input(z.string())

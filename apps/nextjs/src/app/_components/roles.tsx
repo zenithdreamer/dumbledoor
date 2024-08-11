@@ -13,13 +13,13 @@ import {
 
 interface SelectedDoor {
   id: string;
-  name: string;
+  //name: string;
   accessLevel: number;
 }
 
 interface SelectedUser {
   id: string;
-  username: string;
+  //username: string;
 }
 
 const RoleTable: React.FC = () => {
@@ -93,15 +93,15 @@ const RoleTable: React.FC = () => {
     setSelectedDoors(
       role.role_doors.map((door) => ({
         id: door.door_id,
-        name: door.door_name, 
+        //name: door.door_name,
         accessLevel: door.granted_access_level,
-      }))
+      })),
     );
     setSelectedUsers(
       role.role_users.map((user) => ({
         id: user.user_id,
-        username: user.username,
-      }))
+        //username: user.username,
+      })),
     );
     setShowModal(true);
   };
@@ -327,7 +327,7 @@ const RoleTable: React.FC = () => {
                     {selectedDoors.map((door, index) => (
                       <tr key={index}>
                         <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
-                          {door.name}
+                          {/* {door.name} */} Door Name
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
                           {door.accessLevel}
@@ -336,7 +336,7 @@ const RoleTable: React.FC = () => {
                           <button
                             onClick={() =>
                               setSelectedDoors((prev) =>
-                                prev.filter((_, i) => i !== index)
+                                prev.filter((_, i) => i !== index),
                               )
                             }
                             className="text-red-600 hover:text-red-800"
@@ -362,7 +362,6 @@ const RoleTable: React.FC = () => {
                     <button
                       type="button"
                       className="ml-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                      onClick={() => {}}
                     >
                       Add
                     </button>
@@ -407,7 +406,7 @@ const RoleTable: React.FC = () => {
                     {selectedUsers.map((user, index) => (
                       <tr key={index}>
                         <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
-                          {user.username}
+                          {/* {user.username} */} User Name
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
                           {user.id}
@@ -416,7 +415,7 @@ const RoleTable: React.FC = () => {
                           <button
                             onClick={() =>
                               setSelectedUsers((prev) =>
-                                prev.filter((_, i) => i !== index)
+                                prev.filter((_, i) => i !== index),
                               )
                             }
                             className="text-red-600 hover:text-red-800"
@@ -442,7 +441,6 @@ const RoleTable: React.FC = () => {
                     <button
                       type="button"
                       className="ml-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                      onClick={() => {}}
                     >
                       Add
                     </button>
@@ -541,7 +539,7 @@ const UserSelect: React.FC<{
         if (selected) {
           props.onChange({
             id: selected.id,
-            username: selected.username,
+            //username: selected.username,
           });
         }
         setSelectedUser(e.target.value);
@@ -602,8 +600,8 @@ const DoorSelect: React.FC<{
         if (selected) {
           props.onChange({
             id: selected.id,
-            name: selected.name,
-            accessLevel: selected.access_level, 
+            //name: selected.name,
+            accessLevel: selected.access_level,
           });
         }
         setSelectedDoor(e.target.value);
