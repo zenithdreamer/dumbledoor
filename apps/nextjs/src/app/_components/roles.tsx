@@ -11,6 +11,17 @@ import {
   UserTRPCReactProvider,
 } from "~/trpc/react";
 
+interface SelectedDoor {
+  id: string;
+  name: string;
+  accessLevel: number;
+}
+
+interface SelectedUser {
+  id: string;
+  username: string;
+}
+
 const RoleTable: React.FC = () => {
   const roles = trpc.access.admin.getRoles.useQuery();
   const createRole = trpc.access.admin.createRole.useMutation();
@@ -30,8 +41,15 @@ const RoleTable: React.FC = () => {
     description: "",
   });
 
+  const [selectedDoors, setSelectedDoors] = useState<SelectedDoor[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<SelectedUser[]>([]);
+
   const handleCreateRole = async () => {
-    await createRole.mutateAsync(newRole);
+    await createRole.mutateAsync({
+      name: newRole.name,
+      description: newRole.description,
+      // Send selected doors and users if needed in your backend
+    });
     setShowModal(false);
     void roles.refetch();
   };
@@ -39,9 +57,10 @@ const RoleTable: React.FC = () => {
   const handleEditRole = async () => {
     if (!editRole) return;
     await updateRole.mutateAsync({
-      ...editRole,
+      id: editRole.id,
       name: newRole.name,
       description: newRole.description,
+      // Send selected doors and users if needed in your backend
     });
     setShowModal(false);
     setEditRole(null);
@@ -60,6 +79,8 @@ const RoleTable: React.FC = () => {
       name: "",
       description: "",
     });
+    setSelectedDoors([]);
+    setSelectedUsers([]);
     setShowModal(true);
   };
 
@@ -69,6 +90,19 @@ const RoleTable: React.FC = () => {
       name: role.name,
       description: role.description,
     });
+    setSelectedDoors(
+      role.role_doors.map((door) => ({
+        id: door.door_id,
+        name: door.door_name, 
+        accessLevel: door.granted_access_level,
+      }))
+    );
+    setSelectedUsers(
+      role.role_users.map((user) => ({
+        id: user.user_id,
+        username: user.username,
+      }))
+    );
     setShowModal(true);
   };
 
@@ -282,21 +316,33 @@ const RoleTable: React.FC = () => {
                   </thead>
 
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {editRole?.role_doors.length === 0 && (
+                    {selectedDoors.length === 0 && (
                       <tr>
-                        <td colSpan={7} className="py-4 text-center">
+                        <td colSpan={3} className="py-4 text-center">
                           No doors
                         </td>
                       </tr>
                     )}
 
-                    {editRole?.role_doors.map((door) => (
-                      <tr key={door.door_id}>
+                    {selectedDoors.map((door, index) => (
+                      <tr key={index}>
                         <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
-                          {door.door_id}
+                          {door.name}
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
-                          {door.granted_access_level}
+                          {door.accessLevel}
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
+                          <button
+                            onClick={() =>
+                              setSelectedDoors((prev) =>
+                                prev.filter((_, i) => i !== index)
+                              )
+                            }
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            Remove
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -308,14 +354,16 @@ const RoleTable: React.FC = () => {
                 <div className="mb-4 flex w-full justify-between">
                   <div className="flex w-full ">
                     <DoorSelectWithTRPC
-                      ignoreIds={editRole?.role_doors.map(
-                        (door) => door.door_id,
-                      )}
+                      ignoreIds={selectedDoors.map((door) => door.id)}
                       onChange={(door) => {
-                        console.log(door);
+                        setSelectedDoors((prev) => [...prev, door]);
                       }}
                     />
-                    <button className="ml-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                    <button
+                      type="button"
+                      className="ml-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                      onClick={() => {}}
+                    >
                       Add
                     </button>
                   </div>
@@ -348,21 +396,33 @@ const RoleTable: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {editRole?.role_users.length === 0 && (
+                    {selectedUsers.length === 0 && (
                       <tr>
-                        <td colSpan={7} className="py-4 text-center">
+                        <td colSpan={3} className="py-4 text-center">
                           No users
                         </td>
                       </tr>
                     )}
 
-                    {editRole?.role_users.map((user) => (
-                      <tr key={user.user_id}>
+                    {selectedUsers.map((user, index) => (
+                      <tr key={index}>
                         <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
-                          {user.user_id}
+                          {user.username}
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
-                          {user.user_id}
+                          {user.id}
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
+                          <button
+                            onClick={() =>
+                              setSelectedUsers((prev) =>
+                                prev.filter((_, i) => i !== index)
+                              )
+                            }
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            Remove
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -374,14 +434,16 @@ const RoleTable: React.FC = () => {
                 <div className="mb-4 flex w-full justify-between">
                   <div className="flex w-full ">
                     <UserSelectWithTRPC
-                      ignoreIds={editRole?.role_users.map(
-                        (user) => user.user_id,
-                      )}
+                      ignoreIds={selectedUsers.map((user) => user.id)}
                       onChange={(user) => {
-                        console.log(user);
+                        setSelectedUsers((prev) => [...prev, user]);
                       }}
                     />
-                    <button className="ml-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                    <button
+                      type="button"
+                      className="ml-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                      onClick={() => {}}
+                    >
                       Add
                     </button>
                   </div>
@@ -448,7 +510,7 @@ export default function RoleTableWithTRPC() {
 
 const UserSelect: React.FC<{
   ignoreIds?: string[];
-  onChange: (role: string) => void;
+  onChange: (user: SelectedUser) => void;
 }> = (props) => {
   const users = trpc.user.admin.getUsers.useQuery();
   const [selectedUser, setSelectedUser] = useState<string>("");
@@ -475,8 +537,14 @@ const UserSelect: React.FC<{
       className="w-full rounded border px-3 py-2"
       value={selectedUser}
       onChange={(e) => {
+        const selected = userList.find((user) => user.id === e.target.value);
+        if (selected) {
+          props.onChange({
+            id: selected.id,
+            username: selected.username,
+          });
+        }
         setSelectedUser(e.target.value);
-        props.onChange(e.target.value);
       }}
     >
       <option value={""}>Select a user</option>
@@ -492,7 +560,7 @@ const UserSelect: React.FC<{
 
 const UserSelectWithTRPC: React.FC<{
   ignoreIds?: string[];
-  onChange: (user: string) => void;
+  onChange: (user: SelectedUser) => void;
 }> = (props) => {
   return (
     <UserTRPCReactProvider>
@@ -503,7 +571,7 @@ const UserSelectWithTRPC: React.FC<{
 
 const DoorSelect: React.FC<{
   ignoreIds?: string[];
-  onChange: (door: string) => void;
+  onChange: (door: SelectedDoor) => void;
 }> = (props) => {
   const doors = trpc.door.admin.getAllDoors.useQuery();
   const [selectedDoor, setSelectedDoor] = useState<string>("");
@@ -530,8 +598,15 @@ const DoorSelect: React.FC<{
       className="w-full rounded border px-3 py-2"
       value={selectedDoor}
       onChange={(e) => {
+        const selected = doorList.find((door) => door.id === e.target.value);
+        if (selected) {
+          props.onChange({
+            id: selected.id,
+            name: selected.name,
+            accessLevel: selected.access_level, 
+          });
+        }
         setSelectedDoor(e.target.value);
-        props.onChange(e.target.value);
       }}
     >
       <option value={""}>Select a door</option>
@@ -547,7 +622,7 @@ const DoorSelect: React.FC<{
 
 const DoorSelectWithTRPC: React.FC<{
   ignoreIds?: string[];
-  onChange: (door: string) => void;
+  onChange: (door: SelectedDoor) => void;
 }> = (props) => {
   return (
     <DoorTRPCReactProvider>
