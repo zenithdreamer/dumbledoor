@@ -5,7 +5,7 @@ import React, { useEffect, useRef } from "react";
 interface Keycard {
   level: number;
   position: { x: number; y: number };
-  width: number;  // Added width
+  width: number; // Added width
   height: number; // Added height
 }
 
@@ -122,7 +122,7 @@ export default function FunctionalDoors({
 }: {
   keycards: Keycard[];
   level: number;
-  doorName: string;  // Added prop for door name
+  doorName: string; // Added prop for door name
 }) {
   const [areDoorsOpen, setDoorsOpen] = React.useState(false);
 
@@ -137,10 +137,12 @@ export default function FunctionalDoors({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        marginBottom: "20px",  
+        marginBottom: "20px",
       }}
     >
-      <h3 style={{ marginBottom: "10px", fontSize: "1.5rem", color: "black" }}>{doorName}</h3> 
+      <h3 style={{ marginBottom: "10px", fontSize: "1.5rem", color: "black" }}>
+        {doorName}
+      </h3>
 
       <div style={{ display: "flex", position: "relative" }}>
         <Door isOpen={areDoorsOpen} position="left" />

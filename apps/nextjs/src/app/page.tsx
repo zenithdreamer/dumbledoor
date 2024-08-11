@@ -2,23 +2,31 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+
+import { DoorTRPCReactProvider, trpc } from "~/trpc/react";
 import FunctionalDoors from "./_components/door";
 import MovableKeycard from "./_components/keycard";
-import { DoorTRPCReactProvider, trpc } from "~/trpc/react";
 
 const Doortable: React.FC = () => {
-  const { data: doors, isLoading, error } = trpc.door.admin.getAllDoors.useQuery();
+  const {
+    data: doors,
+    isLoading,
+    error,
+  } = trpc.door.admin.getAllDoors.useQuery();
   const [selectedDoorId, setSelectedDoorId] = useState<string | null>(null);
   const [keycards, setKeycards] = useState([
     { level: 4, position: { x: 0, y: 0 }, width: 200, height: 120 }, // Added width and height
     { level: 2, position: { x: 0, y: 0 }, width: 200, height: 120 }, // Added width and height
   ]);
 
-  const updateKeycardPosition = (index: number, position: { x: number; y: number }) => {
-    setKeycards(prevKeycards =>
+  const updateKeycardPosition = (
+    index: number,
+    position: { x: number; y: number },
+  ) => {
+    setKeycards((prevKeycards) =>
       prevKeycards.map((keycard, i) =>
-        i === index ? { ...keycard, position } : keycard
-      )
+        i === index ? { ...keycard, position } : keycard,
+      ),
     );
   };
 
@@ -26,7 +34,7 @@ const Doortable: React.FC = () => {
     setSelectedDoorId(event.target.value);
   };
 
-  const selectedDoor = doors?.find(door => door.id === selectedDoorId);
+  const selectedDoor = doors?.find((door) => door.id === selectedDoorId);
 
   return (
     <main className="container relative h-screen py-16">
@@ -44,10 +52,12 @@ const Doortable: React.FC = () => {
         {doors && (
           <select
             onChange={handleDoorSelect}
-            value={selectedDoorId || ''}
-            className="mb-4 p-2 border rounded"
+            value={selectedDoorId || ""}
+            className="mb-4 rounded border p-2"
           >
-            <option value="" disabled>Select a door</option>
+            <option value="" disabled>
+              Select a door
+            </option>
             {doors.map((door) => (
               <option key={door.id} value={door.id}>
                 {door.name}
@@ -57,7 +67,7 @@ const Doortable: React.FC = () => {
         )}
 
         {selectedDoor && (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex h-full items-center justify-center">
             <FunctionalDoors
               keycards={keycards}
               level={selectedDoor.access_level}
