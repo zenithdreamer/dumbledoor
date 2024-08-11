@@ -24,6 +24,7 @@
     "@dumbledoor/access-api": "workspace:*",
     "@dumbledoor/user-api": "workspace:*",
     "@dumbledoor/validators": "workspace:*",
+    "jsonwebtoken": "^9.0.2",
     "@trpc/server": "11.0.0-rc.477",
     "argon2": "^0.40.3",
     "superjson": "2.2.1",
@@ -32,6 +33,7 @@
   "devDependencies": {
     "@dumbledoor/eslint-config": "workspace:*",
     "@dumbledoor/prettier-config": "workspace:*",
+    "@types/jsonwebtoken": "^9.0.6",
     "@dumbledoor/tsconfig": "workspace:*",
     "eslint": "^9.4.0",
     "prettier": "^3.3.1",

@@ -19,9 +19,9 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
+    "@dumbledoor/access-api": "workspace:*",
     "@dumbledoor/auth": "workspace:*",
     "@dumbledoor/user-db": "workspace:*",
-    "@dumbledoor/access-api": "workspace:*",
     "@dumbledoor/validators": "workspace:*",
     "@trpc/server": "11.0.0-rc.477",
     "argon2": "^0.40.3",
@@ -32,6 +32,7 @@
     "@dumbledoor/eslint-config": "workspace:*",
     "@dumbledoor/prettier-config": "workspace:*",
     "@dumbledoor/tsconfig": "workspace:*",
+    "@types/jsonwebtoken": "^9.0.6",
     "eslint": "^9.4.0",
     "prettier": "^3.3.1",
     "typescript": "^5.4.5"

@@ -32,6 +32,7 @@
     "@dumbledoor/eslint-config": "workspace:*",
     "@dumbledoor/prettier-config": "workspace:*",
     "@dumbledoor/tsconfig": "workspace:*",
+    "@types/jsonwebtoken": "^9.0.6",
     "eslint": "^9.4.0",
     "prettier": "^3.3.1",
     "typescript": "^5.4.5"
