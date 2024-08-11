@@ -9,15 +9,15 @@ interface Keycard {
 
 interface DoorProps {
   isOpen: boolean;
-  position: 'left' | 'right';
+  position: "left" | "right";
 }
 
 const Door = ({ isOpen, position }: DoorProps) => {
   const transform = isOpen
-    ? position === 'left'
-      ? 'translateX(-100px)'
-      : 'translateX(100px)'
-    : 'translateX(0) rotateY(0deg)';
+    ? position === "left"
+      ? "translateX(-100px)"
+      : "translateX(100px)"
+    : "translateX(0) rotateY(0deg)";
 
   return (
     <div
@@ -114,7 +114,6 @@ const Scanner = ({ keycards, scannerLevel, onScan }: ScannerProps) => {
   );
 };
 
-
 export default function FunctionalDoors({
   keycards,
   level,
@@ -129,8 +128,15 @@ export default function FunctionalDoors({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ display: 'flex', position: 'relative' }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div style={{ display: "flex", position: "relative" }}>
         <Door isOpen={areDoorsOpen} position="left" />
         <Door isOpen={areDoorsOpen} position="right" />
       </div>

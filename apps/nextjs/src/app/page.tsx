@@ -12,11 +12,14 @@ export default function HomePage() {
     { level: 2, position: { x: 0, y: 0 } },
   ]);
 
-  const updateKeycardPosition = (index: number, position: { x: number; y: number }) => {
-    setKeycards(prevKeycards =>
+  const updateKeycardPosition = (
+    index: number,
+    position: { x: number; y: number },
+  ) => {
+    setKeycards((prevKeycards) =>
       prevKeycards.map((keycard, i) =>
-        i === index ? { ...keycard, position } : keycard
-      )
+        i === index ? { ...keycard, position } : keycard,
+      ),
     );
   };
 

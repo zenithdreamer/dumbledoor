@@ -26,14 +26,15 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@dumbledoor/auth": "workspace:*",
     "@dumbledoor/access-api": "workspace:*",
+    "@dumbledoor/auth": "workspace:*",
     "@dumbledoor/door-api": "workspace:*",
     "@dumbledoor/door-db": "workspace:*",
     "@dumbledoor/validators": "workspace:*",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
+    "rabbitmq-client": "^4.6.0",
     "ts-node-dev": "^2.0.0",
     "tsx": "^4.17.0"
   },

@@ -1,5 +1,6 @@
-import { RouterOutputs } from "@dumbledoor/access-api";
 import React from "react";
+
+import { RouterOutputs } from "@dumbledoor/access-api";
 
 import { DoorTRPCReactProvider, trpc } from "~/trpc/react";
 
@@ -10,7 +11,9 @@ const Card: React.FC = () => {
   const updateDoor = trpc.door.admin.editDoor.useMutation();
 
   const [showModal, setShowModal] = React.useState(false);
-  const [editDoorData, setEditDoorData] = React.useState<RouterOutputs["admin"]["getAllDoors"][0] | null>(null);
+  const [editDoorData, setEditDoorData] = React.useState<
+    RouterOutputs["admin"]["getAllDoors"][0] | null
+  >(null);
   const [newDoor, setNewDoor] = React.useState({
     name: "",
     accessLevel: 0,
@@ -149,7 +152,7 @@ const Card: React.FC = () => {
                 </p>
               </div>
 
-              <div className="absolute top-2 right-2">
+              <div className="absolute right-2 top-2">
                 <button onClick={() => handleEditDoor(door)}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
