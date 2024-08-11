@@ -2,24 +2,24 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-
 import FunctionalDoors from "./_components/door";
 import MovableKeycard from "./_components/keycard";
+import { DoorTRPCReactProvider, trpc } from "~/trpc/react";
 
-export default function HomePage() {
+const Doortable: React.FC = () => {
+
+  const { data: doors, isLoading, error } = trpc.door.admin.getAllDoors.useQuery();
+
   const [keycards, setKeycards] = useState([
     { level: 4, position: { x: 0, y: 0 } },
     { level: 2, position: { x: 0, y: 0 } },
   ]);
 
-  const updateKeycardPosition = (
-    index: number,
-    position: { x: number; y: number },
-  ) => {
-    setKeycards((prevKeycards) =>
+  const updateKeycardPosition = (index: number, position: { x: number; y: number }) => {
+    setKeycards(prevKeycards =>
       prevKeycards.map((keycard, i) =>
-        i === index ? { ...keycard, position } : keycard,
-      ),
+        i === index ? { ...keycard, position } : keycard
+      )
     );
   };
 
@@ -33,11 +33,15 @@ export default function HomePage() {
       </Link>
 
       <div className="flex flex-col items-center justify-center gap-4">
-        <FunctionalDoors keycards={keycards} level={1} />
-        <FunctionalDoors keycards={keycards} level={2} />
-        <FunctionalDoors keycards={keycards} level={3} />
-        <FunctionalDoors keycards={keycards} level={4} />
-        <FunctionalDoors keycards={keycards} level={5} />
+        {isLoading && <p>Loading doors...</p>}
+        {error && <p>Error loading doors: {error.message}</p>}
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {doors && doors.map((door) => (
+            <FunctionalDoors keycards={keycards} level={door.access_level} doorName={door.name} key={door.id} />
+          ))}
+        </div>
+
         {keycards.map((keycard, index) => (
           <MovableKeycard
             key={index}
@@ -50,5 +54,14 @@ export default function HomePage() {
         ))}
       </div>
     </main>
+  );
+};
+
+
+export default function HomePage() {
+  return (
+    <DoorTRPCReactProvider>
+      <Doortable />
+    </DoorTRPCReactProvider>
   );
 }

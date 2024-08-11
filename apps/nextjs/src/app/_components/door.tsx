@@ -116,10 +116,12 @@ const Scanner = ({ keycards, scannerLevel, onScan }: ScannerProps) => {
 
 export default function FunctionalDoors({
   keycards,
+  doorName,
   level,
 }: {
   keycards: Keycard[];
   level: number;
+  doorName: string;  // Added prop for door name
 }) {
   const [areDoorsOpen, setDoorsOpen] = React.useState(false);
 
@@ -134,8 +136,11 @@ export default function FunctionalDoors({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+        marginBottom: "20px",  
       }}
     >
+      <h3 style={{ marginBottom: "10px", fontSize: "1.5rem", color: "black" }}>{doorName}</h3> 
+
       <div style={{ display: "flex", position: "relative" }}>
         <Door isOpen={areDoorsOpen} position="left" />
         <Door isOpen={areDoorsOpen} position="right" />
