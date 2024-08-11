@@ -4,33 +4,32 @@ import { AccessTRPCReactProvider, trpc } from "~/trpc/react";
 
 const RoleTable: React.FC = () => {
   const roles = trpc.access.admin.getRoles.useQuery();
+  const createRole = trpc.access.admin.createRole.useMutation();
   const [showModal, setShowModal] = useState(false);
-  const [newUser, setNewUser] = useState({
-    userName: "",
-    firstName: "",
-    lastName: "",
-    accessLevel: 0,
-    role: "",
-    admin: false,
+  const [newRole, setNewUser] = useState({
+    name: "",
+    description: "",
   });
 
-  const handleCreateUser = () => {
+  const handleCreateUser = async () => {
     const today = new Date().toLocaleDateString();
-    const newUserData = { ...newUser, createDate: today };
-    //NewUserdata here
-    console.log(newUserData);
+    const newUserData = { ...newRole, createDate: today };
+
+    try {
+      await createRole.mutateAsync(newUserData);
+    } catch (error) {
+      console.error(error);
+    }
+
+    void roles.refetch();
 
     setShowModal(false);
   };
 
   const openModal = () => {
     setNewUser({
-      userName: "",
-      firstName: "",
-      lastName: "",
-      accessLevel: 0,
-      role: "",
-      admin: false,
+      name: "",
+      description: "",
     });
     setShowModal(true);
   };
@@ -135,7 +134,7 @@ const RoleTable: React.FC = () => {
                   {role.description}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
-                  {"Role"}
+                  {role.doors.length}
                 </td>
                 {/* <td className="whitespace-nowrap px-4 py-2">
                   <span
@@ -160,7 +159,16 @@ const RoleTable: React.FC = () => {
                   {role.id}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-right text-sm font-medium">
-                  <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                  <a
+                    href="#"
+                    className="m-2 text-indigo-600 hover:text-indigo-900"
+                  >
+                    Edit
+                  </a>
+                  <a
+                    href="#"
+                    className="m-2 text-red-600 hover:text-indigo-900"
+                  >
                     Delete
                   </a>
                 </td>
@@ -173,7 +181,7 @@ const RoleTable: React.FC = () => {
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="w-1/3 rounded bg-white p-8 shadow-lg">
-            <h2 className="mb-4 text-xl font-bold">Create New User</h2>
+            <h2 className="mb-4 text-xl font-bold">Create New Role</h2>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -181,71 +189,27 @@ const RoleTable: React.FC = () => {
               }}
             >
               <div className="mb-4">
-                <label className="block text-gray-700">First name</label>
+                <label className="block text-gray-700">Name</label>
                 <input
                   type="text"
                   className="w-full rounded border px-3 py-2"
-                  value={newUser.firstName}
+                  value={newRole.name}
                   onChange={(e) =>
-                    setNewUser({ ...newUser, firstName: e.target.value })
+                    setNewUser({ ...newRole, name: e.target.value })
                   }
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700">Last name</label>
+                <label className="block text-gray-700">Description</label>
                 <input
                   type="text"
                   className="w-full rounded border px-3 py-2"
-                  value={newUser.lastName}
+                  value={newRole.description}
                   onChange={(e) =>
-                    setNewUser({ ...newUser, lastName: e.target.value })
+                    setNewUser({ ...newRole, description: e.target.value })
                   }
                   required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Role</label>
-                <select
-                  className="w-full rounded border px-3 py-2"
-                  value={newUser.role}
-                  onChange={(e) =>
-                    setNewUser({ ...newUser, role: e.target.value })
-                  }
-                >
-                  <option value="">Select Role</option>
-
-                  <option value="My Goat">My Goat</option>
-                  <option value="My Goat">My Love</option>
-                </select>
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Role</label>
-                <select
-                  className="w-full rounded border px-3 py-2"
-                  value={newUser.accessLevel}
-                  onChange={(e) =>
-                    setNewUser({
-                      ...newUser,
-                      accessLevel: parseInt(e.target.value),
-                    })
-                  }
-                  required
-                >
-                  <option value={0}>Access level 0</option>
-                  <option value={1}>Access level 1</option>
-                  <option value={2}>Access level 2</option>
-                  <option value={3}>Access level 3</option>
-                </select>
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Admin</label>
-                <input
-                  type="checkbox"
-                  checked={newUser.admin}
-                  onChange={(e) =>
-                    setNewUser({ ...newUser, admin: e.target.checked })
-                  }
                 />
               </div>
               <div className="flex justify-end">
