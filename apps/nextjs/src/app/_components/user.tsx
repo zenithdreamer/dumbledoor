@@ -6,10 +6,11 @@ const UserTable: React.FC = () => {
   const users = api.admin.getUsers.useQuery();
   const [showModal, setShowModal] = useState(false);
   const [newUser, setNewUser] = useState({
-    id: "",
-    name: "",
-    assignedBy: "",
+    firstName: "",
+    lastName: "",
+    accessLevel: 0,
     role: "",
+    admin: false,
   });
 
   const handleCreateUser = () => {
@@ -22,7 +23,13 @@ const UserTable: React.FC = () => {
   };
 
   const openModal = () => {
-    setNewUser({ id: "", name: "", assignedBy: "", role: "" });
+    setNewUser({
+      firstName: "",
+      lastName: "",
+      accessLevel: 0,
+      role: "",
+      admin: false,
+    });
     setShowModal(true);
   };
 
@@ -151,25 +158,25 @@ const UserTable: React.FC = () => {
               }}
             >
               <div className="mb-4">
-                <label className="block text-gray-700">ID</label>
+                <label className="block text-gray-700">First name</label>
                 <input
                   type="text"
                   className="w-full rounded border px-3 py-2"
-                  value={newUser.id}
+                  value={newUser.firstName}
                   onChange={(e) =>
-                    setNewUser({ ...newUser, id: e.target.value })
+                    setNewUser({ ...newUser, firstName: e.target.value })
                   }
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700">Name</label>
+                <label className="block text-gray-700">Last name</label>
                 <input
                   type="text"
                   className="w-full rounded border px-3 py-2"
-                  value={newUser.name}
+                  value={newUser.lastName}
                   onChange={(e) =>
-                    setNewUser({ ...newUser, name: e.target.value })
+                    setNewUser({ ...newUser, lastName: e.target.value })
                   }
                   required
                 />
@@ -182,24 +189,40 @@ const UserTable: React.FC = () => {
                   onChange={(e) =>
                     setNewUser({ ...newUser, role: e.target.value })
                   }
-                  required
                 >
                   <option value="">Select Role</option>
-                  //Add role here
+
                   <option value="My Goat">My Goat</option>
                   <option value="My Goat">My Love</option>
                 </select>
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700">Assigned By</label>
-                <input
-                  type="text"
+                <label className="block text-gray-700">Role</label>
+                <select
                   className="w-full rounded border px-3 py-2"
-                  value={newUser.assignedBy}
+                  value={newUser.accessLevel}
                   onChange={(e) =>
-                    setNewUser({ ...newUser, assignedBy: e.target.value })
+                    setNewUser({
+                      ...newUser,
+                      accessLevel: parseInt(e.target.value),
+                    })
                   }
                   required
+                >
+                  <option value={0}>Access level 0</option>
+                  <option value={1}>Access level 1</option>
+                  <option value={2}>Access level 2</option>
+                  <option value={3}>Access level 3</option>
+                </select>
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Admin</label>
+                <input
+                  type="checkbox"
+                  checked={newUser.admin}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, admin: e.target.checked })
+                  }
                 />
               </div>
               <div className="flex justify-end">
