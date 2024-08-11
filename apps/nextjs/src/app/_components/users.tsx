@@ -17,7 +17,6 @@ const UserTable: React.FC = () => {
   const handleCreateUser = () => {
     const today = new Date().toLocaleDateString();
     const newUserData = { ...newUser, createDate: today };
-    //NewUserdata here
     console.log(newUserData);
 
     setShowModal(false);
@@ -34,17 +33,30 @@ const UserTable: React.FC = () => {
     });
     setShowModal(true);
   };
-
+  
   return (
     <div className="relative flex-1 bg-gray-100 p-8">
       <div className="overflow-x-auto">
         <div className="mb-4 flex justify-between">
           <h1 className="text-2xl font-bold">Users</h1>
           <button
-            className="rounded bg-blue-600 px-4 py-1 text-white hover:bg-pink-600"
+            className="rounded bg-blue-600 p-2 text-white hover:bg-pink-600"
             onClick={openModal}
           >
-            Create New User
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
           </button>
         </div>
         <table className="min-w-full divide-y divide-gray-200">
@@ -68,12 +80,6 @@ const UserTable: React.FC = () => {
               >
                 Role
               </th>
-              {/* <th
-                scope="col"
-                className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-              >
-                Status
-              </th> */}
               <th
                 scope="col"
                 className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
@@ -128,18 +134,6 @@ const UserTable: React.FC = () => {
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
                   {"Role"}
                 </td>
-                {/* <td className="whitespace-nowrap px-4 py-2">
-                  <span
-                      className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                        user.status === "Good"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {user.status} 
-                    </span>
-                  Nyan
-                </td> */}
                 <td
                   className="whitespace-nowrap px-4 py-2 text-sm text-gray-500"
                   suppressHydrationWarning
@@ -221,7 +215,7 @@ const UserTable: React.FC = () => {
                 </select>
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700">Role</label>
+                <label className="block text-gray-700">Access Level</label>
                 <select
                   className="w-full rounded border px-3 py-2"
                   value={newUser.accessLevel}
