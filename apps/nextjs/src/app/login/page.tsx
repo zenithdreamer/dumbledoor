@@ -6,12 +6,12 @@ import { useRouter } from "next/navigation";
 
 import type { AppRouter } from "@dumbledoor/user-api";
 
-import { api } from "~/trpc/react";
+import { trpc, UserTRPCReactProvider } from "~/trpc/react";
 
 export const runtime = "nodejs";
 
-export default function LoginPage() {
-  const login = api.auth.signIn.useMutation();
+function LoginPage() {
+  const login = trpc.user.auth.signIn.useMutation();
   const router = useRouter();
 
   const [username, setUsername] = useState("");
@@ -124,5 +124,13 @@ export default function LoginPage() {
         </form>
       </div>
     </main>
+  );
+}
+
+export default function LoginPageWithTRPC() {
+  return (
+    <UserTRPCReactProvider>
+      <LoginPage />
+    </UserTRPCReactProvider>
   );
 }

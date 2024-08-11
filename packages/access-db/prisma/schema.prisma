@@ -23,19 +23,27 @@ model Role {
   description String
   role_doors  RoleDoor[]
   role_users  RoleUser[]
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
 }
 
 model RoleUser {
-  id      String @id @default(cuid())
-  user_id String
-  role    Role   @relation(fields: [role_id], references: [id])
-  role_id String
+  id         String   @id @default(cuid())
+  user_id    String
+  role       Role     @relation(fields: [role_id], references: [id])
+  role_id    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([user_id, role_id])
 }
 
 model RoleDoor {
-  id                   String @id @default(cuid())
+  id                   String   @id @default(cuid())
   door_id              String
   granted_access_level Int
-  role                 Role   @relation(fields: [role_id], references: [id])
+  role                 Role     @relation(fields: [role_id], references: [id])
   role_id              String
+  created_at           DateTime @default(now())
+  updated_at           DateTime @updatedAt
 }

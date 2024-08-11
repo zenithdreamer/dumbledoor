@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 
-import { api } from "~/trpc/react";
+import { AccessTRPCReactProvider, trpc } from "~/trpc/react";
 
 const RoleTable: React.FC = () => {
-  const users = api.admin.getUsers.useQuery();
+  const roles = trpc.access.admin.getRoles.useQuery();
   const [showModal, setShowModal] = useState(false);
   const [newUser, setNewUser] = useState({
+    userName: "",
     firstName: "",
     lastName: "",
     accessLevel: 0,
@@ -15,7 +16,7 @@ const RoleTable: React.FC = () => {
 
   const handleCreateUser = () => {
     const today = new Date().toLocaleDateString();
-    const newUserData = { ...newUser, createDate: today, status: "Good" };
+    const newUserData = { ...newUser, createDate: today };
     //NewUserdata here
     console.log(newUserData);
 
@@ -24,6 +25,7 @@ const RoleTable: React.FC = () => {
 
   const openModal = () => {
     setNewUser({
+      userName: "",
       firstName: "",
       lastName: "",
       accessLevel: 0,
@@ -36,10 +38,10 @@ const RoleTable: React.FC = () => {
   return (
     <div className="relative flex-1 bg-gray-100 p-8">
       <div className="overflow-x-auto">
-      <div className="mb-4 flex justify-between">
-          <h1 className="text-2xl font-bold">Role</h1>
+        <div className="mb-4 flex justify-between">
+          <h1 className="text-2xl font-bold">Roles</h1>
           <button
-            className="rounded bg-blue-600 p-2 text-white hover:bg-pink-600"
+            className="rounded bg-blue-600 px-2 py-2 text-white hover:bg-pink-600"
             onClick={openModal}
           >
             <svg
@@ -55,18 +57,12 @@ const RoleTable: React.FC = () => {
                 strokeWidth="2"
                 d="M12 4v16m8-8H4"
               />
-            </svg>
+            </svg>{" "}
           </button>
         </div>
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th
-                scope="col"
-                className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-              >
-                ID
-              </th>
               <th
                 scope="col"
                 className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
@@ -77,33 +73,36 @@ const RoleTable: React.FC = () => {
                 scope="col"
                 className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
               >
-                Role
+                Description
               </th>
               <th
                 scope="col"
                 className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
               >
-                Status
+                Doors
               </th>
               <th
                 scope="col"
                 className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
               >
-                Create Date
+                Users
               </th>
               <th
                 scope="col"
                 className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
               >
-                Assigned By
+                ID
               </th>
-              <th scope="col" className="relative px-4 py-2">
-                <span className="sr-only">Action</span>
+              <th
+                scope="col"
+                className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+              >
+                Action
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
-            {users.isPending && (
+            {roles.isPending && (
               <tr>
                 <td colSpan={7} className="py-4 text-center">
                   Loading...
@@ -111,27 +110,35 @@ const RoleTable: React.FC = () => {
               </tr>
             )}
 
-            {users.error && (
+            {roles.error && (
               <tr>
                 <td colSpan={7} className="py-4 text-center">
-                  {users.error.message}
+                  {roles.error.message}
                 </td>
               </tr>
             )}
 
-            {users.data?.map((user) => (
-              <tr key={user.id}>
+            {roles.data?.length === 0 && (
+              <tr>
+                <td colSpan={7} className="py-4 text-center">
+                  No data
+                </td>
+              </tr>
+            )}
+
+            {roles.data?.map((role) => (
+              <tr key={role.id}>
                 <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
-                  {user.id}
+                  {role.name}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
-                  {user.first_name} {user.last_name}
+                  {role.description}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
                   {"Role"}
                 </td>
-                <td className="whitespace-nowrap px-4 py-2">
-                  {/* <span
+                {/* <td className="whitespace-nowrap px-4 py-2">
+                  <span
                       className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
                         user.status === "Good"
                           ? "bg-green-100 text-green-800"
@@ -139,21 +146,22 @@ const RoleTable: React.FC = () => {
                       }`}
                     >
                       {user.status} 
-                    </span>*/}
+                    </span>
                   Nyan
-                </td>
+                </td> */}
                 <td
                   className="whitespace-nowrap px-4 py-2 text-sm text-gray-500"
                   suppressHydrationWarning
                 >
-                  {new Date(user.created_at).toLocaleDateString()}
+                  {new Date(role.created_at).toLocaleString()}
                 </td>
+
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
-                  {""}
+                  {role.id}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-right text-sm font-medium">
                   <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                    delete
+                    Delete
                   </a>
                 </td>
               </tr>
@@ -161,7 +169,6 @@ const RoleTable: React.FC = () => {
           </tbody>
         </table>
       </div>
-
 
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -264,4 +271,10 @@ const RoleTable: React.FC = () => {
   );
 };
 
-export default RoleTable;
+export default function RoleTableWithTRPC() {
+  return (
+    <AccessTRPCReactProvider>
+      <RoleTable />
+    </AccessTRPCReactProvider>
+  );
+}

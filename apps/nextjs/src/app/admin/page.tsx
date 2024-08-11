@@ -28,17 +28,19 @@ const App: React.FC = () => {
         return <Users />;
       case "roles":
         return <Roles />;
-      case "card":
+      case "cards":
         return <Card />;
       case "edit-access":
         return <Edit_access />;
-      case "log":
+      case "logs":
         return <Log />;
-      case "door":
+      case "doors":
         return <Door />;
 
       default:
-        return <div>Select an option from the sidebar.</div>;
+        // Default to users
+        return <Users />;
+      //return <div>Select an option from the sidebar.</div>;
     }
   };
 

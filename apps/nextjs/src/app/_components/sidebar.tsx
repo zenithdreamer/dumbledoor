@@ -17,7 +17,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelect }) => {
             onSelect("users");
           }}
         >
-          <span className="text-sm font-medium">User</span>
+          <span className="text-sm font-medium">Users</span>
         </li>
         <li
           className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
@@ -29,15 +29,15 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelect }) => {
         </li>
         <li
           className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
-          onClick={() => onSelect("card")}
+          onClick={() => onSelect("cards")}
         >
-          <span className="text-sm font-medium">Card</span>
+          <span className="text-sm font-medium">Cards</span>
         </li>
         <li
           className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"
-          onClick={() => onSelect("door")}
+          onClick={() => onSelect("doors")}
         >
-          <span className="text-sm font-medium">Door</span>
+          <span className="text-sm font-medium">Doors</span>
         </li>
         <li
           className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-600"

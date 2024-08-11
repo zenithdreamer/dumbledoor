@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
-import { api } from "~/trpc/react";
+import { trpc, UserTRPCReactProvider } from "~/trpc/react";
 
 const UserTable: React.FC = () => {
-  const users = api.admin.getUsers.useQuery();
+  const users = trpc.user.admin.getUsers.useQuery();
   const [showModal, setShowModal] = useState(false);
   const [newUser, setNewUser] = useState({
     userName: "",
@@ -119,6 +119,14 @@ const UserTable: React.FC = () => {
               <tr>
                 <td colSpan={7} className="py-4 text-center">
                   {users.error.message}
+                </td>
+              </tr>
+            )}
+
+            {users.data?.length === 0 && (
+              <tr>
+                <td colSpan={7} className="py-4 text-center">
+                  No data
                 </td>
               </tr>
             )}
@@ -266,4 +274,10 @@ const UserTable: React.FC = () => {
   );
 };
 
-export default UserTable;
+export default function UsersWithTRPC() {
+  return (
+    <UserTRPCReactProvider>
+      <UserTable />
+    </UserTRPCReactProvider>
+  );
+}
