@@ -68,6 +68,7 @@ const UserTable: React.FC = () => {
     });
 
     setShowModal(false);
+    setEditUser(null);
     void users.refetch();
   };
 
