@@ -175,7 +175,7 @@ const UserTable: React.FC = () => {
                   {user.first_name} {user.last_name}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
-                  {user.role_id}
+                  {user.role?.name ?? "No role"}
                 </td>
                 <td
                   className="whitespace-nowrap px-4 py-2 text-sm text-gray-500"

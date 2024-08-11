@@ -35,6 +35,7 @@ export const userRouter = {
     .mutation(async ({ input }) => {
       const users = await prisma.userAccess.findMany({
         where: { user_id: { in: input } },
+        include: { role: true },
       });
 
       return users;
