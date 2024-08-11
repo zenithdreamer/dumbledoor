@@ -1,4 +1,4 @@
-FROM node:20 AS alpine
+FROM node:20-alpine AS alpine
 
 # Setup environment variables
 ENV PNPM_HOME="/pnpm"
@@ -8,7 +8,7 @@ ENV CI=true
 ENV SKIP_ENV_VALIDATION=true
 
 # Setup pnpm on the alpine base
-FROM debian as base
+FROM alpine as base
 
 # Enable corepack and install turbo
 RUN corepack enable
@@ -18,7 +18,8 @@ RUN pnpm install turbo --global
 FROM base AS builder
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y libc6
+RUN apk add --no-cache libc6-compat
+RUN apk update
 
 # Set working directory
 WORKDIR /app
@@ -27,7 +28,8 @@ RUN turbo prune @dumbledoor/nextjs --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
-RUN apt-get update && apt-get install -y libc6-compat
+RUN apk add --no-cache libc6-compat
+RUN apk update
 WORKDIR /app
 
 # First install the dependencies (as they change less often)
@@ -59,7 +61,7 @@ RUN turbo run build --filter=@dumbledoor/card-db
 RUN turbo run build --filter=@dumbledoor/nextjs
 
 # Runner
-FROM debian AS runner
+FROM alpine AS runner
 WORKDIR /app
 
 # Don't run production as root
@@ -72,7 +74,7 @@ COPY --from=installer /app/apps/nextjs/package.json .
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=installer --chown=nextjs:nodejs /app/apps/nextjs/.next/standalone ./apps/nextjs/.next/standalone
+COPY --from=installer --chown=nextjs:nodejs /app/apps/nextjs/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/nextjs/.next/static ./apps/nextjs/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/nextjs/public ./apps/nextjs/public
 COPY --from=installer --chown=nextjs:nodejs /app/apps/nextjs/src/rich_menus ./apps/nextjs/src/rich_menus
