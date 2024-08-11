@@ -11,7 +11,7 @@ const RoleTable: React.FC = () => {
     description: "",
   });
 
-  const handleCreateUser = async () => {
+  const handleCreateRole = async () => {
     const today = new Date().toLocaleDateString();
     const newUserData = { ...newRole, createDate: today };
 
@@ -161,7 +161,7 @@ const RoleTable: React.FC = () => {
                 <td className="whitespace-nowrap px-4 py-2 text-right text-sm font-medium">
                   <a
                     href="#"
-                    className="m-2 text-indigo-600 hover:text-indigo-900"
+                    className="mr-2 text-indigo-600 hover:text-indigo-900"
                   >
                     Edit
                   </a>
@@ -185,7 +185,7 @@ const RoleTable: React.FC = () => {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                handleCreateUser();
+                void handleCreateRole();
               }}
             >
               <div className="mb-4">

@@ -7,6 +7,7 @@ import { createTRPCReact } from "@trpc/react-query";
 import SuperJSON from "superjson";
 
 import type { AppRouter as AccessAppRouter } from "@dumbledoor/access-api";
+import type { AppRouter as DoorAppRouter } from "@dumbledoor/door-api";
 import type { AppRouter as UserAppRouter } from "@dumbledoor/user-api";
 
 import { env } from "~/env";
@@ -37,6 +38,7 @@ const getQueryClient = () => {
 export const trpc = {
   user: createTRPCReact<UserAppRouter>(),
   access: createTRPCReact<AccessAppRouter>(),
+  door: createTRPCReact<DoorAppRouter>(),
 };
 
 export function AccessTRPCReactProvider(props: { children: React.ReactNode }) {
@@ -121,6 +123,47 @@ export function UserTRPCReactProvider(props: { children: React.ReactNode }) {
   );
 }
 
+export function DoorTRPCReactProvider(props: { children: React.ReactNode }) {
+  const queryClient = getQueryClient();
+
+  const [doorTrpcClient] = useState(() =>
+    trpc.door.createClient({
+      links: [
+        loggerLink({
+          enabled: (op) =>
+            env.NODE_ENV === "development" ||
+            (op.direction === "down" && op.result instanceof Error),
+        }),
+        unstable_httpBatchStreamLink({
+          transformer: SuperJSON,
+          url: getDoorBaseUrl() + "/api/trpc",
+          headers() {
+            console.log("doorTrpcClient headers");
+            const headers = new Headers();
+            headers.set("x-trpc-source", "nextjs-react");
+            const savedToken = localStorage.getItem("token");
+            if (savedToken) {
+              headers.set(
+                "authorization",
+                `Bearer ${localStorage.getItem("token")}`,
+              );
+            }
+            return headers;
+          },
+        }),
+      ],
+    }),
+  );
+
+  return (
+    <trpc.door.Provider client={doorTrpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        {props.children}
+      </QueryClientProvider>
+    </trpc.door.Provider>
+  );
+}
+
 export function TRPCReactProvider(props: { children: React.ReactNode }) {
   // const queryClient = getQueryClient();
 
@@ -184,6 +227,10 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
 
   return <>{props.children}</>;
 }
+
+const getDoorBaseUrl = () => {
+  return `http://localhost:4002`;
+};
 
 const getUserBaseUrl = () => {
   return `http://localhost:4000`;

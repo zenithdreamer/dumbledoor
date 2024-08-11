@@ -6,7 +6,18 @@ import { prisma } from "@dumbledoor/door-db";
 
 import { accessClient, protectedProcedure } from "../trpc";
 
-export const doorRouter = {
+export const adminRouter = {
+  getAllDoors: protectedProcedure.query(async ({ ctx }) => {
+    const isAdmin = await accessClient.user.isAdmin.mutate(ctx.session.userId);
+
+    if (!isAdmin)
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You are not allowed to view doors",
+      });
+
+    return prisma.door.findMany();
+  }),
   create: protectedProcedure
     .input(
       z.object({

@@ -1,8 +1,8 @@
-import { doorRouter } from "./router/door";
+import { adminRouter } from "./router/door";
 import { createTRPCRouter } from "./trpc";
 
 export const appRouter = createTRPCRouter({
-  door: doorRouter,
+  admin: adminRouter,
 });
 
 // export type definition of API
