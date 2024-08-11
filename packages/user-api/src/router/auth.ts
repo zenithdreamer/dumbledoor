@@ -9,6 +9,9 @@ import { prisma } from "@dumbledoor/user-db";
 
 import { publicProcedure } from "../trpc";
 
+const fakeHash =
+  "$argon2id$v=19$m=4096,t=3,p=1$X2Zha2UtaGFzaA$1Q6Q6Q6Q6Q6Q6Q6Q6Q6Q6Q";
+
 export const authRouter = {
   signIn: publicProcedure
     .input(
@@ -25,7 +28,8 @@ export const authRouter = {
 
       if (!user) {
         // Perform a fake verification to consume the same amount of time for security reasons
-        await argon2.verify("fake-hash", password);
+        const fakeHash = await argon2.hash("fake-hash");
+        await argon2.verify(fakeHash, password);
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "Invalid username or password",

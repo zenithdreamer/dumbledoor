@@ -14,11 +14,13 @@
  */
 //import type * as trpcExpress from "@trpc/server/adapters/express";
 import type { IncomingHttpHeaders } from "http";
+import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { initTRPC, TRPCError } from "@trpc/server";
 import jwt from "jsonwebtoken";
-import superjson from "superjson";
+import superjson, { SuperJSON } from "superjson";
 import { ZodError } from "zod";
 
+import type { InternalAppRouter as AccessAppRouter } from "@dumbledoor/access-api";
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
 import { env } from "@dumbledoor/auth/env";
@@ -74,7 +76,6 @@ export const createTRPCContext = (opts: {
   if (authToken) {
     // Remove "Bearer " from the token if it exists
     const token = authToken.replace("Bearer ", "");
-
     let decoded;
     try {
       decoded = jwt.verify(token, env.AUTH_SECRET) as Session;
@@ -166,4 +167,20 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
       session: { ...ctx.session },
     },
   });
+});
+
+export const accessClient = createTRPCClient<AccessAppRouter>({
+  links: [
+    httpBatchLink({
+      url: "http://localhost:" + env.ACCESS_SERVICE_PORT + "/api/trpc-internal",
+      // You can pass any HTTP headers you wish here
+      headers() {
+        const headers = new Headers();
+        headers.set("authorization", "Bearer " + env.INTERNAL_API_SECRET);
+        headers.set("x-trpc-source", "user-api");
+        return headers;
+      },
+      transformer: SuperJSON,
+    }),
+  ],
 });

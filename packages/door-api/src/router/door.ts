@@ -15,9 +15,9 @@ export const doorRouter = {
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const isAdmin = await accessClient.user.isAdmin.mutate({
-        userId: ctx.session.userId,
-      });
+      const isAdmin = await accessClient.user.isAdmin.mutate(
+        ctx.session.userId,
+      );
 
       if (!isAdmin)
         throw new TRPCError({

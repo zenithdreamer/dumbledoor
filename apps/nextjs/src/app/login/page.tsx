@@ -29,12 +29,16 @@ export default function LoginPage() {
         username,
         password,
       })
-      .then(() => {
+      .then((data) => {
         setBannerMessage({
           type: "success",
           message: "Successfully logged in... Redirecting to admin panel",
         });
         setDisabled(true);
+
+        if (!data.token) throw new Error("No token received from the server");
+
+        localStorage.setItem("token", data.token);
 
         setTimeout(() => {
           void router.push("/admin");
@@ -45,7 +49,8 @@ export default function LoginPage() {
           type: "error",
           message: error.message,
         });
-
+      })
+      .finally(() => {
         setDisabled(false);
       });
 

@@ -1,34 +1,9 @@
 import React, { useState } from "react";
 
-const sample_data = [
-  {
-    id: "#1",
-    name: "Dtto",
-    status: "Good",
-    role: "My Goat",
-    createDate: "8/10/2024",
-    assignedBy: "Me",
-  },
-  {
-    id: "#2",
-    name: "Aqua",
-    status: "Bad",
-    role: "My Goat",
-    createDate: "8/10/2024",
-    assignedBy: "Me",
-  },
-  {
-	id: "3",
-	name: "Ayame",
-	status: "Good",
-	role: "My love",
-	createDate: "8/10/2024",
-	assignedBy: "Me",
-
-  }
-];
+import { api } from "~/trpc/react";
 
 const UserTable: React.FC = () => {
+  const users = api.admin.getUsers.useQuery();
   const [showModal, setShowModal] = useState(false);
   const [newUser, setNewUser] = useState({
     id: "",
@@ -99,33 +74,53 @@ const UserTable: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
-            {sample_data.map((user) => (
+            {users.isPending && (
+              <tr>
+                <td colSpan={7} className="py-4 text-center">
+                  Loading...
+                </td>
+              </tr>
+            )}
+
+            {users.error && (
+              <tr>
+                <td colSpan={7} className="py-4 text-center">
+                  {users.error.message}
+                </td>
+              </tr>
+            )}
+
+            {users.data?.map((user) => (
               <tr key={user.id}>
                 <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
                   {user.id}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
-                  {user.name}
+                  {user.first_name} {user.last_name}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
-                  {user.role}
+                  {"Role"}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2">
-                  <span
-                    className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                      user.status === "Good"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {user.status}
-                  </span>
+                  {/* <span
+                      className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
+                        user.status === "Good"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {user.status} 
+                    </span>*/}
+                  Nyan
+                </td>
+                <td
+                  className="whitespace-nowrap px-4 py-2 text-sm text-gray-500"
+                  suppressHydrationWarning
+                >
+                  {new Date(user.created_at).toLocaleDateString()}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
-                  {user.createDate}
-                </td>
-                <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
-                  {user.assignedBy}
+                  {""}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-right text-sm font-medium">
                   <a href="#" className="text-indigo-600 hover:text-indigo-900">
@@ -192,8 +187,7 @@ const UserTable: React.FC = () => {
                   <option value="">Select Role</option>
                   //Add role here
                   <option value="My Goat">My Goat</option>
-				  <option value="My Goat">My Love</option>
-
+                  <option value="My Goat">My Love</option>
                 </select>
               </div>
               <div className="mb-4">

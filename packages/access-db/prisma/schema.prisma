@@ -12,8 +12,7 @@ datasource db {
 }
 
 model UserAccess {
-  id           String  @id @default(cuid())
-  user_id      String
+  user_id      String  @id
   access_level Int
   admin        Boolean
 }

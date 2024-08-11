@@ -22,7 +22,7 @@
     "lint": "eslint",
     "generate": "pnpm with-env prisma generate",
     "push": "pnpm with-env prisma db push",
-    "studio": "pnpm with-env prisma studio --config src/config.ts",
+    "studio": "pnpm with-env prisma studio",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --"
   },

@@ -1,7 +1,8 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
 import { appRouter, createTRPCContext } from "@dumbledoor/api";
-import { auth } from "@dumbledoor/auth";
+
+//import { auth } from "@dumbledoor/auth";
 
 export const runtime = "nodejs";
 
@@ -24,7 +25,7 @@ export const OPTIONS = () => {
   return response;
 };
 
-const handler = auth(async (req) => {
+const handler = async (req: Request) => {
   const response = await fetchRequestHandler({
     endpoint: "/api/trpc",
 
@@ -33,7 +34,7 @@ const handler = auth(async (req) => {
     req,
     createContext: () =>
       createTRPCContext({
-        session: req.auth,
+        session: null,
         headers: req.headers,
       }),
     // onError({ error: any, path }) {
@@ -43,6 +44,6 @@ const handler = auth(async (req) => {
 
   setCorsHeaders(response);
   return response;
-});
+};
 
 export { handler as GET, handler as POST };

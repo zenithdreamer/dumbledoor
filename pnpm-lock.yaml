@@ -686,6 +686,9 @@ importers:
 
   packages/user-api:
     dependencies:
+      '@dumbledoor/access-api':
+        specifier: workspace:*
+        version: link:../access-api
       '@dumbledoor/auth':
         specifier: workspace:*
         version: link:../auth

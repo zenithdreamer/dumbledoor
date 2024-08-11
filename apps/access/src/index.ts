@@ -7,6 +7,7 @@ import createJiti from "jiti";
 import { appRouter, createTRPCContext } from "@dumbledoor/access-api";
 
 import { internalAppRouter } from "../../../packages/access-api/src/root";
+import { createInternalTRPCContext } from "../../../packages/access-api/src/trpc";
 
 // Import env files to validate at build time. Use jiti so we can load .ts files in here.
 createJiti(fileURLToPath(import.meta.url))("./env");
@@ -37,9 +38,8 @@ app.use(
   trpcExpress.createExpressMiddleware({
     router: internalAppRouter,
     createContext: ({ req }) =>
-      createTRPCContext({
+      createInternalTRPCContext({
         headers: req.headers,
-        session: null,
       }),
   }),
 );

@@ -9,6 +9,24 @@
     "db:push": {
       "cache": false
     },
+    "user-db:generate": {
+      "cache": false
+    },
+    "user-db:push": {
+      "cache": false
+    },
+    "access-db:generate": {
+      "cache": false
+    },
+    "access-db:push": {
+      "cache": false
+    },
+    "door-db:generate": {
+      "cache": false
+    },
+    "door-db:push": {
+      "cache": false
+    },
     "topo": {
       "dependsOn": ["^topo"]
     },

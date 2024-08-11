@@ -173,7 +173,7 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
 export const accessClient = createTRPCClient<AccessAppRouter>({
   links: [
     httpBatchLink({
-      url: "http://localhost:" + env.ACCESS_SERVICE_PORT + "/api/trpc_internal",
+      url: "http://localhost:" + env.ACCESS_SERVICE_PORT + "/api/trpc-internal",
       // You can pass any HTTP headers you wish here
       headers() {
         const headers = new Headers();
