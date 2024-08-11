@@ -324,9 +324,6 @@ importers:
       '@dumbledoor/card-api':
         specifier: workspace:*
         version: link:../../packages/card-api
-      '@dumbledoor/db':
-        specifier: workspace:*
-        version: link:../../packages/db
       '@dumbledoor/door-api':
         specifier: workspace:*
         version: link:../../packages/door-api
@@ -569,54 +566,11 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
 
-  packages/api:
-    dependencies:
-      '@dumbledoor/auth':
-        specifier: workspace:*
-        version: link:../auth
-      '@dumbledoor/db':
-        specifier: workspace:*
-        version: link:../db
-      '@dumbledoor/validators':
-        specifier: workspace:*
-        version: link:../validators
-      '@trpc/server':
-        specifier: 11.0.0-rc.477
-        version: 11.0.0-rc.477
-      superjson:
-        specifier: 2.2.1
-        version: 2.2.1
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
-    devDependencies:
-      '@dumbledoor/eslint-config':
-        specifier: workspace:*
-        version: link:../../tooling/eslint
-      '@dumbledoor/prettier-config':
-        specifier: workspace:*
-        version: link:../../tooling/prettier
-      '@dumbledoor/tsconfig':
-        specifier: workspace:*
-        version: link:../../tooling/typescript
-      eslint:
-        specifier: ^9.4.0
-        version: 9.6.0
-      prettier:
-        specifier: ^3.3.1
-        version: 3.3.2
-      typescript:
-        specifier: ^5.4.5
-        version: 5.4.5
-
   packages/auth:
     dependencies:
       '@auth/prisma-adapter':
         specifier: ^1.0.1
         version: 1.6.0(@prisma/client@5.13.0(prisma@5.13.0))
-      '@dumbledoor/db':
-        specifier: workspace:*
-        version: link:../db
       '@t3-oss/env-nextjs':
         specifier: ^0.10.1
         version: 0.10.1(typescript@5.4.5)(zod@3.23.8)
@@ -705,46 +659,6 @@ importers:
         version: 5.4.5
 
   packages/card-db:
-    dependencies:
-      '@prisma/client':
-        specifier: ^5.13.0
-        version: 5.13.0(prisma@5.13.0)
-      '@t3-oss/env-core':
-        specifier: ^0.10.1
-        version: 0.10.1(typescript@5.4.5)(zod@3.23.8)
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
-    devDependencies:
-      '@dumbledoor/eslint-config':
-        specifier: workspace:*
-        version: link:../../tooling/eslint
-      '@dumbledoor/prettier-config':
-        specifier: workspace:*
-        version: link:../../tooling/prettier
-      '@dumbledoor/tsconfig':
-        specifier: workspace:*
-        version: link:../../tooling/typescript
-      dotenv-cli:
-        specifier: ^7.4.2
-        version: 7.4.2
-      eslint:
-        specifier: ^9.4.0
-        version: 9.6.0
-      mysql2:
-        specifier: ^3.9.7
-        version: 3.9.7
-      prettier:
-        specifier: ^3.3.1
-        version: 3.3.2
-      prisma:
-        specifier: ^5.13.0
-        version: 5.13.0
-      typescript:
-        specifier: ^5.4.5
-        version: 5.4.5
-
-  packages/db:
     dependencies:
       '@prisma/client':
         specifier: ^5.13.0

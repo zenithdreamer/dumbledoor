@@ -20,7 +20,6 @@
     "@dumbledoor/door-api": "workspace:*",
     "@dumbledoor/card-api": "workspace:*",
     "@dumbledoor/auth": "workspace:*",
-    "@dumbledoor/db": "workspace:*",
     "@dumbledoor/ui": "workspace:*",
     "@dumbledoor/validators": "workspace:*",
     "@t3-oss/env-nextjs": "^0.10.1",

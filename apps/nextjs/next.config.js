@@ -11,9 +11,9 @@ const config = {
 
   /** Enables hot reloading for local packages without a build step */
   transpilePackages: [
-    "@dumbledoor/api",
+    "@dumbledoor/user-api",
     "@dumbledoor/auth",
-    "@dumbledoor/db",
+    "@dumbledoor/user-db",
     "@dumbledoor/ui",
     "@dumbledoor/validators",
   ],
