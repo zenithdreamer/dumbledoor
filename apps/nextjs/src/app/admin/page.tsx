@@ -10,6 +10,7 @@ import Log from "../_components/log";
 import Roles from "../_components/roles";
 import Sidebar from "../_components/sidebar";
 import Users from "../_components/users";
+import HomePage from "../page";
 
 const App: React.FC = () => {
   const [selectedSection, setSelectedSection] = useState("user");
@@ -34,6 +35,8 @@ const App: React.FC = () => {
         return <Debug />;
       case "log":
         return <Log />;
+      case "demo":
+        return <HomePage />;
       case "doors":
         return <Door />;
 
