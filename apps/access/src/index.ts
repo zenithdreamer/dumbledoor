@@ -92,6 +92,21 @@ const sub = rabbit.createConsumer(
       } catch (e) {
         console.error("Error updating user", e);
       }
+    } else if (message.routingKey === "user-access.create") {
+      const newData = message.body;
+
+      try {
+        const user = await prisma.userAccess.create({
+          data: {
+            user_id: newData.id,
+            admin: newData.admin !== undefined ? newData.admin : undefined,
+            access_level:
+              newData.access_level !== undefined ? newData.access_level : 3,
+          },
+        });
+      } catch (e) {
+        console.error("Error creating user", e);
+      }
     }
   },
 );

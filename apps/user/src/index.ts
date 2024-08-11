@@ -72,7 +72,7 @@ const bootstrapAdminAccount = async () => {
     {
       durable: true,
       exchange: "access",
-      routingKey: "user-access.edit",
+      routingKey: "user-access.create",
     },
     {
       id: user.id,
