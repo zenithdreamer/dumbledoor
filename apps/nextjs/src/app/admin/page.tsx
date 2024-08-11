@@ -16,9 +16,15 @@ const App: React.FC = () => {
   const [selectedSection, setSelectedSection] = useState("user");
   const router = useRouter();
 
-  // TODO: Properly handle log-out
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      router.push("/login");
+    }
+  }, [router]);
+
   useEffect(() => {
     if (selectedSection === "log-out") {
+      localStorage.removeItem("token");
       router.push("/login");
     }
   }, [selectedSection, router]);
