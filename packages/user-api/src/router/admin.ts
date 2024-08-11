@@ -144,7 +144,10 @@ export const adminRouter = {
         where: { id: input.id },
         data: {
           username: input.username,
-          password: await argon2.hash(input.password),
+          password:
+            input.password && input.password !== ""
+              ? await argon2.hash(input.password)
+              : undefined,
           first_name: input.firstName,
           last_name: input.lastName,
         },

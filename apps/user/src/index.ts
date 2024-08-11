@@ -50,6 +50,26 @@ const bootstrapAdminAccount = async () => {
   // If there is no user in the database, create an admin account
   const result = await prisma.user.findMany();
   if (result.length > 0) {
+    // Debug, Update password for admin account
+    // const admin = await prisma.user.findFirst({
+    //   where: {
+    //     username: "admin",
+    //   },
+    // });
+
+    // if (!admin) {
+    //   console.log("Admin account not found");
+    //   return;
+    // }
+
+    // await prisma.user.update({
+    //   where: {
+    //     id: admin.id,
+    //   },
+    //   data: {
+    //     password: await argon2.hash("admin"),
+    //   },
+    // });
     return;
   }
 
