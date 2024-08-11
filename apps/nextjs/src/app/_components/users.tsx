@@ -68,6 +68,7 @@ const UserTable: React.FC = () => {
     });
 
     setShowModal(false);
+    void users.refetch();
   };
 
   const handleEditUser = (user: RouterOutputs["admin"]["getUsers"][0]) => {
@@ -344,7 +345,10 @@ const UserTable: React.FC = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700">Role</label>
-                <RoleSelectWithTRPC role={newUser.role ?? ""} />
+                <RoleSelectWithTRPC
+                  role={newUser.role ?? ""}
+                  onChange={(role) => setNewUser({ ...newUser, role })}
+                />
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700">Access Level</label>
@@ -433,7 +437,10 @@ export default function UsersWithTRPC() {
   );
 }
 
-const RoleSelect: React.FC<{ role: string }> = (props) => {
+const RoleSelect: React.FC<{
+  role: string;
+  onChange: (role: string) => void;
+}> = (props) => {
   const roles = trpc.access.admin.getRoles.useQuery();
   const [selectedRole, setSelectedRole] = useState<string>(props.role);
 
@@ -441,7 +448,10 @@ const RoleSelect: React.FC<{ role: string }> = (props) => {
     <select
       className="w-full rounded border px-3 py-2"
       value={selectedRole}
-      onChange={(e) => setSelectedRole(e.target.value)}
+      onChange={(e) => {
+        setSelectedRole(e.target.value);
+        props.onChange(e.target.value);
+      }}
     >
       <option value={""}>No role</option>
 
@@ -454,10 +464,13 @@ const RoleSelect: React.FC<{ role: string }> = (props) => {
   );
 };
 
-const RoleSelectWithTRPC: React.FC<{ role: string }> = (props) => {
+const RoleSelectWithTRPC: React.FC<{
+  role: string;
+  onChange: (role: string) => void;
+}> = (props) => {
   return (
     <AccessTRPCReactProvider>
-      <RoleSelect role={props.role} />
+      <RoleSelect role={props.role} onChange={props.onChange} />
     </AccessTRPCReactProvider>
   );
 };
