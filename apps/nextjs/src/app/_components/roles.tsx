@@ -278,9 +278,9 @@ const RoleTable: React.FC = () => {
                     )}
 
                     {editRole?.role_doors.map((door) => (
-                      <tr key={door.id}>
+                      <tr key={door.door_id}>
                         <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
-                          {door.id}
+                          {door.door_id}
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
                           {door.granted_access_level}
