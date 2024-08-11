@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import Door from "../_components/add_door";
 import Card from "../_components/card";
-import Edit_access from "../_components/edit-access";
+import Debug from "../_components/debug";
 import Log from "../_components/log";
 import Roles from "../_components/roles";
 import Sidebar from "../_components/sidebar";
@@ -30,8 +30,8 @@ const App: React.FC = () => {
         return <Roles />;
       case "cards":
         return <Card />;
-      case "edit-access":
-        return <Edit_access />;
+      case "debug":
+        return <Debug />;
       case "log":
         return <Log />;
       case "doors":

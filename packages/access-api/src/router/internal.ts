@@ -104,4 +104,27 @@ export const internalRouter = {
 
       return users;
     }),
+  getAllUserAccess: internalProcedure.query(async () => {
+    return prisma.userAccess.findMany({
+      include: { role: true },
+    });
+  }),
+  purgeUser: internalProcedure.input(z.string()).mutation(async ({ input }) => {
+    const user = await prisma.userAccess.findFirst({
+      where: { user_id: input },
+    });
+
+    if (!user) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found",
+      });
+    }
+
+    await prisma.userAccess.delete({
+      where: { user_id: input },
+    });
+
+    return true;
+  }),
 } satisfies TRPCRouterRecord;

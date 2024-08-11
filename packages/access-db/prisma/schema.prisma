@@ -30,11 +30,12 @@ model Role {
 }
 
 model RoleDoor {
-  id                   String   @id @default(cuid())
   door_id              String
-  granted_access_level Int
   role                 Role     @relation(fields: [role_id], references: [id])
   role_id              String
+  granted_access_level Int
   created_at           DateTime @default(now())
   updated_at           DateTime @updatedAt
+
+  @@id([door_id, role_id])
 }

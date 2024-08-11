@@ -1,4 +1,4 @@
-import { adminRouter } from "./router/auth";
+import { adminRouter } from "./router/admin";
 import { internalRouter } from "./router/internal";
 import { createInternalTRPCRouter, createTRPCRouter } from "./trpc";
 

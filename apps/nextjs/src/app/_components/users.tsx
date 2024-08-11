@@ -255,7 +255,7 @@ const UserTable: React.FC = () => {
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
                   {user.id}
                 </td>
-                <td className="whitespace-nowrap px-4 py-2 text-right text-sm font-medium">
+                <td className="whitespace-nowrap px-4 py-2 text-left text-sm font-medium">
                   <a
                     href="#"
                     className="m-2 text-indigo-600 hover:text-indigo-900"

@@ -162,12 +162,44 @@ export const adminRouter = {
         });
       }
 
+      await accessClient.internal.purgeUser.mutate(input);
+
       await prisma.user.delete({
         where: { id: input },
       });
 
-      // TODO: Delete on all services
-
       return true;
     }),
+  purgeInvalidUsers: protectedProcedure.mutation(async ({ ctx }) => {
+    const isAdmin = await accessClient.internal.isAdmin.mutate(
+      ctx.session.userId,
+    );
+
+    if (!isAdmin) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You are not authorized to perform this action",
+      });
+    }
+
+    const users = await prisma.user.findMany();
+
+    const userAccess = await accessClient.internal.getAllUserAccess.query();
+
+    // From userAccess, get all user ids that are not in users table
+    const invalidUserIds = userAccess
+      .map((access) => access.user_id)
+      .filter((userId) => !users.find((user) => user.id === userId));
+
+    // Remove invalid users
+    await Promise.all(
+      invalidUserIds.map(async (userId) => {
+        await accessClient.internal.purgeUser.mutate(userId);
+
+        console.log(`User ${userId} removed`);
+      }),
+    );
+
+    return true;
+  }),
 } satisfies TRPCRouterRecord;
