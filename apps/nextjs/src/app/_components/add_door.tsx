@@ -1,3 +1,4 @@
+import { RouterOutputs } from "@dumbledoor/access-api";
 import React from "react";
 
 import { DoorTRPCReactProvider, trpc } from "~/trpc/react";
@@ -5,10 +6,18 @@ import { DoorTRPCReactProvider, trpc } from "~/trpc/react";
 const Card: React.FC = () => {
   const door = trpc.door.admin.getAllDoors.useQuery();
   const createDoor = trpc.door.admin.create.useMutation();
+  const deleteDoor = trpc.door.admin.deleteDoor.useMutation();
+  const updateDoor = trpc.door.admin.editDoor.useMutation();
+
+  const [showModal, setShowModal] = React.useState(false);
+  const [editDoorData, setEditDoorData] = React.useState<RouterOutputs["admin"]["getAllDoors"][0] | null>(null);
+  const [newDoor, setNewDoor] = React.useState({
+    name: "",
+    accessLevel: 0,
+  });
 
   const handleAddDoor = () => {
     setShowModal(true);
-
     setNewDoor({
       name: "",
       accessLevel: 0,
@@ -18,15 +27,36 @@ const Card: React.FC = () => {
   const handleCreateDoor = async () => {
     await createDoor.mutateAsync(newDoor);
     void door.refetch();
-
     setShowModal(false);
   };
 
-  const [showModal, setShowModal] = React.useState(false);
-  const [newDoor, setNewDoor] = React.useState({
-    name: "",
-    accessLevel: 0,
-  });
+  const handleDeleteDoor = async (doorId: string) => {
+    await deleteDoor.mutateAsync(doorId);
+    void door.refetch();
+  };
+
+  const handleEditDoor = (door: RouterOutputs["admin"]["getAllDoors"][0]) => {
+    setEditDoorData(door);
+    setNewDoor({
+      name: door.name,
+      accessLevel: door.access_level,
+    });
+    setShowModal(true);
+  };
+
+  const doEditDoor = async () => {
+    if (!editDoorData) return;
+
+    await updateDoor.mutateAsync({
+      id: editDoorData.id,
+      name: newDoor.name,
+      accessLevel: newDoor.accessLevel,
+    });
+
+    setShowModal(false);
+    setEditDoorData(null);
+    void door.refetch();
+  };
 
   return (
     <div className="container relative mx-auto p-6">
@@ -79,7 +109,7 @@ const Card: React.FC = () => {
         )}
 
         {door.data?.length === 0 && (
-          <div className="flex  items-center justify-center py-8">
+          <div className="flex items-center justify-center py-8">
             <div className="mx-auto w-full max-w-lg rounded-lg bg-yellow-100 p-4 text-center text-yellow-700">
               <svg
                 className="mr-2 inline h-6 w-6"
@@ -104,7 +134,7 @@ const Card: React.FC = () => {
           door.data.map((door) => (
             <div
               key={door.id}
-              className="overflow-hidden rounded-lg border shadow-lg"
+              className="relative overflow-hidden rounded-lg border shadow-lg"
             >
               <div className="flex h-48 w-full flex-col justify-center bg-yellow-500 p-4 text-black">
                 <h2 className="text-xl font-semibold">{door.name}</h2>
@@ -119,8 +149,30 @@ const Card: React.FC = () => {
                 </p>
               </div>
 
+              <div className="absolute top-2 right-2">
+                <button onClick={() => handleEditDoor(door)}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                </button>
+              </div>
+
               <div className="p-4">
-                <button className="w-full rounded-lg bg-pink-600 py-2 text-white hover:bg-pink-700">
+                <button
+                  className="w-full rounded-lg bg-pink-600 py-2 text-white hover:bg-pink-700"
+                  onClick={() => handleDeleteDoor(door.id)}
+                >
                   Delete this door
                 </button>
               </div>
@@ -152,11 +204,17 @@ const Card: React.FC = () => {
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="w-1/3 rounded bg-white p-8 shadow-lg">
-            <h2 className="mb-4 text-xl font-bold">Create New Door</h2>
+            <h2 className="mb-4 text-xl font-bold">
+              {editDoorData ? "Edit Door" : "Create New Door"}
+            </h2>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                void handleAddDoor();
+                if (editDoorData) {
+                  void doEditDoor();
+                } else {
+                  void handleCreateDoor();
+                }
               }}
             >
               <div className="mb-4">
@@ -201,12 +259,8 @@ const Card: React.FC = () => {
                 <button
                   type="submit"
                   className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                  onClick={() => {
-                    setShowModal(false);
-                    void handleCreateDoor();
-                  }}
                 >
-                  Create
+                  {editDoorData ? "Update" : "Create"}
                 </button>
               </div>
             </form>

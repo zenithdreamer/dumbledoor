@@ -55,4 +55,49 @@ export const adminRouter = {
         });
       }
     }),
+  deleteDoor: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ input }) => {
+      await prisma.door.delete({
+        where: { id: input },
+      });
+    }),
+
+    editDoor: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(), 
+        name: z.string().optional(), 
+        accessLevel: z.number().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const isAdmin = await accessClient.internal.isAdmin.mutate(
+        ctx.session.userId,
+      );
+
+      if (!isAdmin)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not allowed to edit a door",
+        });
+
+      try {
+        const door = await prisma.door.update({
+          where: { id: input.id },
+          data: {
+            name: input.name,
+            access_level: input.accessLevel,
+          },
+        });
+
+        return door;
+      } catch {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to edit door",
+        });
+      }
+    }),
+    
 } satisfies TRPCRouterRecord;
