@@ -51,7 +51,7 @@ COPY turbo.json turbo.json
 
 # Generate the database and build types
 RUN pnpm postinstall
-RUN turbo run build --filter=@dumbledoor/db
+#RUN turbo run build --filter=@dumbledoor/db
 RUN turbo run build --filter=@dumbledoor/log-db
 RUN turbo run build --filter=@dumbledoor/user-db
 RUN turbo run build --filter=@dumbledoor/access-db

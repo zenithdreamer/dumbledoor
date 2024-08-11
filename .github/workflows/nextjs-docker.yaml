@@ -1,4 +1,4 @@
-name: dumbledoor-ui Build and Publish
+name: dumbledoor-ui
 
 on:
   push:
