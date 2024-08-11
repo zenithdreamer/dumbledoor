@@ -114,6 +114,14 @@ export const adminRouter = {
         });
       }
 
+      // If user trying to make themselves not admin, prevent it
+      if (input.id === ctx.session.userId && !input.admin) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You cannot remove your own admin access",
+        });
+      }
+
       const user = await prisma.user.update({
         where: { id: input.id },
         data: {
