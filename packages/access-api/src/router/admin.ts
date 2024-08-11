@@ -65,6 +65,8 @@ export const adminRouter = {
         data: input,
       });
 
+      ctx.queueLog(ctx.session.userId, `Created a new role: ${role.name}`);
+
       return role;
     }),
   updateRole: protectedProcedure
@@ -92,6 +94,11 @@ export const adminRouter = {
         data: input,
       });
 
+      ctx.queueLog(
+        ctx.session.userId,
+        `Updated a role: ${role.name} (${role.id}) with a name: ${input.name} and description: ${input.description}`,
+      );
+
       return role;
     }),
   deleteRole: protectedProcedure
@@ -109,13 +116,13 @@ export const adminRouter = {
       }
 
       // Remove all user access with the role
-      await prisma.userAccess.updateMany({
+      const deletedUserAccess = await prisma.userAccess.updateMany({
         where: { role_id: input },
         data: { role_id: null },
       });
 
       // Remove all door that binded to the role
-      await prisma.roleDoor.deleteMany({
+      const deletedRoleDoor = await prisma.roleDoor.deleteMany({
         where: { role_id: input },
       });
 
@@ -124,6 +131,10 @@ export const adminRouter = {
         where: { id: input },
       });
 
+      ctx.queueLog(
+        ctx.session.userId,
+        `Deleted a role ${input}, changed ${deletedUserAccess.count} user access to no role, and  ${deletedRoleDoor.count} doors were affected`,
+      );
       return true;
     }),
 } satisfies TRPCRouterRecord;

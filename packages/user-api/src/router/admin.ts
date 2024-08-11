@@ -81,13 +81,19 @@ export const adminRouter = {
         },
       });
 
-      await accessClient.internal.createUserAccess.mutate({
+      const newUser = await accessClient.internal.createUserAccess.mutate({
         user_id: user.id,
         role_id: input.role,
         accessLevel: input.accessLevel,
         admin: input.admin,
       });
 
+      ctx.queueLog(
+        user.id,
+        `
+        Created a new user ${user.username} ${newUser.user_id} (${user.first_name} ${user.last_name}) ${input.role ? `with role ${input.role}` : ""} ${input.accessLevel ? `with access level ${input.accessLevel}` : ""} ${input.admin ? "as admin" : ""}  
+      `,
+      );
       return user;
     }),
   updateUser: protectedProcedure
@@ -123,6 +129,17 @@ export const adminRouter = {
         });
       }
 
+      const oldUser = await prisma.user.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!oldUser) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+
       const user = await prisma.user.update({
         where: { id: input.id },
         data: {
@@ -138,6 +155,14 @@ export const adminRouter = {
         role_id: input.role,
         accessLevel: input.accessLevel,
       });
+
+      ctx.queueLog(
+        user.id,
+        `
+        Updated user ${oldUser.username} ${oldUser.id} (${oldUser.first_name} ${oldUser.last_name}) ${input.role ? `with role ${input.role}` : ""} ${input.accessLevel ? `with access level ${input.accessLevel}` : ""} ${input.admin ? "as admin" : ""}  
+        From ${oldUser.username} ${oldUser.id} (${oldUser.first_name} ${oldUser.last_name}) 
+      `,
+      );
 
       return user;
     }),
@@ -167,6 +192,8 @@ export const adminRouter = {
       await prisma.user.delete({
         where: { id: input },
       });
+
+      ctx.queueLog(input, `Deleted user ${input}`);
 
       return true;
     }),
@@ -198,6 +225,11 @@ export const adminRouter = {
 
         console.log(`User ${userId} removed`);
       }),
+    );
+
+    ctx.queueLog(
+      ctx.session.userId,
+      `Ran a debug command: Purged ${invalidUserIds.length} invalid users`,
     );
 
     return true;

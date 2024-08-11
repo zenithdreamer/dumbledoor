@@ -47,6 +47,11 @@ export const adminRouter = {
           },
         });
 
+        ctx.queueLog(
+          ctx.session.userId,
+          `Created door ${door.name} with access level ${door.access_level}`,
+        );
+
         return door;
       } catch {
         throw new TRPCError({
@@ -57,19 +62,31 @@ export const adminRouter = {
     }),
   deleteDoor: protectedProcedure
     .input(z.string())
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const isAdmin = await accessClient.internal.isAdmin.mutate(
+        ctx.session.userId,
+      );
+
+      if (!isAdmin)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not allowed to create a door",
+        });
+
       await prisma.door.delete({
         where: { id: input },
       });
+
+      ctx.queueLog(ctx.session.userId, `Deleted door ${input}`);
     }),
 
-    editDoor: protectedProcedure
+  editDoor: protectedProcedure
     .input(
       z.object({
-        id: z.string(), 
-        name: z.string().optional(), 
+        id: z.string(),
+        name: z.string().optional(),
         accessLevel: z.number().optional(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const isAdmin = await accessClient.internal.isAdmin.mutate(
@@ -91,6 +108,11 @@ export const adminRouter = {
           },
         });
 
+        ctx.queueLog(
+          ctx.session.userId,
+          `Edited door ${door.name} (${door.id}) with access level ${door.access_level}`,
+        );
+
         return door;
       } catch {
         throw new TRPCError({
@@ -99,5 +121,4 @@ export const adminRouter = {
         });
       }
     }),
-    
 } satisfies TRPCRouterRecord;

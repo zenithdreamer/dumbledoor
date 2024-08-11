@@ -13,7 +13,6 @@
  * - Next.js requests will have a session token in cookies
  */
 //import type * as trpcExpress from "@trpc/server/adapters/express";
-import type { HTTPHeaders } from "@trpc/client";
 import type { IncomingHttpHeaders } from "http";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { initTRPC, TRPCError } from "@trpc/server";
@@ -25,7 +24,7 @@ import type { InternalAppRouter as AccessAppRouter } from "@dumbledoor/access-ap
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
 import { env } from "@dumbledoor/auth/env";
-import { prisma } from "@dumbledoor/user-db";
+import { prisma } from "@dumbledoor/log-db";
 
 // const isomorphicGetSession = async (headers: IncomingHttpHeaders) => {
 //   const authToken = headers.authorization ?? null;
@@ -68,7 +67,6 @@ import { prisma } from "@dumbledoor/user-db";
 // };
 
 export const createTRPCContext = (opts: {
-  queueLog: (userId: string, action: string) => void;
   headers: IncomingHttpHeaders;
   session: Session | null;
 }) => {
@@ -78,6 +76,7 @@ export const createTRPCContext = (opts: {
   if (authToken) {
     // Remove "Bearer " from the token if it exists
     const token = authToken.replace("Bearer ", "");
+
     let decoded;
     try {
       decoded = jwt.verify(token, env.AUTH_SECRET) as Session;
@@ -90,11 +89,12 @@ export const createTRPCContext = (opts: {
     }
   }
 
+  console.log(session);
+
   const source = opts.headers["x-trpc-source"] ?? "unknown";
   console.log(">>> tRPC Request from", source, "by", session);
 
   return {
-    queueLog: opts.queueLog,
     session,
     prisma,
     token: authToken,
@@ -107,7 +107,7 @@ export const createTRPCContext = (opts: {
  * This is where the trpc api is initialized, connecting the context and
  * transformer
  */
-export type Context = Awaited<ReturnType<typeof createTRPCContext>>;
+type Context = Awaited<ReturnType<typeof createTRPCContext>>;
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter: ({ shape, error }) => ({
@@ -175,10 +175,10 @@ export const accessClient = createTRPCClient<AccessAppRouter>({
     httpBatchLink({
       url: "http://localhost:" + env.ACCESS_SERVICE_PORT + "/api/trpc-internal",
       // You can pass any HTTP headers you wish here
-      headers(): HTTPHeaders {
+      headers() {
         const headers = new Headers();
         headers.set("authorization", "Bearer " + env.INTERNAL_API_SECRET);
-        headers.set("x-trpc-source", "user-api");
+        headers.set("x-trpc-source", "door-api");
         return headers;
       },
       transformer: SuperJSON,

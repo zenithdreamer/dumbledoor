@@ -29,6 +29,7 @@ app.use(
     router: appRouter,
     createContext: ({ req }) =>
       createTRPCContext({
+        queueLog,
         headers: req.headers,
         session: null,
       }),
@@ -114,3 +115,24 @@ const sub = rabbit.createConsumer(
 sub.on("error", (err) => {
   console.log("consumer error (user-events)", err);
 });
+
+const pub = rabbit.createPublisher({
+  confirm: true,
+  maxAttempts: 3,
+  exchanges: [{ exchange: "log", type: "topic" }],
+});
+
+const queueLog = (userId: string, action: string) => {
+  pub.send(
+    {
+      durable: true,
+      exchange: "log",
+      routingKey: "log.create",
+    },
+    {
+      user_id: userId,
+      action,
+      created_at: new Date().toISOString(),
+    },
+  );
+};

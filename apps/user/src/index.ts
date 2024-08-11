@@ -27,6 +27,7 @@ app.use(
     router: appRouter,
     createContext: ({ req }) =>
       createTRPCContext({
+        queueLog,
         headers: req.headers,
         session: null,
       }),
@@ -82,4 +83,25 @@ const bootstrapAdminAccount = async () => {
 
   console.log("Admin account created with username: admin and password: admin");
   pub.close();
+};
+
+const pub = rabbit.createPublisher({
+  confirm: true,
+  maxAttempts: 3,
+  exchanges: [{ exchange: "log", type: "topic" }],
+});
+
+const queueLog = (userId: string, action: string) => {
+  pub.send(
+    {
+      durable: true,
+      exchange: "log",
+      routingKey: "log.create",
+    },
+    {
+      user_id: userId,
+      action,
+      created_at: new Date().toISOString(),
+    },
+  );
 };

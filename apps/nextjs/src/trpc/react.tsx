@@ -8,6 +8,7 @@ import SuperJSON from "superjson";
 
 import type { AppRouter as AccessAppRouter } from "@dumbledoor/access-api";
 import type { AppRouter as DoorAppRouter } from "@dumbledoor/door-api";
+import type { AppRouter as LogAppRouter } from "@dumbledoor/log-api";
 import type { AppRouter as UserAppRouter } from "@dumbledoor/user-api";
 
 import { env } from "~/env";
@@ -39,6 +40,7 @@ export const trpc = {
   user: createTRPCReact<UserAppRouter>(),
   access: createTRPCReact<AccessAppRouter>(),
   door: createTRPCReact<DoorAppRouter>(),
+  log: createTRPCReact<LogAppRouter>(),
 };
 
 export function AccessTRPCReactProvider(props: { children: React.ReactNode }) {
@@ -164,6 +166,47 @@ export function DoorTRPCReactProvider(props: { children: React.ReactNode }) {
   );
 }
 
+export function LogTRPCReactProvider(props: { children: React.ReactNode }) {
+  const queryClient = getQueryClient();
+
+  const [logTrpcClient] = useState(() =>
+    trpc.log.createClient({
+      links: [
+        loggerLink({
+          enabled: (op) =>
+            env.NODE_ENV === "development" ||
+            (op.direction === "down" && op.result instanceof Error),
+        }),
+        unstable_httpBatchStreamLink({
+          transformer: SuperJSON,
+          url: getLogBaseUrl() + "/api/trpc",
+          headers() {
+            console.log("logTrpcClient headers");
+            const headers = new Headers();
+            headers.set("x-trpc-source", "nextjs-react");
+            const savedToken = localStorage.getItem("token");
+            if (savedToken) {
+              headers.set(
+                "authorization",
+                `Bearer ${localStorage.getItem("token")}`,
+              );
+            }
+            return headers;
+          },
+        }),
+      ],
+    }),
+  );
+
+  return (
+    <trpc.log.Provider client={logTrpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        {props.children}
+      </QueryClientProvider>
+    </trpc.log.Provider>
+  );
+}
+
 export function TRPCReactProvider(props: { children: React.ReactNode }) {
   // const queryClient = getQueryClient();
 
@@ -238,6 +281,10 @@ const getUserBaseUrl = () => {
 
 const getAccessBaseUrl = () => {
   return `http://localhost:4001`;
+};
+
+const getLogBaseUrl = () => {
+  return `http://localhost:4003`;
 };
 
 const _getBaseUrl = () => {

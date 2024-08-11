@@ -1,0 +1,22 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/log-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("LOG_DATABASE_URL")
+}
+
+model Log {
+  id         String   @id @default(cuid())
+  user_id    String
+  action     String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([user_id])
+}

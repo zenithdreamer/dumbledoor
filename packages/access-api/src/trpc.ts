@@ -65,6 +65,7 @@ import { env } from "@dumbledoor/auth/env";
 // };
 
 export const createTRPCContext = (opts: {
+  queueLog: (userId: string, action: string) => void;
   headers: IncomingHttpHeaders;
   session: Session | null;
 }) => {
@@ -91,6 +92,7 @@ export const createTRPCContext = (opts: {
   console.log(">>> tRPC Request from", source, "by", session);
 
   return {
+    queueLog: opts.queueLog,
     session,
     prisma,
     token: authToken,

@@ -44,6 +44,7 @@ export const authRouter = {
       const token = jwt.sign({ userId: user.id }, env.AUTH_SECRET);
 
       ctx.session = { userId: user.id };
+      ctx.queueLog(user.id, "Successful sign in");
       return { success: true, token };
     }),
   // getSession: publicProcedure.query(({ ctx }) => {
