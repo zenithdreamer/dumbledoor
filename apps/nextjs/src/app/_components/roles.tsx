@@ -1,8 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import type { RouterOutputs } from "@dumbledoor/access-api";
+import type { RouterOutputs as DoorRouterOutputs } from "@dumbledoor/door-api";
+import type { RouterOutputs as UserRouterOutputs } from "@dumbledoor/user-api";
 
-import { AccessTRPCReactProvider, trpc } from "~/trpc/react";
+import {
+  AccessTRPCReactProvider,
+  DoorTRPCReactProvider,
+  trpc,
+  UserTRPCReactProvider,
+} from "~/trpc/react";
 
 const RoleTable: React.FC = () => {
   const roles = trpc.access.admin.getRoles.useQuery();
@@ -235,7 +242,7 @@ const RoleTable: React.FC = () => {
                   required
                 />
               </div>
-              <div className="mb-4">
+              <div className="mb-4 ">
                 <label className="block text-gray-700">Description</label>
                 <input
                   type="text"
@@ -265,6 +272,12 @@ const RoleTable: React.FC = () => {
                       >
                         Granted Access Level
                       </th>
+                      <th
+                        scope="col"
+                        className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                      >
+                        Action
+                      </th>
                     </tr>
                   </thead>
 
@@ -291,6 +304,24 @@ const RoleTable: React.FC = () => {
                 </table>
               </div>
 
+              <div>
+                <div className="mb-4 flex w-full justify-between">
+                  <div className="flex w-full ">
+                    <DoorSelectWithTRPC
+                      ignoreIds={editRole?.role_doors.map(
+                        (door) => door.door_id,
+                      )}
+                      onChange={(door) => {
+                        console.log(door);
+                      }}
+                    />
+                    <button className="ml-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                      Add
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <div className="mb-4">
                 <label className="block text-gray-700">Users</label>
                 <table className="min-w-full divide-y divide-gray-200">
@@ -307,6 +338,12 @@ const RoleTable: React.FC = () => {
                         className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                       >
                         User ID
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                      >
+                        Action
                       </th>
                     </tr>
                   </thead>
@@ -331,6 +368,24 @@ const RoleTable: React.FC = () => {
                     ))}
                   </tbody>
                 </table>
+              </div>
+
+              <div>
+                <div className="mb-4 flex w-full justify-between">
+                  <div className="flex w-full ">
+                    <UserSelectWithTRPC
+                      ignoreIds={editRole?.role_users.map(
+                        (user) => user.user_id,
+                      )}
+                      onChange={(user) => {
+                        console.log(user);
+                      }}
+                    />
+                    <button className="ml-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                      Add
+                    </button>
+                  </div>
+                </div>
               </div>
 
               <div className="flex justify-end">
@@ -390,3 +445,113 @@ export default function RoleTableWithTRPC() {
     </AccessTRPCReactProvider>
   );
 }
+
+const UserSelect: React.FC<{
+  ignoreIds?: string[];
+  onChange: (role: string) => void;
+}> = (props) => {
+  const users = trpc.user.admin.getUsers.useQuery();
+  const [selectedUser, setSelectedUser] = useState<string>("");
+
+  const [userList, setUserList] = useState<
+    UserRouterOutputs["admin"]["getUsers"]
+  >([]);
+
+  useEffect(() => {
+    if (users.data) {
+      if (props.ignoreIds) {
+        const filteredUsers = users.data.filter(
+          (user) => !(props.ignoreIds ?? []).includes(user.id),
+        );
+        setUserList(filteredUsers);
+      } else {
+        setUserList(users.data);
+      }
+    }
+  }, [props.ignoreIds, users.data]);
+
+  return (
+    <select
+      className="w-full rounded border px-3 py-2"
+      value={selectedUser}
+      onChange={(e) => {
+        setSelectedUser(e.target.value);
+        props.onChange(e.target.value);
+      }}
+    >
+      <option value={""}>Select a user</option>
+
+      {userList.map((user) => (
+        <option key={user.id} value={user.id}>
+          {user.first_name} {user.last_name}
+        </option>
+      ))}
+    </select>
+  );
+};
+
+const UserSelectWithTRPC: React.FC<{
+  ignoreIds?: string[];
+  onChange: (user: string) => void;
+}> = (props) => {
+  return (
+    <UserTRPCReactProvider>
+      <UserSelect onChange={props.onChange} ignoreIds={props.ignoreIds} />
+    </UserTRPCReactProvider>
+  );
+};
+
+const DoorSelect: React.FC<{
+  ignoreIds?: string[];
+  onChange: (door: string) => void;
+}> = (props) => {
+  const doors = trpc.door.admin.getAllDoors.useQuery();
+  const [selectedDoor, setSelectedDoor] = useState<string>("");
+
+  const [doorList, setDoorList] = useState<
+    DoorRouterOutputs["admin"]["getAllDoors"]
+  >([]);
+
+  useEffect(() => {
+    if (doors.data) {
+      if (props.ignoreIds) {
+        const filteredDoors = doors.data.filter(
+          (door) => !(props.ignoreIds ?? []).includes(door.id),
+        );
+        setDoorList(filteredDoors);
+      } else {
+        setDoorList(doors.data);
+      }
+    }
+  }, [props.ignoreIds, doors.data]);
+
+  return (
+    <select
+      className="w-full rounded border px-3 py-2"
+      value={selectedDoor}
+      onChange={(e) => {
+        setSelectedDoor(e.target.value);
+        props.onChange(e.target.value);
+      }}
+    >
+      <option value={""}>Select a door</option>
+
+      {doorList.map((door) => (
+        <option key={door.id} value={door.id}>
+          {door.name}
+        </option>
+      ))}
+    </select>
+  );
+};
+
+const DoorSelectWithTRPC: React.FC<{
+  ignoreIds?: string[];
+  onChange: (door: string) => void;
+}> = (props) => {
+  return (
+    <DoorTRPCReactProvider>
+      <DoorSelect onChange={props.onChange} ignoreIds={props.ignoreIds} />
+    </DoorTRPCReactProvider>
+  );
+};
