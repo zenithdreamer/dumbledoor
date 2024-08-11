@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { set } from "zod";
 
 import type { RouterOutputs } from "@dumbledoor/user-api";
 
@@ -13,6 +12,7 @@ const UserTable: React.FC = () => {
   const users = trpc.user.admin.getUsers.useQuery();
   const createUser = trpc.user.admin.createUser.useMutation();
   const updateUser = trpc.user.admin.updateUser.useMutation();
+  const deleteUserTrpc = trpc.user.admin.deleteUser.useMutation();
 
   const [showModal, setShowModal] = useState(false);
   const [editUser, setEditUser] = useState<
@@ -40,16 +40,19 @@ const UserTable: React.FC = () => {
     admin: false,
   });
 
-  const doCreateUser = () => {
-    createUser.mutate({
+  const doCreateUser = async () => {
+    await createUser.mutateAsync({
       username: newUser.userName,
-      password: "password",
+      password: newUser.password,
       firstName: newUser.firstName,
       lastName: newUser.lastName,
       role: newUser.role,
       accessLevel: newUser.accessLevel,
       admin: newUser.admin,
     });
+
+    setShowModal(false);
+    void users.refetch();
   };
 
   const doEditUser = async () => {
@@ -90,8 +93,11 @@ const UserTable: React.FC = () => {
     setDeleteUser(user);
   };
 
-  const confirmDeleteUser = () => {
-    console.log("Deleting user:", deleteUser);
+  const confirmDeleteUser = async () => {
+    if (!deleteUser) return;
+
+    await deleteUserTrpc.mutateAsync(deleteUser.id);
+    void users.refetch();
     setDeleteUser(null);
   };
 
@@ -224,7 +230,7 @@ const UserTable: React.FC = () => {
                   {user.first_name} {user.last_name}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
-                  {user.role !== null ? user.role?.name : "No role"}
+                  {user.role !== null ? user.role.name : "No role"}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
                   {user.access_level}
@@ -284,7 +290,7 @@ const UserTable: React.FC = () => {
                 if (editUser) {
                   void doEditUser();
                 } else {
-                  doCreateUser();
+                  void doCreateUser();
                 }
               }}
             >

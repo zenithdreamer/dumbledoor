@@ -81,7 +81,7 @@ export const adminRouter = {
         },
       });
 
-      await accessClient.internal.updateUserAccess.mutate({
+      await accessClient.internal.createUserAccess.mutate({
         user_id: user.id,
         role_id: input.role,
         accessLevel: input.accessLevel,
@@ -99,14 +99,15 @@ export const adminRouter = {
         firstName: z.string(),
         lastName: z.string(),
         role: z.string().nullable().optional(),
-        accessLevel: z.number().default(0),
-        admin: z.boolean().default(false),
+        accessLevel: z.number().optional(),
+        admin: z.boolean().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       const isAdmin = await accessClient.internal.isAdmin.mutate(
         ctx.session.userId,
       );
+
       if (!isAdmin) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
@@ -115,7 +116,7 @@ export const adminRouter = {
       }
 
       // If user trying to make themselves not admin, prevent it
-      if (input.id === ctx.session.userId && !input.admin) {
+      if (input.id === ctx.session.userId && input.admin === false) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "You cannot remove your own admin access",
@@ -139,5 +140,34 @@ export const adminRouter = {
       });
 
       return user;
+    }),
+  deleteUser: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      const isAdmin = await accessClient.internal.isAdmin.mutate(
+        ctx.session.userId,
+      );
+
+      if (!isAdmin) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not authorized to perform this action",
+        });
+      }
+
+      if (input === ctx.session.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You cannot delete your own account",
+        });
+      }
+
+      await prisma.user.delete({
+        where: { id: input },
+      });
+
+      // TODO: Delete on all services
+
+      return true;
     }),
 } satisfies TRPCRouterRecord;

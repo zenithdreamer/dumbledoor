@@ -21,6 +21,38 @@ export const internalRouter = {
 
     return user.admin;
   }),
+  createUserAccess: internalProcedure
+    .input(
+      z.object({
+        user_id: z.string(),
+        role_id: z.string().nullable().optional(),
+        accessLevel: z.number().optional().default(0),
+        admin: z.boolean().optional().default(false),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const userAccess = await prisma.userAccess.findFirst({
+        where: { user_id: input.user_id },
+      });
+
+      if (userAccess) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "User access already exists",
+        });
+      }
+
+      const createdUserAccess = await prisma.userAccess.create({
+        data: {
+          user_id: input.user_id,
+          role_id: input.role_id,
+          access_level: input.accessLevel,
+          admin: input.admin,
+        },
+      });
+
+      return createdUserAccess;
+    }),
   updateUserAccess: internalProcedure
     .input(
       z.object({
