@@ -32,7 +32,7 @@ const App: React.FC = () => {
         return <Card />;
       case "edit-access":
         return <Edit_access />;
-      case "logs":
+      case "log":
         return <Log />;
       case "doors":
         return <Door />;
