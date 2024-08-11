@@ -30,4 +30,13 @@ export const userRouter = {
 
       return users.map((user) => user.admin);
     }),
+  getUserAccessBatch: internalProcedure
+    .input(z.array(z.string()))
+    .mutation(async ({ input }) => {
+      const users = await prisma.userAccess.findMany({
+        where: { user_id: { in: input } },
+      });
+
+      return users;
+    }),
 } satisfies TRPCRouterRecord;

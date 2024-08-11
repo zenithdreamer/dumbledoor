@@ -121,7 +121,7 @@ const Card: React.FC = () => {
 
               <div className="p-4">
                 <button className="w-full rounded-lg bg-pink-600 py-2 text-white hover:bg-pink-700">
-                  delete this door
+                  Delete this door
                 </button>
               </div>
             </div>

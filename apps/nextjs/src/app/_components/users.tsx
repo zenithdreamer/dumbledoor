@@ -1,10 +1,19 @@
 import React, { useState } from "react";
 
+import type { RouterOutputs } from "@dumbledoor/user-api";
+
 import { trpc, UserTRPCReactProvider } from "~/trpc/react";
 
 const UserTable: React.FC = () => {
   const users = trpc.user.admin.getUsers.useQuery();
   const [showModal, setShowModal] = useState(false);
+  const [editUser, setEditUser] = useState<
+    RouterOutputs["admin"]["getUsers"][0] | null
+  >(null);
+  const [deleteUser, setDeleteUser] = useState<
+    RouterOutputs["admin"]["getUsers"][0] | null
+  >(null);
+
   const [newUser, setNewUser] = useState({
     userName: "",
     firstName: "",
@@ -22,6 +31,32 @@ const UserTable: React.FC = () => {
     setShowModal(false);
   };
 
+  const handleEditUser = (user: RouterOutputs["admin"]["getUsers"][0]) => {
+    setEditUser(user);
+    setNewUser({
+      userName: user.username,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      accessLevel: 0,
+      role: "",
+      admin: user.admin,
+    });
+    setShowModal(true);
+  };
+
+  const handleDeleteUser = (user: RouterOutputs["admin"]["getUsers"][0]) => {
+    setDeleteUser(user);
+  };
+
+  const confirmDeleteUser = () => {
+    console.log("Deleting user:", deleteUser);
+    setDeleteUser(null);
+  };
+
+  const cancelDeleteUser = () => {
+    setDeleteUser(null);
+  };
+
   const openModal = () => {
     setNewUser({
       userName: "",
@@ -33,7 +68,7 @@ const UserTable: React.FC = () => {
     });
     setShowModal(true);
   };
-  
+
   return (
     <div className="relative flex-1 bg-gray-100 p-8">
       <div className="overflow-x-auto">
@@ -140,7 +175,7 @@ const UserTable: React.FC = () => {
                   {user.first_name} {user.last_name}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
-                  {"Role"}
+                  {user.role_id}
                 </td>
                 <td
                   className="whitespace-nowrap px-4 py-2 text-sm text-gray-500"
@@ -163,7 +198,18 @@ const UserTable: React.FC = () => {
                   {user.id}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-right text-sm font-medium">
-                  <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                  <a
+                    href="#"
+                    className="m-2 text-indigo-600 hover:text-indigo-900"
+                    onClick={() => handleEditUser(user)}
+                  >
+                    Edit
+                  </a>
+                  <a
+                    href="#"
+                    className="m-2 text-red-600 hover:text-indigo-900"
+                    onClick={() => handleDeleteUser(user)}
+                  >
                     Delete
                   </a>
                 </td>
@@ -173,16 +219,23 @@ const UserTable: React.FC = () => {
         </table>
       </div>
 
+      {/* Modal for Creating/Editing a User */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="w-1/3 rounded bg-white p-8 shadow-lg">
-            <h2 className="mb-4 text-xl font-bold">Create New User</h2>
+            <h2 className="mb-4 text-xl font-bold">
+              {editUser ? "Edit User" : "Create New User"}
+            </h2>
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleCreateUser();
+              onSubmit={() => {
+                if (editUser) {
+                  handleEditUser(editUser);
+                } else {
+                  handleCreateUser();
+                }
               }}
             >
+              {/* Form Fields */}
               <div className="mb-4">
                 <label className="block text-gray-700">First name</label>
                 <input
@@ -217,9 +270,8 @@ const UserTable: React.FC = () => {
                   }
                 >
                   <option value="">Select Role</option>
-
                   <option value="My Goat">My Goat</option>
-                  <option value="My Goat">My Love</option>
+                  <option value="My Love">My Love</option>
                 </select>
               </div>
               <div className="mb-4">
@@ -263,10 +315,34 @@ const UserTable: React.FC = () => {
                   type="submit"
                   className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
                 >
-                  Create
+                  {editUser ? "Update" : "Create"}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      {deleteUser && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="w-1/3 rounded bg-white p-8 shadow-lg">
+            <h2 className="mb-4 text-xl font-bold">Delete User</h2>
+            <p>Are you sure you want to delete user "{deleteUser.username}"?</p>
+            <div className="mt-4 flex justify-end">
+              <button
+                className="mr-4 rounded bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400"
+                onClick={cancelDeleteUser}
+              >
+                Cancel
+              </button>
+              <button
+                className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                onClick={confirmDeleteUser}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}

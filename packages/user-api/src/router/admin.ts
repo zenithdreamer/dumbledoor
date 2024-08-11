@@ -27,13 +27,22 @@ export const adminRouter = {
     });
 
     const userIds = users.map((user) => user.id);
-    const isAdminBatch = await accessClient.user.isAdminBatch.mutate(userIds);
+    const getUserAccessBatch =
+      await accessClient.user.getUserAccessBatch.mutate(userIds);
 
-    type UserWithAdmin = (typeof users)[number] & { admin: boolean };
-    const usersWithAdmin: UserWithAdmin[] = users.map((user, index) => {
-      return { ...user, admin: isAdminBatch[index] ?? false };
+    // Combine user data access data
+    type ReturnType = (typeof users)[number] &
+      (typeof getUserAccessBatch)[number];
+
+    return users.map((user) => {
+      const userAccess = getUserAccessBatch.find(
+        (access) => access.user_id === user.id,
+      );
+
+      return {
+        ...user,
+        ...userAccess,
+      } as ReturnType;
     });
-
-    return usersWithAdmin;
   }),
 } satisfies TRPCRouterRecord;
