@@ -6,7 +6,7 @@ import { prisma } from "@dumbledoor/access-db";
 
 import { internalProcedure } from "../trpc";
 
-export const userRouter = {
+export const internalRouter = {
   isAdmin: internalProcedure.input(z.string()).mutation(async ({ input }) => {
     const user = await prisma.userAccess.findFirst({
       where: { user_id: input },
@@ -21,6 +21,38 @@ export const userRouter = {
 
     return user.admin;
   }),
+  updateUserAccess: internalProcedure
+    .input(
+      z.object({
+        user_id: z.string(),
+        role_id: z.string().nullable().optional(),
+        accessLevel: z.number().optional(),
+        admin: z.boolean().optional(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const userAccess = await prisma.userAccess.findFirst({
+        where: { user_id: input.user_id },
+      });
+
+      if (!userAccess) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+
+      const updatedUserAccess = await prisma.userAccess.update({
+        where: { user_id: userAccess.user_id },
+        data: {
+          role: input.role_id ? { connect: { id: input.role_id } } : undefined,
+          access_level: input.accessLevel,
+          admin: input.admin,
+        },
+      });
+
+      return updatedUserAccess;
+    }),
   isAdminBatch: internalProcedure
     .input(z.array(z.string()))
     .mutation(async ({ input }) => {

@@ -1,11 +1,19 @@
 import React, { useState } from "react";
+import { set } from "zod";
 
 import type { RouterOutputs } from "@dumbledoor/user-api";
 
-import { trpc, UserTRPCReactProvider } from "~/trpc/react";
+import {
+  AccessTRPCReactProvider,
+  trpc,
+  UserTRPCReactProvider,
+} from "~/trpc/react";
 
 const UserTable: React.FC = () => {
   const users = trpc.user.admin.getUsers.useQuery();
+  const createUser = trpc.user.admin.createUser.useMutation();
+  const updateUser = trpc.user.admin.updateUser.useMutation();
+
   const [showModal, setShowModal] = useState(false);
   const [editUser, setEditUser] = useState<
     RouterOutputs["admin"]["getUsers"][0] | null
@@ -14,19 +22,50 @@ const UserTable: React.FC = () => {
     RouterOutputs["admin"]["getUsers"][0] | null
   >(null);
 
-  const [newUser, setNewUser] = useState({
+  const [newUser, setNewUser] = useState<{
+    userName: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    accessLevel: number;
+    role: string | null;
+    admin: boolean;
+  }>({
     userName: "",
+    password: "",
     firstName: "",
     lastName: "",
     accessLevel: 0,
-    role: "",
+    role: null,
     admin: false,
   });
 
-  const handleCreateUser = () => {
-    const today = new Date().toLocaleDateString();
-    const newUserData = { ...newUser, createDate: today };
-    console.log(newUserData);
+  const doCreateUser = () => {
+    createUser.mutate({
+      username: newUser.userName,
+      password: "password",
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      role: newUser.role,
+      accessLevel: newUser.accessLevel,
+      admin: newUser.admin,
+    });
+  };
+
+  const doEditUser = async () => {
+    if (!editUser) return;
+
+    console.log(newUser);
+    await updateUser.mutateAsync({
+      id: editUser.id,
+      username: newUser.userName,
+      password: newUser.password,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      role: newUser.role,
+      accessLevel: newUser.accessLevel,
+      admin: newUser.admin,
+    });
 
     setShowModal(false);
   };
@@ -36,9 +75,10 @@ const UserTable: React.FC = () => {
     setNewUser({
       userName: user.username,
       firstName: user.first_name,
+      password: "",
       lastName: user.last_name,
-      accessLevel: 0,
-      role: "",
+      accessLevel: user.access_level,
+      role: user.role_id,
       admin: user.admin,
     });
     setShowModal(true);
@@ -60,10 +100,11 @@ const UserTable: React.FC = () => {
   const openModal = () => {
     setNewUser({
       userName: "",
+      password: "",
       firstName: "",
       lastName: "",
       accessLevel: 0,
-      role: "",
+      role: null,
       admin: false,
     });
     setShowModal(true);
@@ -114,6 +155,12 @@ const UserTable: React.FC = () => {
                 className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
               >
                 Role
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+              >
+                Access Level
               </th>
               <th
                 scope="col"
@@ -175,7 +222,10 @@ const UserTable: React.FC = () => {
                   {user.first_name} {user.last_name}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
-                  {user.role?.name ?? "No role"}
+                  {user.role !== null ? user.role?.name : "No role"}
+                </td>
+                <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-500">
+                  {user.access_level}
                 </td>
                 <td
                   className="whitespace-nowrap px-4 py-2 text-sm text-gray-500"
@@ -227,15 +277,47 @@ const UserTable: React.FC = () => {
               {editUser ? "Edit User" : "Create New User"}
             </h2>
             <form
-              onSubmit={() => {
+              onSubmit={(e) => {
+                e.preventDefault();
                 if (editUser) {
-                  handleEditUser(editUser);
+                  void doEditUser();
                 } else {
-                  handleCreateUser();
+                  doCreateUser();
                 }
               }}
             >
               {/* Form Fields */}
+              <div className="mb-4">
+                <label className="block text-gray-700">Username</label>
+                <input
+                  type="text"
+                  className="w-full rounded border px-3 py-2"
+                  value={newUser.userName}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, userName: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">
+                  {editUser ? "New Password" : "Password"}
+                </label>
+                <input
+                  type="text"
+                  className="w-full rounded border px-3 py-2"
+                  value={newUser.password}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, password: e.target.value })
+                  }
+                  placeholder={
+                    editUser
+                      ? "Leave blank to keep the same password"
+                      : "Password"
+                  }
+                  required={editUser ? false : true}
+                />
+              </div>
               <div className="mb-4">
                 <label className="block text-gray-700">First name</label>
                 <input
@@ -262,29 +344,19 @@ const UserTable: React.FC = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700">Role</label>
-                <select
-                  className="w-full rounded border px-3 py-2"
-                  value={newUser.role}
-                  onChange={(e) =>
-                    setNewUser({ ...newUser, role: e.target.value })
-                  }
-                >
-                  <option value="">Select Role</option>
-                  <option value="My Goat">My Goat</option>
-                  <option value="My Love">My Love</option>
-                </select>
+                <RoleSelectWithTRPC role={newUser.role ?? ""} />
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700">Access Level</label>
                 <select
                   className="w-full rounded border px-3 py-2"
                   value={newUser.accessLevel}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setNewUser({
                       ...newUser,
                       accessLevel: parseInt(e.target.value),
-                    })
-                  }
+                    });
+                  }}
                   required
                 >
                   <option value={0}>Access level 0</option>
@@ -307,7 +379,10 @@ const UserTable: React.FC = () => {
                 <button
                   type="button"
                   className="mr-4 rounded bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400"
-                  onClick={() => setShowModal(false)}
+                  onClick={() => {
+                    setShowModal(false);
+                    setEditUser(null);
+                  }}
                 >
                   Cancel
                 </button>
@@ -357,3 +432,32 @@ export default function UsersWithTRPC() {
     </UserTRPCReactProvider>
   );
 }
+
+const RoleSelect: React.FC<{ role: string }> = (props) => {
+  const roles = trpc.access.admin.getRoles.useQuery();
+  const [selectedRole, setSelectedRole] = useState<string>(props.role);
+
+  return (
+    <select
+      className="w-full rounded border px-3 py-2"
+      value={selectedRole}
+      onChange={(e) => setSelectedRole(e.target.value)}
+    >
+      <option value={""}>No role</option>
+
+      {roles.data?.map((role) => (
+        <option key={role.id} value={role.id}>
+          {role.name}
+        </option>
+      ))}
+    </select>
+  );
+};
+
+const RoleSelectWithTRPC: React.FC<{ role: string }> = (props) => {
+  return (
+    <AccessTRPCReactProvider>
+      <RoleSelect role={props.role} />
+    </AccessTRPCReactProvider>
+  );
+};

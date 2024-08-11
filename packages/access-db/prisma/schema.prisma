@@ -21,7 +21,7 @@ model UserAccess {
 
 model Role {
   id          String       @id @default(cuid())
-  name        String       @unique
+  name        String
   description String
   role_doors  RoleDoor[]
   role_users  UserAccess[]

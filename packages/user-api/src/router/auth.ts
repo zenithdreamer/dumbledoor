@@ -9,9 +9,6 @@ import { prisma } from "@dumbledoor/user-db";
 
 import { publicProcedure } from "../trpc";
 
-const fakeHash =
-  "$argon2id$v=19$m=4096,t=3,p=1$X2Zha2UtaGFzaA$1Q6Q6Q6Q6Q6Q6Q6Q6Q6Q6Q";
-
 export const authRouter = {
   signIn: publicProcedure
     .input(

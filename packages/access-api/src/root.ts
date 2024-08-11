@@ -1,5 +1,5 @@
 import { adminRouter } from "./router/auth";
-import { userRouter } from "./router/user";
+import { internalRouter } from "./router/internal";
 import { createInternalTRPCRouter, createTRPCRouter } from "./trpc";
 
 export const appRouter = createTRPCRouter({
@@ -7,7 +7,7 @@ export const appRouter = createTRPCRouter({
 });
 
 export const internalAppRouter = createInternalTRPCRouter({
-  user: userRouter,
+  internal: internalRouter,
 });
 
 // export type definition of API

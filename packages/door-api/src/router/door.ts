@@ -8,7 +8,9 @@ import { accessClient, protectedProcedure } from "../trpc";
 
 export const adminRouter = {
   getAllDoors: protectedProcedure.query(async ({ ctx }) => {
-    const isAdmin = await accessClient.user.isAdmin.mutate(ctx.session.userId);
+    const isAdmin = await accessClient.internal.isAdmin.mutate(
+      ctx.session.userId,
+    );
 
     if (!isAdmin)
       throw new TRPCError({
@@ -26,7 +28,7 @@ export const adminRouter = {
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const isAdmin = await accessClient.user.isAdmin.mutate(
+      const isAdmin = await accessClient.internal.isAdmin.mutate(
         ctx.session.userId,
       );
 
