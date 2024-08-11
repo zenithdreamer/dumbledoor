@@ -1,6 +1,6 @@
 import React from "react";
 
-import { RouterOutputs } from "@dumbledoor/access-api";
+import type { RouterOutputs } from "@dumbledoor/door-api";
 
 import { DoorTRPCReactProvider, trpc } from "~/trpc/react";
 

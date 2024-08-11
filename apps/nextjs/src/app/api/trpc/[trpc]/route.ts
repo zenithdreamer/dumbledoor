@@ -1,49 +1,49 @@
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+// import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
-import { appRouter, createTRPCContext } from "@dumbledoor/api";
+// import { appRouter, createTRPCContext } from "@dumbledoor/api";
 
-//import { auth } from "@dumbledoor/auth";
+// //import { auth } from "@dumbledoor/auth";
 
-export const runtime = "nodejs";
+// export const runtime = "nodejs";
 
-/**
- * Configure basic CORS headers
- * You should extend this to match your needs
- */
-const setCorsHeaders = (res: Response) => {
-  res.headers.set("Access-Control-Allow-Origin", "*");
-  res.headers.set("Access-Control-Request-Method", "*");
-  res.headers.set("Access-Control-Allow-Methods", "OPTIONS, GET, POST");
-  res.headers.set("Access-Control-Allow-Headers", "*");
-};
+// /**
+//  * Configure basic CORS headers
+//  * You should extend this to match your needs
+//  */
+// const setCorsHeaders = (res: Response) => {
+//   res.headers.set("Access-Control-Allow-Origin", "*");
+//   res.headers.set("Access-Control-Request-Method", "*");
+//   res.headers.set("Access-Control-Allow-Methods", "OPTIONS, GET, POST");
+//   res.headers.set("Access-Control-Allow-Headers", "*");
+// };
 
-export const OPTIONS = () => {
-  const response = new Response(null, {
-    status: 204,
-  });
-  setCorsHeaders(response);
-  return response;
-};
+// export const OPTIONS = () => {
+//   const response = new Response(null, {
+//     status: 204,
+//   });
+//   setCorsHeaders(response);
+//   return response;
+// };
 
-const handler = async (req: Request) => {
-  const response = await fetchRequestHandler({
-    endpoint: "/api/trpc",
+// const handler = async (req: Request) => {
+//   const response = await fetchRequestHandler({
+//     endpoint: "/api/trpc",
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    router: appRouter,
-    req,
-    createContext: () =>
-      createTRPCContext({
-        session: null,
-        headers: req.headers,
-      }),
-    // onError({ error: any, path }) {
-    //   console.error(`>>> tRPC Error on '${path}'`, error);
-    // },
-  });
+//     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+//     router: appRouter,
+//     req,
+//     createContext: () =>
+//       createTRPCContext({
+//         session: null,
+//         headers: req.headers,
+//       }),
+//     // onError({ error: any, path }) {
+//     //   console.error(`>>> tRPC Error on '${path}'`, error);
+//     // },
+//   });
 
-  setCorsHeaders(response);
-  return response;
-};
+//   setCorsHeaders(response);
+//   return response;
+// };
 
-export { handler as GET, handler as POST };
+// export { handler as GET, handler as POST };

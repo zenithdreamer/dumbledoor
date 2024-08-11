@@ -232,12 +232,12 @@ export const accessClient = createTRPCClient<AccessAppRouter>({
   links: [
     httpBatchLink({
       url: "http://localhost:" + env.ACCESS_SERVICE_PORT + "/api/trpc-internal",
-      // You can pass any HTTP headers you wish here
+
       headers(): HTTPHeaders {
-        const headers = new Headers();
-        headers.set("authorization", "Bearer " + env.INTERNAL_API_SECRET);
-        headers.set("x-trpc-source", "user-api");
-        return headers;
+        return {
+          authorization: "Bearer " + env.INTERNAL_API_SECRET,
+          "x-trpc-source": "log-api",
+        };
       },
       transformer: SuperJSON,
     }),

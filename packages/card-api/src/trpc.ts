@@ -177,12 +177,11 @@ export const accessClient = createTRPCClient<AccessAppRouter>({
   links: [
     httpBatchLink({
       url: "http://localhost:" + env.ACCESS_SERVICE_PORT + "/api/trpc-internal",
-      // @ts-expect-error - headers are not typed yet
       headers() {
-        const headers = new Headers();
-        headers.set("authorization", "Bearer " + env.INTERNAL_API_SECRET);
-        headers.set("x-trpc-source", "door-api");
-        return headers;
+        return {
+          authorization: "Bearer " + env.INTERNAL_API_SECRET,
+          "x-trpc-source": "card-api",
+        };
       },
       transformer: SuperJSON,
     }),
@@ -194,12 +193,11 @@ export const userClient = createTRPCClient<UserAppRouter>({
     httpBatchLink({
       url: "http://localhost:" + env.USER_SERVICE_PORT + "/api/trpc-internal",
 
-      // @ts-expect-error - headers are not typed yet
       headers() {
-        const headers = new Headers();
-        headers.set("authorization", "Bearer " + env.INTERNAL_API_SECRET);
-        headers.set("x-trpc-source", "door-api");
-        return headers;
+        return {
+          authorization: "Bearer " + env.INTERNAL_API_SECRET,
+          "x-trpc-source": "card-api",
+        };
       },
       transformer: SuperJSON,
     }),

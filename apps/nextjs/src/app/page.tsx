@@ -52,7 +52,7 @@ const Doortable: React.FC = () => {
         {doors && (
           <select
             onChange={handleDoorSelect}
-            value={selectedDoorId || ""}
+            value={selectedDoorId ?? ""}
             className="mb-4 rounded border p-2"
           >
             <option value="" disabled>

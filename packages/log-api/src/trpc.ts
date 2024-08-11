@@ -13,6 +13,7 @@
  * - Next.js requests will have a session token in cookies
  */
 //import type * as trpcExpress from "@trpc/server/adapters/express";
+import type { HTTPHeaders } from "@trpc/client";
 import type { IncomingHttpHeaders } from "http";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { initTRPC, TRPCError } from "@trpc/server";
@@ -174,12 +175,12 @@ export const accessClient = createTRPCClient<AccessAppRouter>({
   links: [
     httpBatchLink({
       url: "http://localhost:" + env.ACCESS_SERVICE_PORT + "/api/trpc-internal",
-      // You can pass any HTTP headers you wish here
-      headers() {
-        const headers = new Headers();
-        headers.set("authorization", "Bearer " + env.INTERNAL_API_SECRET);
-        headers.set("x-trpc-source", "door-api");
-        return headers;
+
+      headers(): HTTPHeaders {
+        return {
+          authorization: "Bearer " + env.INTERNAL_API_SECRET,
+          "x-trpc-source": "log-api",
+        };
       },
       transformer: SuperJSON,
     }),
