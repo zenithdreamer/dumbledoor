@@ -262,47 +262,46 @@ const RoleTable: React.FC = () => {
         </table>
       </div>
 
-      {/* Modal for Creating/Editing a Role */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-1/3 rounded bg-white p-8 shadow-lg">
-            <h2 className="mb-4 text-xl font-bold">
-              {editRole ? "Edit Role" : "Create New Role"}
-            </h2>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (editRole) {
-                  void handleEditRole();
-                } else {
-                  void handleCreateRole();
-                }
-              }}
-            >
-              <div className="mb-4">
-                <label className="block text-gray-700">Name</label>
-                <input
-                  type="text"
-                  className="w-full rounded border px-3 py-2"
-                  value={newRole.name}
-                  onChange={(e) =>
-                    setNewRole({ ...newRole, name: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div className="mb-4 ">
-                <label className="block text-gray-700">Description</label>
-                <input
-                  type="text"
-                  className="w-full rounded border px-3 py-2"
-                  value={newRole.description}
-                  onChange={(e) =>
-                    setNewRole({ ...newRole, description: e.target.value })
-                  }
-                  required
-                />
-              </div>
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4 sm:p-6 lg:p-8">
+    <div className="w-full max-w-lg rounded bg-white p-8 shadow-lg">
+      <h2 className="mb-4 text-xl font-bold">
+        {editRole ? "Edit Role" : "Create New Role"}
+      </h2>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (editRole) {
+            void handleEditRole();
+          } else {
+            void handleCreateRole();
+          }
+        }}
+      >
+        <div className="mb-4">
+          <label className="block text-gray-700">Name</label>
+          <input
+            type="text"
+            className="w-full rounded border px-3 py-2"
+            value={newRole.name}
+            onChange={(e) =>
+              setNewRole({ ...newRole, name: e.target.value })
+            }
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Description</label>
+          <input
+            type="text"
+            className="w-full rounded border px-3 py-2"
+            value={newRole.description}
+            onChange={(e) =>
+              setNewRole({ ...newRole, description: e.target.value })
+            }
+            required
+          />
+        </div>
 
               <div className="mb-4">
                 <label className="block text-gray-700">Doors</label>
@@ -469,27 +468,27 @@ const RoleTable: React.FC = () => {
               </div>
 
               <div className="flex justify-end">
-                <button
-                  type="button"
-                  className="mr-4 rounded bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400"
-                  onClick={() => {
-                    setShowModal(false);
-                    setEditRole(null);
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                >
-                  {editRole ? "Update" : "Create"}
-                </button>
-              </div>
-            </form>
-          </div>
+          <button
+            type="button"
+            className="mr-4 rounded bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400"
+            onClick={() => {
+              setShowModal(false);
+              setEditRole(null);
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          >
+            {editRole ? "Update" : "Create"}
+          </button>
         </div>
-      )}
+      </form>
+    </div>
+  </div>
+)}
 
       {/* Delete Confirmation Dialog */}
       {deleteRole && (

@@ -16,4 +16,6 @@ export const scannerRouter = {
     .mutation(async ({ ctx, input }) => {
       const card = await cardClient.internal.getCards.mutate(input.cardId);
     }),
+
+    
 } satisfies TRPCRouterRecord;
