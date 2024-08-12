@@ -94,6 +94,23 @@ export const internalRouter = {
 
       return users.map((user) => user.admin);
     }),
+  getUserAccess: internalProcedure
+    .input(z.string())
+    .mutation(async ({ input }) => {
+      const user = await prisma.userAccess.findFirst({
+        where: { user_id: input },
+        include: { role: true },
+      });
+
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+
+      return user;
+    }),
   getUserAccessBatch: internalProcedure
     .input(z.array(z.string()))
     .mutation(async ({ input }) => {
@@ -109,6 +126,25 @@ export const internalRouter = {
       include: { role: true },
     });
   }),
+  getRoleDoors: internalProcedure
+    .input(z.string())
+    .mutation(async ({ input }) => {
+      const role = await prisma.role.findFirst({
+        where: { id: input },
+        include: {
+          role_doors: true,
+        },
+      });
+
+      if (!role) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Role not found",
+        });
+      }
+
+      return role.role_doors;
+    }),
   purgeUser: internalProcedure.input(z.string()).mutation(async ({ input }) => {
     const user = await prisma.userAccess.findFirst({
       where: { user_id: input },

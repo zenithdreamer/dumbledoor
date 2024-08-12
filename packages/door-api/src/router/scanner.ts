@@ -16,19 +16,12 @@ export const scannerRouter = {
       }),
     )
     .mutation(async ({ ctx, input }) => {
-  
       const card = await cardClient.internal.getCards.mutate(input.cardId);
 
-      const accessList = await accessClient.internal.getUserAccessBatch.mutate([card.user_id]);
+      const accessList = await accessClient.internal.getUserAccess.mutate(
+        card.user_id,
+      );
 
-      if (accessList.length === 0) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Access not found for the provided card ID",
-        });
-      }
-
-  
       const door = await prisma.door.findUnique({
         where: {
           id: input.doorId,
@@ -42,19 +35,33 @@ export const scannerRouter = {
         });
       }
 
-      const userAccess = accessList[0]; 
+      const userAccess = accessList;
 
-
-      //const role_doors = await prisma.roleDoor.findMany({});
-
-      const personalAccessLevel = userAccess?.access_level;
-      const doorAccessLevel = door.access_level; 
-
-
+      const personalAccessLevel = userAccess.access_level;
+      const doorAccessLevel = door.access_level;
 
       // If the user has personal access that meets the door's requirement
-      if (personalAccessLevel !== undefined && personalAccessLevel >= doorAccessLevel) {
+      if (personalAccessLevel >= doorAccessLevel) {
         return true; // Access granted based on personal access
+      }
+
+      // If person have a role, check if the role has access
+      if (userAccess.role) {
+        const role_doors = await accessClient.internal.getRoleDoors.mutate(
+          userAccess.role.id,
+        );
+
+        const roleDoor = role_doors.find(
+          (role_door) => role_door.door_id === door.id,
+        );
+
+        if (!roleDoor) {
+          return false; // Access denied
+        }
+
+        if (roleDoor.granted_access_level >= doorAccessLevel) {
+          return true; // Access granted based on role access
+        }
       }
 
       return false; // Access denied
