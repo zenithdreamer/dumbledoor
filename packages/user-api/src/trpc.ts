@@ -231,7 +231,7 @@ export const internalProcedure = tInternal.procedure.use(({ ctx, next }) => {
 export const accessClient = createTRPCClient<AccessAppRouter>({
   links: [
     httpBatchLink({
-      url: "http://localhost:" + env.ACCESS_SERVICE_PORT + "/api/trpc-internal",
+      url: env.ACCESS_SERVICE_URL + "/api/trpc-internal",
 
       headers(): HTTPHeaders {
         return {
