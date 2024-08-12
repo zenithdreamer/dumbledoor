@@ -36,9 +36,16 @@ const RoleTable: React.FC = () => {
     RouterOutputs["admin"]["getRoles"][0] | null
   >(null);
 
-  const [newRole, setNewRole] = useState({
+  const [newRole, setNewRole] = useState<{
+    name: string;
+    description: string;
+    users: RouterOutputs["admin"]["getRoles"][0]["role_users"];
+    doors: RouterOutputs["admin"]["getRoles"][0]["role_doors"];
+  }>({
     name: "",
     description: "",
+    users: [],
+    doors: [],
   });
 
   const [selectedDoors, setSelectedDoors] = useState<SelectedDoor[]>([]);
@@ -48,7 +55,6 @@ const RoleTable: React.FC = () => {
     await createRole.mutateAsync({
       name: newRole.name,
       description: newRole.description,
-      // Send selected doors and users if needed in your backend
     });
     setShowModal(false);
     void roles.refetch();
@@ -56,11 +62,16 @@ const RoleTable: React.FC = () => {
 
   const handleEditRole = async () => {
     if (!editRole) return;
+    console.log(newRole);
     await updateRole.mutateAsync({
       id: editRole.id,
       name: newRole.name,
       description: newRole.description,
-      // Send selected doors and users if needed in your backend
+      users: selectedUsers.map((user) => user.id),
+      doors: selectedDoors.map((door) => ({
+        door_id: door.id,
+        granted_access_level: door.accessLevel,
+      })),
     });
     setShowModal(false);
     setEditRole(null);
@@ -78,6 +89,8 @@ const RoleTable: React.FC = () => {
     setNewRole({
       name: "",
       description: "",
+      users: [],
+      doors: [],
     });
     setSelectedDoors([]);
     setSelectedUsers([]);
@@ -89,6 +102,8 @@ const RoleTable: React.FC = () => {
     setNewRole({
       name: role.name,
       description: role.description,
+      users: role.role_users,
+      doors: role.role_doors,
     });
     setSelectedDoors(
       role.role_doors.map((door) => ({
@@ -330,7 +345,24 @@ const RoleTable: React.FC = () => {
                           {/* {door.name} */} Door Name
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
-                          {door.accessLevel}
+                          <select
+                            value={door.accessLevel}
+                            onChange={(e) => {
+                              const updatedDoors = [...selectedDoors];
+                              if (updatedDoors[index]) {
+                                updatedDoors[index].accessLevel = parseInt(
+                                  e.target.value,
+                                );
+                              }
+                              setSelectedDoors(updatedDoors);
+                            }}
+                            className="w-full rounded border px-3 py-2"
+                          >
+                            <option value={0}>Access Level 0</option>
+                            <option value={1}>Access Level 1</option>
+                            <option value={2}>Access Level 2</option>
+                            <option value={3}>Access Level 3</option>
+                          </select>
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900">
                           <button
@@ -359,12 +391,6 @@ const RoleTable: React.FC = () => {
                         setSelectedDoors((prev) => [...prev, door]);
                       }}
                     />
-                    <button
-                      type="button"
-                      className="ml-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                    >
-                      Add
-                    </button>
                   </div>
                 </div>
               </div>
@@ -438,12 +464,6 @@ const RoleTable: React.FC = () => {
                         setSelectedUsers((prev) => [...prev, user]);
                       }}
                     />
-                    <button
-                      type="button"
-                      className="ml-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                    >
-                      Add
-                    </button>
                   </div>
                 </div>
               </div>

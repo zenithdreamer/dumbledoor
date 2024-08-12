@@ -15,6 +15,7 @@ export const env = createEnv({
       .default("4000"),
     ACCESS_SERVICE_URL: z.string().optional(),
     USER_SERVICE_URL: z.string().optional(),
+    CARD_SERVICE_URL: z.string().optional(),
     INTERNAL_API_SECRET: z.string().min(1),
     NODE_ENV: z.enum(["development", "production"]).optional(),
   },

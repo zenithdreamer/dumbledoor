@@ -718,6 +718,9 @@ importers:
       '@dumbledoor/auth':
         specifier: workspace:*
         version: link:../auth
+      '@dumbledoor/card-api':
+        specifier: workspace:*
+        version: link:../card-api
       '@dumbledoor/door-db':
         specifier: workspace:*
         version: link:../door-db

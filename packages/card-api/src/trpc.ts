@@ -122,6 +122,18 @@ const t = initTRPC.context<Context>().create({
   }),
 });
 
+type InternalContext = Awaited<ReturnType<typeof createTRPCContext>>;
+const tInternal = initTRPC.context<InternalContext>().create({
+  transformer: superjson,
+  errorFormatter: ({ shape, error }) => ({
+    ...shape,
+    data: {
+      ...shape.data,
+      zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
+    },
+  }),
+});
+
 /**
  * Create a server-side caller
  * @see https://trpc.io/docs/server/server-side-calls
@@ -140,6 +152,7 @@ export const createCallerFactory = t.createCallerFactory;
  * @see https://trpc.io/docs/router
  */
 export const createTRPCRouter = t.router;
+export const createInternalTRPCRouter = tInternal.router;
 
 /**
  * Public (unauthed) procedure
@@ -169,6 +182,29 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
     ctx: {
       // infers the `session` as non-nullable
       session: { ...ctx.session },
+    },
+  });
+});
+
+/**
+ * Internal (authenticated) procedure
+ *
+ * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
+ * the session is valid and guarantees `ctx.session.user` is not null.
+ *
+ * @see https://trpc.io/docs/procedures
+ */
+export const internalProcedure = tInternal.procedure.use(({ ctx, next }) => {
+  //throw new TRPCError({ code: "UNAUTHORIZED" });
+
+  if (!ctx.token) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return next({
+    ctx: {
+      // infers the `token` as non-nullable
+      token: ctx.token,
     },
   });
 });

@@ -76,6 +76,15 @@ export const adminRouter = {
         id: z.string(),
         name: z.string().optional(),
         description: z.string().optional(),
+        users: z.array(z.string()).optional(),
+        doors: z
+          .array(
+            z.object({
+              door_id: z.string(),
+              granted_access_level: z.number().min(0).max(3),
+            }),
+          )
+          .optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -92,8 +101,41 @@ export const adminRouter = {
 
       const role = await prisma.role.update({
         where: { id: input.id },
-        data: input,
+        data: {
+          name: input.name,
+          description: input.description,
+        },
       });
+
+      if (input.doors) {
+        // Remove all doors that binded to the role
+        await prisma.roleDoor.deleteMany({
+          where: { role_id: input.id },
+        });
+
+        // Assign doors to the role
+        await prisma.roleDoor.createMany({
+          data: input.doors.map((door) => ({
+            role_id: input.id,
+            door_id: door.door_id,
+            granted_access_level: door.granted_access_level,
+          })),
+        });
+      }
+
+      if (input.users) {
+        // Remove all user access that binded to the role
+        await prisma.userAccess.updateMany({
+          where: { role_id: input.id },
+          data: { role_id: null },
+        });
+
+        // Assign users to the role
+        await prisma.userAccess.updateMany({
+          where: { user_id: { in: input.users } },
+          data: { role_id: input.id },
+        });
+      }
 
       ctx.queueLog(
         ctx.session.userId,

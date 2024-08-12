@@ -23,6 +23,7 @@ import { ZodError } from "zod";
 import type { InternalAppRouter as AccessAppRouter } from "@dumbledoor/access-api";
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
+import type { InternalAppRouter as CardAppRouter } from "@dumbledoor/card-api";
 import { env } from "@dumbledoor/auth/env";
 import { prisma } from "@dumbledoor/door-db";
 
@@ -176,6 +177,21 @@ export const accessClient = createTRPCClient<AccessAppRouter>({
   links: [
     httpBatchLink({
       url: env.ACCESS_SERVICE_URL + "/api/trpc-internal",
+      headers() {
+        return {
+          authorization: "Bearer " + env.INTERNAL_API_SECRET,
+          "x-trpc-source": "log-api",
+        };
+      },
+      transformer: SuperJSON,
+    }),
+  ],
+});
+
+export const cardClient = createTRPCClient<CardAppRouter>({
+  links: [
+    httpBatchLink({
+      url: env.CARD_SERVICE_URL + "/api/trpc-internal",
       headers() {
         return {
           authorization: "Bearer " + env.INTERNAL_API_SECRET,
