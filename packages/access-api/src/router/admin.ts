@@ -42,6 +42,39 @@ export const adminRouter = {
 
     return roles;
   }),
+  getRoleById: protectedProcedure
+    .input(z.string()) // Expecting a string as the role ID
+    .query(async ({ ctx, input }) => {
+      // Check if the user is an admin
+      const user = await prisma.userAccess.findUnique({
+        where: { user_id: ctx.session.userId },
+      });
+
+      if (!user?.admin) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not authorized to perform this action",
+        });
+      }
+
+      // Fetch the role with its associated doors and users
+      const role = await prisma.role.findUnique({
+        where: { id: input }, // input is the role ID
+        include: {
+          role_doors: true,
+          role_users: true,
+        },
+      });
+
+      if (!role) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Role not found",
+        });
+      }
+
+      return role;
+    }),
   createRole: protectedProcedure
     .input(
       z.object({
