@@ -110,7 +110,14 @@ const Doortable: React.FC = () => {
               height={120} 
               onMove={(pos) => updateKeycardPosition(0, pos)}
             />
-
+            <div className="mt-4">
+              <Link
+                href="/admin" 
+                className="rounded bg-blue-500 px-4 py-2 text-white shadow-lg transition-colors duration-300 hover:bg-blue-600"
+              >
+                Select another Cards
+              </Link>
+            </div>
           </div>
         ) : (
           <p>No matching card found or card not selected.</p>
