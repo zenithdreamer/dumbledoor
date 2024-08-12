@@ -1,7 +1,7 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import type { RouterOutputs } from "@dumbledoor/card-api";
-import { useRouter } from "next/navigation"; 
 
 import {
   CardTRPCReactProvider,
@@ -35,14 +35,12 @@ const Card: React.FC = () => {
   const router = useRouter();
 
   const handleSelectCard = (card: RouterOutputs["admin"]["getAllCards"][0]) => {
-
     setCurrentCard(card.id); // Update the state with the selected card's ID
 
     console.log("Selected card data:", card.id);
 
     // Navigate to the homepage and pass the card ID as a query parameter
     router.push(`/?retrive_card=${card.id}`);
-    
   };
 
   const handleEditCard = (card: RouterOutputs["admin"]["getAllCards"][0]) => {
@@ -123,7 +121,6 @@ const Card: React.FC = () => {
                   Create Date: {new Date(card.created_at).toLocaleDateString()}
                 </p>
               </div>
-
 
               <div className="p-4">
                 <button

@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+
 import { DoorTRPCReactProvider, trpc } from "~/trpc/react";
 import FunctionalDoors from "./_components/door";
 import MovableKeycard from "./_components/keycard";
@@ -32,7 +33,7 @@ const Doortable: React.FC = () => {
 
   const [selectedDoorId, setSelectedDoorId] = useState<string | null>(null);
   const [keycards, setKeycards] = useState([
-    { id: "1", level: 4, position: { x: 0, y: 0 }, width: 200, height: 120 }
+    { id: "1", level: 4, position: { x: 0, y: 0 }, width: 200, height: 120 },
   ]);
 
   useEffect(() => {
@@ -53,18 +54,15 @@ const Doortable: React.FC = () => {
   }, [retrievedCardId, cards]);
 
   const updateKeycardPosition = (
-    
     index: number,
     position: { x: number; y: number },
   ) => {
     setKeycards((prevKeycards) =>
       prevKeycards.map((keycard, i) =>
-        
         i === index ? { ...keycard, position } : keycard,
       ),
     );
   };
-
 
   const handleDoorSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedDoorId(event.target.value);
@@ -109,7 +107,6 @@ const Doortable: React.FC = () => {
             <FunctionalDoors
               doorid={selectedDoor.id}
               keycards={keycards}
-             
               level={selectedDoor.access_level}
               doorName={selectedDoor.name}
               key={selectedDoor.id}
@@ -126,7 +123,6 @@ const Doortable: React.FC = () => {
             role={selectedCard.access?.role?.name ?? "No role"}
             id={selectedCard.user?.id ?? "Unknown ID"}
             level={selectedCard.access?.access_level ?? 0}
-
             onMove={(pos) => updateKeycardPosition(0, pos)}
           />
         ) : (

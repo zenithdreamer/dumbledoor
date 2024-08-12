@@ -23,9 +23,7 @@ export const internalRouter = {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: "Card not found",
-
       });
-      
     }
 
     return card;

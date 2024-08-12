@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+
 import { trpc } from "~/trpc/react";
 
 interface Keycard {
@@ -106,23 +107,20 @@ const Scanner: React.FC<ScannerProps> = ({
 
               console.log("API Response: Access Granted:", accessGranted);
 
-             
               if (accessGranted) {
                 onScan(true);
               } else {
                 onScan(false);
               }
             } catch (error) {
-      
               onScan(false);
             }
-            return; 
+            return;
           } else {
             requestSent.current = false;
           }
         }
 
-  
         onScan(false);
       }
     };
