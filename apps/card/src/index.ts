@@ -5,7 +5,11 @@ import express from "express";
 import createJiti from "jiti";
 import { Connection } from "rabbitmq-client";
 
-import { appRouter, createTRPCContext } from "@dumbledoor/card-api";
+import {
+  appRouter,
+  createTRPCContext,
+  internalAppRouter,
+} from "@dumbledoor/card-api";
 
 // Import env files to validate at build time. Use jiti so we can load .ts files in here.
 createJiti(fileURLToPath(import.meta.url))("./env");
@@ -23,6 +27,19 @@ app.use(
   "/api/trpc",
   trpcExpress.createExpressMiddleware({
     router: appRouter,
+    createContext: ({ req }) =>
+      createTRPCContext({
+        queueLog,
+        headers: req.headers,
+        session: null,
+      }),
+  }),
+);
+
+app.use(
+  "/api/trpc-internal",
+  trpcExpress.createExpressMiddleware({
+    router: internalAppRouter,
     createContext: ({ req }) =>
       createTRPCContext({
         queueLog,

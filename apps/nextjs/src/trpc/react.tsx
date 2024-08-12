@@ -235,7 +235,6 @@ export function DoorTRPCReactProvider(props: { children: React.ReactNode }) {
     updateDoorTrpcClient();
   }, [urls]);
 
-  console.log("doorTrpcClient", doorTrpcClient);
   if (!urls || !doorTrpcClient) return null;
 
   return (

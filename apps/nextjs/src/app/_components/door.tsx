@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from "react";
 
 import type { RouterOutputs } from "@dumbledoor/door-api";
 
-import { trpc } from "~/trpc/react"; // Import your TRPC client here
+import { DoorTRPCReactProvider, trpc } from "~/trpc/react"; // Import your TRPC client here
 
 interface Keycard {
   id: string;
@@ -180,12 +180,15 @@ export default function FunctionalDoors({
         <Door isOpen={areDoorsOpen} position="left" />
         <Door isOpen={areDoorsOpen} position="right" />
       </div>
-      <Scanner
-        door_id={doorid}
-        keycards={keycards}
-        scannerLevel={level}
-        onScan={handleScan}
-      />
+
+      <DoorTRPCReactProvider>
+        <Scanner
+          door_id={doorid}
+          keycards={keycards}
+          scannerLevel={level}
+          onScan={handleScan}
+        />
+      </DoorTRPCReactProvider>
     </div>
   );
 }
