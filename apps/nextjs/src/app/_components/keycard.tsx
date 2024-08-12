@@ -88,7 +88,6 @@ export default function MovableKeycard({
     >
       <p className="text-base font-bold">{name}</p>
       <p className="text-base">{role}</p>
-      <p className="text-xs">{id}</p>
       <p className="text-xs" style={{ marginTop: "15px" }}>
         Level: {level}
       </p>

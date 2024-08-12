@@ -60,6 +60,7 @@ interface ScannerProps {
   scannerLevel: number;
   onScan: (isScanned: boolean) => void;
 }
+
 const Scanner = ({ keycards, scannerLevel, onScan }: ScannerProps) => {
   const scannerRef = useRef<HTMLDivElement>(null);
 
@@ -86,7 +87,7 @@ const Scanner = ({ keycards, scannerLevel, onScan }: ScannerProps) => {
         console.log("keycard: ", keycard.position.x, keycard.position.y);
         console.log("isCardOnScanner: ", isCardOnScanner);
 
-        return isCardOnScanner && keycard.level >= scannerLevel;
+        return isCardOnScanner;
       });
 
       onScan(canAccess);

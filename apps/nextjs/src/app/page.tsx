@@ -97,31 +97,30 @@ const Doortable: React.FC = () => {
         )}
 
         {isCardsLoading && <p>Loading card data...</p>}
- 
+
         {selectedCard ? (
-          <div>
-            <MovableKeycard
-              key={selectedCard.id}
-              name={`${selectedCard.user?.first_name} ${selectedCard.user?.last_name}`}
-              role={selectedCard.access?.role?.name ?? "No role"}
-              id={selectedCard.user?.id ?? "Unknown ID"}
-              level={2}
-              width={200} 
-              height={120} 
-              onMove={(pos) => updateKeycardPosition(0, pos)}
-            />
-            <div className="mt-4">
-              <Link
-                href="/admin" 
-                className="rounded bg-blue-500 px-4 py-2 text-white shadow-lg transition-colors duration-300 hover:bg-blue-600"
-              >
-                Select another Cards
-              </Link>
-            </div>
-          </div>
+          <MovableKeycard
+            key={selectedCard.id}
+            name={`${selectedCard.user?.first_name} ${selectedCard.user?.last_name}`}
+            role={selectedCard.access?.role?.name ?? "No role"}
+            id={selectedCard.user?.id ?? "Unknown ID"}
+            level={selectedCard.access?.access_level ?? 0}
+            width={200}
+            height={120}
+            onMove={(pos) => updateKeycardPosition(0, pos)}
+          />
         ) : (
           <p>No matching card found or card not selected.</p>
         )}
+
+        <div className="mt-4">
+          <Link
+            href="/admin"
+            className="rounded bg-blue-500 px-4 py-2 text-white shadow-lg transition-colors duration-300 hover:bg-blue-600"
+          >
+            Select another Cards
+          </Link>
+        </div>
       </div>
     </main>
   );
