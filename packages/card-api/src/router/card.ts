@@ -26,6 +26,7 @@ export const adminRouter = {
     type CardWithUserWithAccess = ((typeof cards)[0] & {
       user: (typeof allUsers)[0];
       access: (typeof allAccess)[0];
+      assigned_by_user?: (typeof allUsers)[0];
     })[];
     const data: CardWithUserWithAccess = [];
 
@@ -35,12 +36,17 @@ export const adminRouter = {
         (access) => access.user_id === card.user_id,
       );
 
+      const assigned_by_user = allUsers.find(
+        (user) => user.id === card.assigned_by,
+      );
+
       if (!user || !access) continue;
 
       data.push({
         ...card,
         user,
         access,
+        assigned_by_user,
       });
     }
 
@@ -62,6 +68,13 @@ export const adminRouter = {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "You are not allowed to create a door",
+        });
+
+      const user = await userClient.internal.getUser.query(input.userId);
+      if (!user)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
         });
 
       try {

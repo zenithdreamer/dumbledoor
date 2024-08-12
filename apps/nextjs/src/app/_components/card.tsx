@@ -98,7 +98,12 @@ const Card: React.FC = () => {
                   {card.user.first_name} {card.user.last_name}
                 </h2>
                 <p>{card.access.role?.name ?? "No role"}</p>
-                <p className="text-gray-500">Assigned By: {card.assigned_by}</p>
+                <p className="text-gray-500">
+                  Assigned By:{" "}
+                  {card.assigned_by_user
+                    ? `${card.assigned_by_user.first_name} ${card.assigned_by_user.last_name}`
+                    : card.assigned_by}
+                </p>
                 <p className="text-gray-500" suppressHydrationWarning>
                   Create Date: {new Date(card.created_at).toLocaleDateString()}
                 </p>
