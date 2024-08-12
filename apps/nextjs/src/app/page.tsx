@@ -1,22 +1,39 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-
+import { useSearchParams } from "next/navigation";
 import { DoorTRPCReactProvider, trpc } from "~/trpc/react";
 import FunctionalDoors from "./_components/door";
 import MovableKeycard from "./_components/keycard";
 
 const Doortable: React.FC = () => {
+  const searchParams = useSearchParams();
+  const [retrievedCardId, setRetrievedCardId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const cardId = searchParams.get("retrive_card");
+    if (cardId) {
+      setRetrievedCardId(cardId);
+    }
+  }, [searchParams]);
+
+  const {
+    data: cards,
+    isLoading: isCardsLoading,
+    error: cardsError,
+  } = trpc.card.admin.getAllCards.useQuery();
+
   const {
     data: doors,
-    isLoading,
-    error,
+    isLoading: isDoorsLoading,
+    error: doorsError,
   } = trpc.door.admin.getAllDoors.useQuery();
+
   const [selectedDoorId, setSelectedDoorId] = useState<string | null>(null);
   const [keycards, setKeycards] = useState([
-    { level: 4, position: { x: 0, y: 0 }, width: 200, height: 120 }, // Added width and height
-    { level: 2, position: { x: 0, y: 0 }, width: 200, height: 120 }, // Added width and height
+    { level: 4, position: { x: 0, y: 0 }, width: 200, height: 120 },
+    { level: 2, position: { x: 0, y: 0 }, width: 200, height: 120 },
   ]);
 
   const updateKeycardPosition = (
@@ -36,6 +53,8 @@ const Doortable: React.FC = () => {
 
   const selectedDoor = doors?.find((door) => door.id === selectedDoorId);
 
+  const selectedCard = cards?.find((card) => card.id === retrievedCardId);
+
   return (
     <main className="container relative h-screen py-16">
       <Link
@@ -46,8 +65,8 @@ const Doortable: React.FC = () => {
       </Link>
 
       <div className="flex flex-col items-center justify-center gap-4">
-        {isLoading && <p>Loading doors...</p>}
-        {error && <p>Error loading doors: {error.message}</p>}
+        {isDoorsLoading && <p>Loading doors...</p>}
+        {doorsError && <p>Error loading doors: {doorsError.message}</p>}
 
         {doors && (
           <select
@@ -77,18 +96,25 @@ const Doortable: React.FC = () => {
           </div>
         )}
 
-        {keycards.map((keycard, index) => (
-          <MovableKeycard
-            key={index}
-            name={index === 0 ? "John Doe" : "Thong Smith"}
-            role={index === 0 ? "SCP Manager" : "SCP Catcher"}
-            id={index === 0 ? "65011353" : "65012333"}
-            level={keycard.level}
-            width={keycard.width} // Passing width
-            height={keycard.height} // Passing height
-            onMove={(pos) => updateKeycardPosition(index, pos)}
-          />
-        ))}
+        {isCardsLoading && <p>Loading card data...</p>}
+ 
+        {selectedCard ? (
+          <div>
+            <MovableKeycard
+              key={selectedCard.id}
+              name={`${selectedCard.user?.first_name} ${selectedCard.user?.last_name}`}
+              role={selectedCard.access?.role?.name ?? "No role"}
+              id={selectedCard.user?.id ?? "Unknown ID"}
+              level={2}
+              width={200} 
+              height={120} 
+              onMove={(pos) => updateKeycardPosition(0, pos)}
+            />
+
+          </div>
+        ) : (
+          <p>No matching card found or card not selected.</p>
+        )}
       </div>
     </main>
   );
