@@ -1,10 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-
-import type { RouterOutputs } from "@dumbledoor/door-api";
-
-import { DoorTRPCReactProvider, trpc } from "~/trpc/react"; // Import your TRPC client here
+import { trpc } from "~/trpc/react";
 
 interface Keycard {
   id: string;
@@ -102,12 +99,22 @@ const Scanner: React.FC<ScannerProps> = ({
             console.log("Sending request to lock for Keycard ID:", keycard.id);
             requestSent.current = true;
             try {
-              const response = await requestLock.mutateAsync({
+              const accessGranted = await requestLock.mutateAsync({
                 cardId: keycard.id,
+                doorId: door_id,
               });
-              console.log("API Response:", response);
+
+              console.log("API Response: Access Granted:", accessGranted);
+
+              // If access is granted, open the door
+              if (accessGranted) {
+                onScan(true);
+              } else {
+                onScan(false);
+              }
             } catch (error) {
-              console.error("Failed to request lock:");
+      
+              onScan(false); // Deny access if there's an error
             }
             return; // Stop after finding the first matching card
           } else {
@@ -121,7 +128,7 @@ const Scanner: React.FC<ScannerProps> = ({
     };
 
     checkCardAccess();
-  }, [keycards, scannerLevel, onScan, requestLock]);
+  }, [keycards, scannerLevel, onScan, requestLock, door_id]);
 
   return (
     <div
@@ -181,14 +188,12 @@ export default function FunctionalDoors({
         <Door isOpen={areDoorsOpen} position="right" />
       </div>
 
-      <DoorTRPCReactProvider>
-        <Scanner
-          door_id={doorid}
-          keycards={keycards}
-          scannerLevel={level}
-          onScan={handleScan}
-        />
-      </DoorTRPCReactProvider>
+      <Scanner
+        door_id={doorid}
+        keycards={keycards}
+        scannerLevel={level}
+        onScan={handleScan}
+      />
     </div>
   );
 }
