@@ -11,6 +11,7 @@ export const internalRouter = {
     const cards = await prisma.card.findMany();
     return cards;
   }),
+
   getCards: internalProcedure.input(z.string()).mutation(async ({ input }) => {
     const card = await prisma.card.findUnique({
       where: {
@@ -22,7 +23,9 @@ export const internalRouter = {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: "Card not found",
+
       });
+      
     }
 
     return card;

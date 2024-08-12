@@ -32,20 +32,39 @@ const Doortable: React.FC = () => {
 
   const [selectedDoorId, setSelectedDoorId] = useState<string | null>(null);
   const [keycards, setKeycards] = useState([
-    { level: 4, position: { x: 0, y: 0 }, width: 200, height: 120 },
-    { level: 2, position: { x: 0, y: 0 }, width: 200, height: 120 },
+    { id: "1", level: 4, position: { x: 0, y: 0 }, width: 200, height: 120 }
   ]);
 
+  useEffect(() => {
+    if (retrievedCardId && cards) {
+      const selectedCard = cards.find((card) => card.id === retrievedCardId);
+      if (selectedCard) {
+        setKeycards([
+          {
+            id: selectedCard.id,
+            level: selectedCard.access?.access_level ?? 0,
+            position: { x: 0, y: 0 },
+            width: 200,
+            height: 120,
+          },
+        ]);
+      }
+    }
+  }, [retrievedCardId, cards]);
+
   const updateKeycardPosition = (
+    
     index: number,
     position: { x: number; y: number },
   ) => {
     setKeycards((prevKeycards) =>
       prevKeycards.map((keycard, i) =>
+        
         i === index ? { ...keycard, position } : keycard,
       ),
     );
   };
+
 
   const handleDoorSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedDoorId(event.target.value);
@@ -88,7 +107,9 @@ const Doortable: React.FC = () => {
         {selectedDoor && (
           <div className="flex h-full items-center justify-center">
             <FunctionalDoors
+              doorid={selectedDoor.id}
               keycards={keycards}
+             
               level={selectedDoor.access_level}
               doorName={selectedDoor.name}
               key={selectedDoor.id}
@@ -118,7 +139,7 @@ const Doortable: React.FC = () => {
             href="/admin"
             className="rounded bg-blue-500 px-4 py-2 text-white shadow-lg transition-colors duration-300 hover:bg-blue-600"
           >
-            Select another Cards
+            Select another Card
           </Link>
         </div>
       </div>

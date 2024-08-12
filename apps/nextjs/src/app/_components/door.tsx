@@ -1,12 +1,16 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { trpc } from "~/trpc/react"; // Import your TRPC client here
+
+import type { RouterOutputs } from "@dumbledoor/door-api";
 
 interface Keycard {
+  id: string;
   level: number;
   position: { x: number; y: number };
-  width: number; // Added width
-  height: number; // Added height
+  width: number;
+  height: number;
 }
 
 interface DoorProps {
@@ -56,43 +60,65 @@ const Door = ({ isOpen, position }: DoorProps) => {
 };
 
 interface ScannerProps {
+  door_id: string;
   keycards: Keycard[];
   scannerLevel: number;
   onScan: (isScanned: boolean) => void;
 }
 
-const Scanner = ({ keycards, scannerLevel, onScan }: ScannerProps) => {
+const Scanner: React.FC<ScannerProps> = ({
+  door_id,
+  keycards,
+  scannerLevel,
+  onScan,
+}) => {
   const scannerRef = useRef<HTMLDivElement>(null);
+  const requestLock = trpc.door.scanner_naja.requestLock.useMutation();
 
   useEffect(() => {
-    if (scannerRef.current) {
-      const scannerElement = scannerRef.current;
-      const scannerPosition = {
-        x: scannerElement.offsetLeft,
-        y: scannerElement.offsetTop,
-      };
-      const scannerSize = {
-        width: scannerElement.offsetWidth,
-        height: scannerElement.offsetHeight,
-      };
+    const checkCardAccess = async () => {
+      if (scannerRef.current) {
+        const scannerElement = scannerRef.current;
+        const scannerPosition = {
+          x: scannerElement.offsetLeft,
+          y: scannerElement.offsetTop,
+        };
+        const scannerSize = {
+          width: scannerElement.offsetWidth,
+          height: scannerElement.offsetHeight,
+        };
 
-      const canAccess = keycards.some((keycard) => {
-        const isCardOnScanner =
-          keycard.position.x + keycard.width >= scannerPosition.x &&
-          keycard.position.x <= scannerPosition.x + scannerSize.width &&
-          keycard.position.y + keycard.height >= scannerPosition.y &&
-          keycard.position.y <= scannerPosition.y + scannerSize.height;
+        for (const keycard of keycards) {
+          const isCardOnScanner =
+            keycard.position.x + keycard.width >= scannerPosition.x &&
+            keycard.position.x <= scannerPosition.x + scannerSize.width &&
+            keycard.position.y + keycard.height >= scannerPosition.y &&
+            keycard.position.y <= scannerPosition.y + scannerSize.height;
 
-        console.log("scanner: ", scannerPosition.x, scannerPosition.y);
-        console.log("keycard: ", keycard.position.x, keycard.position.y);
-        console.log("isCardOnScanner: ", isCardOnScanner);
+          if (isCardOnScanner) {
+            console.log("Sending request to lock for Keycard ID:", keycard.id);
+            try {
+              const response = await requestLock.mutateAsync({
+                cardId: keycard.id,
+              });
+              console.log("API Response:", response);
 
-        return isCardOnScanner;
-      });
+        
+            } catch (error) {
+              console.error("Failed to request lock:");
+          
+            }
+            return; // Stop after finding the first matching card
+          }
+        }
 
-      onScan(canAccess);
-    }
-  }, [keycards, scannerLevel, onScan]);
+        // If no card matched
+        onScan(false);
+      }
+    };
+
+    checkCardAccess();
+  }, [keycards, scannerLevel, onScan, requestLock]);
 
   return (
     <div
@@ -117,13 +143,15 @@ const Scanner = ({ keycards, scannerLevel, onScan }: ScannerProps) => {
 };
 
 export default function FunctionalDoors({
+  doorid,
   keycards,
   doorName,
   level,
 }: {
   keycards: Keycard[];
   level: number;
-  doorName: string; // Added prop for door name
+  doorName: string;
+  doorid: string;
 }) {
   const [areDoorsOpen, setDoorsOpen] = React.useState(false);
 
@@ -149,7 +177,7 @@ export default function FunctionalDoors({
         <Door isOpen={areDoorsOpen} position="left" />
         <Door isOpen={areDoorsOpen} position="right" />
       </div>
-      <Scanner keycards={keycards} scannerLevel={level} onScan={handleScan} />
+      <Scanner door_id={doorid} keycards={keycards} scannerLevel={level} onScan={handleScan} />
     </div>
   );
 }
