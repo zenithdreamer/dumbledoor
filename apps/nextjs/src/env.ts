@@ -11,6 +11,11 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "production", "test"])
       .default("development"),
+    USER_SERVICE_URL: z.string().optional(),
+    ACCESS_SERVICE_URL: z.string().optional(),
+    DOOR_SERVICE_URL: z.string().optional(),
+    LOG_SERVICE_URL: z.string().optional(),
+    CARD_SERVICE_URL: z.string().optional(),
   },
   /**
    * Specify your server-side environment variables schema here.
@@ -32,8 +37,11 @@ export const env = createEnv({
    */
   experimental__runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
-
-    // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+    USER_SERVICE_URL: process.env.USER_SERVICE_URL,
+    ACCESS_SERVICE_URL: process.env.ACCESS_SERVICE_URL,
+    DOOR_SERVICE_URL: process.env.DOOR_SERVICE_URL,
+    LOG_SERVICE_URL: process.env.LOG_SERVICE_URL,
+    CARD_SERVICE_URL: process.env.CARD_SERVICE_URL,
   },
   skipValidation:
     !!process.env.CI || process.env.npm_lifecycle_event === "lint",

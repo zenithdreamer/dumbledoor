@@ -72,7 +72,17 @@
       "interactive": true
     }
   },
-  "globalEnv": ["POSTGRES_URL", "RABBITMQ_URL", "AUTH_SECRET", "PORT"],
+  "globalEnv": [
+    "POSTGRES_URL",
+    "RABBITMQ_URL",
+    "AUTH_SECRET",
+    "PORT",
+    "USER_SERVICE_URL",
+    "ACCESS_SERVICE_URL",
+    "DOOR_SERVICE_URL",
+    "LOG_SERVICE_URL",
+    "CARD_SERVICE_URL"
+  ],
   "globalPassThroughEnv": [
     "NODE_ENV",
     "CI",

@@ -176,7 +176,7 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
 export const accessClient = createTRPCClient<AccessAppRouter>({
   links: [
     httpBatchLink({
-      url: "http://localhost:" + env.ACCESS_SERVICE_PORT + "/api/trpc-internal",
+      url: env.ACCESS_SERVICE_URL + "/api/trpc-internal",
       headers() {
         return {
           authorization: "Bearer " + env.INTERNAL_API_SECRET,
@@ -191,7 +191,7 @@ export const accessClient = createTRPCClient<AccessAppRouter>({
 export const userClient = createTRPCClient<UserAppRouter>({
   links: [
     httpBatchLink({
-      url: "http://localhost:" + env.USER_SERVICE_PORT + "/api/trpc-internal",
+      url: env.USER_SERVICE_URL + "/api/trpc-internal",
 
       headers() {
         return {

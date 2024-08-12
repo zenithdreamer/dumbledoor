@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
@@ -13,6 +13,13 @@ import type { AppRouter as LogAppRouter } from "@dumbledoor/log-api";
 import type { AppRouter as UserAppRouter } from "@dumbledoor/user-api";
 
 import { env } from "~/env";
+import {
+  getAccessBaseUrl,
+  getCardBaseUrl,
+  getDoorBaseUrl,
+  getLogBaseUrl,
+  getUserBaseUrl,
+} from "~/trpc/getUrls";
 
 const createQueryClient = () =>
   new QueryClient({
@@ -48,6 +55,15 @@ export const trpc = {
 export function AccessTRPCReactProvider(props: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
 
+  const [urls, setUrls] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchUrls() {
+      setUrls(await getAccessBaseUrl());
+    }
+    void fetchUrls();
+  });
+
   const [accessTrpcClient] = useState(() =>
     trpc.access.createClient({
       links: [
@@ -58,7 +74,7 @@ export function AccessTRPCReactProvider(props: { children: React.ReactNode }) {
         }),
         unstable_httpBatchStreamLink({
           transformer: SuperJSON,
-          url: getAccessBaseUrl() + "/api/trpc",
+          url: urls + "/api/trpc",
           headers() {
             console.log("accessTrpcClient headers");
             const headers = new Headers();
@@ -76,6 +92,8 @@ export function AccessTRPCReactProvider(props: { children: React.ReactNode }) {
       ],
     }),
   );
+
+  if (!urls) return null;
 
   return (
     <trpc.access.Provider client={accessTrpcClient} queryClient={queryClient}>
@@ -88,6 +106,14 @@ export function AccessTRPCReactProvider(props: { children: React.ReactNode }) {
 
 export function UserTRPCReactProvider(props: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
+  const [urls, setUrls] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchUrls() {
+      setUrls(await getUserBaseUrl());
+    }
+    void fetchUrls();
+  });
 
   const [userTrpcClient] = useState(() =>
     trpc.user.createClient({
@@ -99,7 +125,7 @@ export function UserTRPCReactProvider(props: { children: React.ReactNode }) {
         }),
         unstable_httpBatchStreamLink({
           transformer: SuperJSON,
-          url: getUserBaseUrl() + "/api/trpc",
+          url: urls + "/api/trpc",
           headers() {
             console.log("accessTrpcClient headers");
             const headers = new Headers();
@@ -118,6 +144,8 @@ export function UserTRPCReactProvider(props: { children: React.ReactNode }) {
     }),
   );
 
+  if (!urls) return null;
+
   return (
     <trpc.user.Provider client={userTrpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
@@ -129,6 +157,14 @@ export function UserTRPCReactProvider(props: { children: React.ReactNode }) {
 
 export function DoorTRPCReactProvider(props: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
+  const [urls, setUrls] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchUrls() {
+      setUrls(await getDoorBaseUrl());
+    }
+    void fetchUrls();
+  });
 
   const [doorTrpcClient] = useState(() =>
     trpc.door.createClient({
@@ -140,7 +176,7 @@ export function DoorTRPCReactProvider(props: { children: React.ReactNode }) {
         }),
         unstable_httpBatchStreamLink({
           transformer: SuperJSON,
-          url: getDoorBaseUrl() + "/api/trpc",
+          url: urls + "/api/trpc",
           headers() {
             console.log("doorTrpcClient headers");
             const headers = new Headers();
@@ -159,6 +195,8 @@ export function DoorTRPCReactProvider(props: { children: React.ReactNode }) {
     }),
   );
 
+  if (!urls) return null;
+
   return (
     <trpc.door.Provider client={doorTrpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
@@ -171,6 +209,15 @@ export function DoorTRPCReactProvider(props: { children: React.ReactNode }) {
 export function LogTRPCReactProvider(props: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
 
+  const [urls, setUrls] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchUrls() {
+      setUrls(await getLogBaseUrl());
+    }
+    void fetchUrls();
+  });
+
   const [logTrpcClient] = useState(() =>
     trpc.log.createClient({
       links: [
@@ -181,7 +228,7 @@ export function LogTRPCReactProvider(props: { children: React.ReactNode }) {
         }),
         unstable_httpBatchStreamLink({
           transformer: SuperJSON,
-          url: getLogBaseUrl() + "/api/trpc",
+          url: urls + "/api/trpc",
           headers() {
             console.log("logTrpcClient headers");
             const headers = new Headers();
@@ -200,6 +247,8 @@ export function LogTRPCReactProvider(props: { children: React.ReactNode }) {
     }),
   );
 
+  if (!urls) return null;
+
   return (
     <trpc.log.Provider client={logTrpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
@@ -212,6 +261,15 @@ export function LogTRPCReactProvider(props: { children: React.ReactNode }) {
 export function CardTRPCReactProvider(props: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
 
+  const [urls, setUrls] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchUrls() {
+      setUrls(await getCardBaseUrl());
+    }
+    void fetchUrls();
+  });
+
   const [cardTrpcClient] = useState(() =>
     trpc.card.createClient({
       links: [
@@ -222,7 +280,7 @@ export function CardTRPCReactProvider(props: { children: React.ReactNode }) {
         }),
         unstable_httpBatchStreamLink({
           transformer: SuperJSON,
-          url: getCardBaseUrl() + "/api/trpc",
+          url: urls + "/api/trpc",
           headers() {
             console.log("cardTrpcClient headers");
             const headers = new Headers();
@@ -240,6 +298,8 @@ export function CardTRPCReactProvider(props: { children: React.ReactNode }) {
       ],
     }),
   );
+
+  if (!urls) return null;
 
   return (
     <trpc.card.Provider client={cardTrpcClient} queryClient={queryClient}>
@@ -313,30 +373,3 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
 
   return <>{props.children}</>;
 }
-
-const getDoorBaseUrl = () => {
-  return `http://localhost:4002`;
-};
-
-const getUserBaseUrl = () => {
-  return `http://localhost:4000`;
-};
-
-const getAccessBaseUrl = () => {
-  return `http://localhost:4001`;
-};
-
-const getLogBaseUrl = () => {
-  return `http://localhost:4003`;
-};
-
-const getCardBaseUrl = () => {
-  return `http://localhost:4004`;
-};
-
-const _getBaseUrl = () => {
-  if (typeof window !== "undefined") return window.location.origin;
-  if (env.VERCEL_URL) return `https://${env.VERCEL_URL}`;
-  // eslint-disable-next-line no-restricted-properties
-  return `http://localhost:${process.env.PORT ?? 3000}`;
-};
