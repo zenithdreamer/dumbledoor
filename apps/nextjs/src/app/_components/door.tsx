@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { trpc } from "~/trpc/react"; // Import your TRPC client here
 
 import type { RouterOutputs } from "@dumbledoor/door-api";
+
+import { trpc } from "~/trpc/react"; // Import your TRPC client here
 
 interface Keycard {
   id: string;
@@ -74,6 +75,7 @@ const Scanner: React.FC<ScannerProps> = ({
 }) => {
   const scannerRef = useRef<HTMLDivElement>(null);
   const requestLock = trpc.door.scanner_naja.requestLock.useMutation();
+  const requestSent = React.useRef(false);
 
   useEffect(() => {
     const checkCardAccess = async () => {
@@ -96,19 +98,20 @@ const Scanner: React.FC<ScannerProps> = ({
             keycard.position.y <= scannerPosition.y + scannerSize.height;
 
           if (isCardOnScanner) {
+            if (requestSent.current) return; // Prevent sending multiple requests
             console.log("Sending request to lock for Keycard ID:", keycard.id);
+            requestSent.current = true;
             try {
               const response = await requestLock.mutateAsync({
                 cardId: keycard.id,
               });
               console.log("API Response:", response);
-
-        
             } catch (error) {
               console.error("Failed to request lock:");
-          
             }
             return; // Stop after finding the first matching card
+          } else {
+            requestSent.current = false;
           }
         }
 
@@ -177,7 +180,12 @@ export default function FunctionalDoors({
         <Door isOpen={areDoorsOpen} position="left" />
         <Door isOpen={areDoorsOpen} position="right" />
       </div>
-      <Scanner door_id={doorid} keycards={keycards} scannerLevel={level} onScan={handleScan} />
+      <Scanner
+        door_id={doorid}
+        keycards={keycards}
+        scannerLevel={level}
+        onScan={handleScan}
+      />
     </div>
   );
 }
