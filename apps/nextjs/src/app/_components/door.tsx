@@ -106,7 +106,7 @@ const Scanner: React.FC<ScannerProps> = ({
 
               console.log("API Response: Access Granted:", accessGranted);
 
-              // If access is granted, open the door
+             
               if (accessGranted) {
                 onScan(true);
               } else {
@@ -114,15 +114,15 @@ const Scanner: React.FC<ScannerProps> = ({
               }
             } catch (error) {
       
-              onScan(false); // Deny access if there's an error
+              onScan(false);
             }
-            return; // Stop after finding the first matching card
+            return; 
           } else {
             requestSent.current = false;
           }
         }
 
-        // If no card matched
+  
         onScan(false);
       }
     };
