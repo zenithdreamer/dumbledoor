@@ -1,14 +1,13 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
+import { trpc } from "~/trpc/react";
 
 interface MovableKeycardProps {
   name: string;
   role: string;
   id: string;
   level: number;
-  width: number; // Added width
-  height: number; // Added height
   onMove: (position: { x: number; y: number }) => void;
 }
 
@@ -17,8 +16,6 @@ export default function MovableKeycard({
   role,
   id,
   level,
-  width, // Added width
-  height, // Added height
   onMove,
 }: MovableKeycardProps) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -67,6 +64,11 @@ export default function MovableKeycard({
     };
   }, [dragging, handleMouseMove, handleMouseUp]);
 
+  const { data: doors, isLoading: isDoorsLoading, error: doorsError } =
+    trpc.door.admin.getAllDoors.useQuery();
+
+  const accessibleDoors = doors?.filter((door) => door.access_level <= level);
+
   return (
     <div
       className="rounded-lg bg-yellow-500 p-4 shadow-md"
@@ -74,13 +76,10 @@ export default function MovableKeycard({
         position: "absolute",
         top: `${position.y}px`,
         left: `${position.x}px`,
-        width: `${width}px`, // Use width prop
-        height: `${height}px`, // Use height prop
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "flex-start",
-        paddingLeft: "15px",
         cursor: dragging ? "move" : "default",
         userSelect: "none",
       }}
@@ -88,9 +87,23 @@ export default function MovableKeycard({
     >
       <p className="text-base font-bold">{name}</p>
       <p className="text-base">{role}</p>
-      <p className="text-xs" style={{ marginTop: "15px" }}>
+      <p className="text-lg font-bold" style={{ marginTop: "10px" }}>
         Level: {level}
       </p>
+      <div style={{ marginTop: "10px" }}>
+        <p className="text-sm font-bold">Accessible Doors:</p>
+        {isDoorsLoading && <p>Loading doors...</p>}
+        {doorsError && <p>Error loading doors: {doorsError.message}</p>}
+        {accessibleDoors && accessibleDoors.length > 0 ? (
+          <ul className="text-sm">
+            {accessibleDoors.map((door) => (
+              <li key={door.id}>{door.name}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>No accessible doors.</p>
+        )}
+      </div>
     </div>
   );
 }

@@ -126,8 +126,7 @@ const Doortable: React.FC = () => {
             role={selectedCard.access?.role?.name ?? "No role"}
             id={selectedCard.user?.id ?? "Unknown ID"}
             level={selectedCard.access?.access_level ?? 0}
-            width={200}
-            height={120}
+
             onMove={(pos) => updateKeycardPosition(0, pos)}
           />
         ) : (
