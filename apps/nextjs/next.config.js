@@ -1,8 +1,10 @@
-import { fileURLToPath } from "url";
-import createJiti from "jiti";
+// @ts-ignore
+const jiti = require("jiti")(__filename);
 
 // Import env files to validate at build time. Use jiti so we can load .ts files in here.
-createJiti(fileURLToPath(import.meta.url))("./src/env");
+//createJiti(fileURLToPath(import.meta.url))("./src/env");
+
+jiti("./src/env");
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -23,4 +25,4 @@ const config = {
   typescript: { ignoreBuildErrors: true },
 };
 
-export default config;
+module.exports = config;
