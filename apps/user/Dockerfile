@@ -1,4 +1,4 @@
-FROM node:20-alpine AS alpine
+FROM node:20 AS alpine
 
 # Setup environment variables
 ENV PNPM_HOME="/pnpm"
