@@ -176,10 +176,10 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
 export const accessClient = createTRPCClient<AccessAppRouter>({
   links: [
     httpBatchLink({
-      url: env.ACCESS_SERVICE_URL + "/api/trpc-internal",
+      url: process.env.ACCESS_SERVICE_URL + "/api/trpc-internal",
       headers() {
         return {
-          authorization: "Bearer " + env.INTERNAL_API_SECRET,
+          authorization: "Bearer " + process.env.INTERNAL_API_SECRET,
           "x-trpc-source": "log-api",
         };
       },
@@ -191,10 +191,10 @@ export const accessClient = createTRPCClient<AccessAppRouter>({
 export const cardClient = createTRPCClient<CardAppRouter>({
   links: [
     httpBatchLink({
-      url: env.CARD_SERVICE_URL + "/api/trpc-internal",
+      url: process.env.CARD_SERVICE_URL + "/api/trpc-internal",
       headers() {
         return {
-          authorization: "Bearer " + env.INTERNAL_API_SECRET,
+          authorization: "Bearer " + process.env.INTERNAL_API_SECRET,
           "x-trpc-source": "log-api",
         };
       },
