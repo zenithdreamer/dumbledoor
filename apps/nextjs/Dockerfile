@@ -18,8 +18,8 @@ RUN pnpm install turbo --global
 FROM base AS builder
 
 # Install system dependencies
-RUN apk add --no-cache libc6-compat
-RUN apk update
+RUN apt update
+RUN apt install -y build-essential
 
 # Set working directory
 WORKDIR /app
@@ -28,8 +28,8 @@ RUN turbo prune @dumbledoor/nextjs --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
-RUN apk add --no-cache libc6-compat
-RUN apk update
+RUN apt update
+RUN apt install -y build-essential
 WORKDIR /app
 
 # First install the dependencies (as they change less often)
