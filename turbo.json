@@ -81,7 +81,8 @@
     "ACCESS_SERVICE_URL",
     "DOOR_SERVICE_URL",
     "LOG_SERVICE_URL",
-    "CARD_SERVICE_URL"
+    "CARD_SERVICE_URL",
+    "INTERNAL_API_SECRET"
   ],
   "globalPassThroughEnv": [
     "NODE_ENV",

@@ -224,7 +224,6 @@ export const accessClient = createTRPCClient<AccessAppRouter>({
   ],
 });
 
-console.log(env.USER_SERVICE_URL);
 export const userClient = createTRPCClient<UserAppRouter>({
   links: [
     httpBatchLink({
