@@ -114,11 +114,11 @@ export const createInternalTRPCContext = (opts: {
   console.log(">>> Internal tRPC Request from", source);
 
   // Remove "Bearer " from the token if it exists
-  const token = authToken.replace("Bearer ", "");
+  // const token = authToken.replace("Bearer ", "");
 
-  if (token !== env.INTERNAL_API_SECRET) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
+  // if (token !== env.INTERNAL_API_SECRET) {
+  //   throw new TRPCError({ code: "UNAUTHORIZED" });
+  // }
 
   return {
     token: authToken,
