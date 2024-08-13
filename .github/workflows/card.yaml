@@ -37,6 +37,20 @@ jobs:
       - name: Docker meta
         id: docker-meta
         uses: docker/metadata-action@v3
+        env:
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          USER_SERVICE_PORT: ${{ env.USER_SERVICE_PORT }}
+          USER_SERVICE_URL: ${{ env.USER_SERVICE_URL }}
+          ACCESS_SERVICE_PORT: ${{ env.ACCESS_SERVICE_PORT }}
+          ACCESS_SERVICE_URL: ${{ env.ACCESS_SERVICE_URL }}
+          DOOR_SERVICE_PORT: ${{ env.DOOR_SERVICE_PORT }}
+          DOOR_SERVICE_URL: ${{ env.DOOR_SERVICE_URL }}
+          LOG_SERVICE_PORT: ${{ env.LOG_SERVICE_PORT }}
+          LOG_SERVICE_URL: ${{ env.LOG_SERVICE_URL }}
+          CARD_SERVICE_PORT: ${{ env.CARD_SERVICE_PORT }}
+          CARD_SERVICE_URL: ${{ env.CARD_SERVICE_URL }}
+          AUTH_SECRET: ${{ env.AUTH_SECRET }}
+          INTERNAL_API_SECRET: ${{ env.INTERNAL_API_SECRET }}
         with:
           images: |
             ${{ env.IMAGE_NAME }}
