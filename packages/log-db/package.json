@@ -2,6 +2,7 @@
   "name": "@dumbledoor/log-db",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "exports": {
     ".": {
@@ -13,22 +14,22 @@
       "default": "./src/schema.ts"
     }
   },
-  "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch",
     "clean": "rm -rf .turbo node_modules",
+    "dev": "tsc --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
-    "lint": "eslint",
     "generate": "pnpm with-env prisma generate",
+    "lint": "eslint",
     "push": "pnpm with-env prisma db push",
     "studio": "pnpm with-env prisma studio",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --"
   },
+  "prettier": "@dumbledoor/prettier-config",
   "dependencies": {
-    "@t3-oss/env-core": "^0.10.1",
     "@prisma/client": "^5.13.0",
+    "@t3-oss/env-core": "^0.10.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -41,6 +42,5 @@
     "prettier": "^3.3.1",
     "prisma": "^5.13.0",
     "typescript": "^5.4.5"
-  },
-  "prettier": "@dumbledoor/prettier-config"
+  }
 }

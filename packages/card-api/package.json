@@ -2,6 +2,7 @@
   "name": "@dumbledoor/card-api",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "exports": {
     ".": {
@@ -9,35 +10,34 @@
       "default": "./src/index.ts"
     }
   },
-  "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch",
     "clean": "rm -rf .turbo node_modules",
+    "dev": "tsc --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
+  "prettier": "@dumbledoor/prettier-config",
   "dependencies": {
+    "@dumbledoor/access-api": "workspace:*",
     "@dumbledoor/auth": "workspace:*",
     "@dumbledoor/card-db": "workspace:*",
-    "@dumbledoor/access-api": "workspace:*",
     "@dumbledoor/user-api": "workspace:*",
     "@dumbledoor/validators": "workspace:*",
-    "jsonwebtoken": "^9.0.2",
     "@trpc/server": "11.0.0-rc.477",
     "argon2": "^0.40.3",
+    "jsonwebtoken": "^9.0.2",
     "superjson": "2.2.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@dumbledoor/eslint-config": "workspace:*",
     "@dumbledoor/prettier-config": "workspace:*",
-    "@types/jsonwebtoken": "^9.0.6",
     "@dumbledoor/tsconfig": "workspace:*",
+    "@types/jsonwebtoken": "^9.0.6",
     "eslint": "^9.4.0",
     "prettier": "^3.3.1",
     "typescript": "^5.4.5"
-  },
-  "prettier": "@dumbledoor/prettier-config"
+  }
 }
