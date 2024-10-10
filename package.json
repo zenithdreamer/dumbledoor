@@ -5,7 +5,7 @@
     "access-db:generate": "pnpm -F access-db generate",
     "access-db:push": "pnpm -F access-db push",
     "access-db:studio": "pnpm -F access-db studio",
-    "all-db:push": "pnpm log-db:push && pnpm user-db:push && pnpm access-db:push && pnpm door-db:push && pnpm card-db:push",
+    "all-db:push": "pnpm log-db:push && pnpm user-db:push && pnpm access-db:push && pnpm door-db:push && pnpm card-db:push && pnpm mqtt-db:push",
     "build": "turbo run build",
     "card-db:generate": "pnpm -F card-db generate",
     "card-db:push": "pnpm -F card-db push",
@@ -29,7 +29,10 @@
     "ui-add": "pnpm -F ui ui-add",
     "user-db:generate": "pnpm -F user-db generate",
     "user-db:push": "pnpm -F user-db push",
-    "user-db:studio": "pnpm -F user-db studio"
+    "user-db:studio": "pnpm -F user-db studio",
+    "mqtt-db:generate": "pnpm -F mqtt-db generate",
+    "mqtt-db:push": "pnpm -F mqtt-db push",
+    "mqtt-db:studio": "pnpm -F mqtt-db studio"
   },
   "prettier": "@dumbledoor/prettier-config",
   "devDependencies": {

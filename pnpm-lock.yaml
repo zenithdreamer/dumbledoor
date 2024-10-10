@@ -13,7 +13,7 @@ importers:
         version: link:tooling/prettier
       '@turbo/gen':
         specifier: ^2.0.3
-        version: 2.0.6(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5)
+        version: 2.0.6(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)
       prettier:
         specifier: ^3.3.1
         version: 3.3.2
@@ -408,7 +408,7 @@ importers:
         version: 3.3.2
       tailwindcss:
         specifier: ^3.4.3
-        version: 3.4.3(ts-node@10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5))
+        version: 3.4.3(ts-node@10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5))
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
@@ -885,6 +885,98 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
 
+  packages/mqtt-api:
+    dependencies:
+      '@dumbledoor/access-api':
+        specifier: workspace:*
+        version: link:../access-api
+      '@dumbledoor/auth':
+        specifier: workspace:*
+        version: link:../auth
+      '@dumbledoor/card-api':
+        specifier: workspace:*
+        version: link:../card-api
+      '@dumbledoor/door-db':
+        specifier: workspace:*
+        version: link:../door-db
+      '@dumbledoor/mqtt-db':
+        specifier: workspace:*
+        version: link:../mqtt-db
+      '@dumbledoor/validators':
+        specifier: workspace:*
+        version: link:../validators
+      '@trpc/server':
+        specifier: 11.0.0-rc.477
+        version: 11.0.0-rc.477
+      argon2:
+        specifier: ^0.40.3
+        version: 0.40.3
+      superjson:
+        specifier: 2.2.1
+        version: 2.2.1
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      '@dumbledoor/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@dumbledoor/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@dumbledoor/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+      eslint:
+        specifier: ^9.4.0
+        version: 9.6.0
+      prettier:
+        specifier: ^3.3.1
+        version: 3.3.2
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+
+  packages/mqtt-db:
+    dependencies:
+      '@prisma/client':
+        specifier: ^5.13.0
+        version: 5.13.0(prisma@5.13.0)
+      '@t3-oss/env-core':
+        specifier: ^0.10.1
+        version: 0.10.1(typescript@5.4.5)(zod@3.23.8)
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      '@dumbledoor/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@dumbledoor/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@dumbledoor/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+      dotenv-cli:
+        specifier: ^7.4.2
+        version: 7.4.2
+      eslint:
+        specifier: ^9.4.0
+        version: 9.6.0
+      mysql2:
+        specifier: ^3.9.7
+        version: 3.9.7
+      prettier:
+        specifier: ^3.3.1
+        version: 3.3.2
+      prisma:
+        specifier: ^5.13.0
+        version: 5.13.0
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+
   packages/ui:
     dependencies:
       '@hookform/resolvers':
@@ -919,7 +1011,7 @@ importers:
         version: 2.3.0
       tailwindcss-animate:
         specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@3.4.3(ts-node@10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5)))
+        version: 1.0.7(tailwindcss@3.4.3(ts-node@10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)))
     devDependencies:
       '@dumbledoor/eslint-config':
         specifier: workspace:*
@@ -947,7 +1039,7 @@ importers:
         version: 18.3.1
       tailwindcss:
         specifier: ^3.4.3
-        version: 3.4.3(ts-node@10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5))
+        version: 3.4.3(ts-node@10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5))
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
@@ -1085,7 +1177,7 @@ importers:
         version: 7.34.1(eslint@9.6.0)
       eslint-plugin-react-hooks:
         specifier: rc
-        version: 5.1.0-rc-2d2cc042-20240809(eslint@9.6.0)
+        version: 5.1.0-rc-77f43893-20241010(eslint@9.6.0)
       eslint-plugin-turbo:
         specifier: ^2.0.3
         version: 2.0.6(eslint@9.6.0)
@@ -1137,10 +1229,10 @@ importers:
         version: 8.4.38
       tailwindcss:
         specifier: ^3.4.3
-        version: 3.4.3(ts-node@10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5))
+        version: 3.4.3(ts-node@10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5))
       tailwindcss-animate:
         specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@3.4.3(ts-node@10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5)))
+        version: 1.0.7(tailwindcss@3.4.3(ts-node@10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)))
     devDependencies:
       '@dumbledoor/eslint-config':
         specifier: workspace:*
@@ -2799,8 +2891,8 @@ packages:
     peerDependencies:
       eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
 
-  eslint-plugin-react-hooks@5.1.0-rc-2d2cc042-20240809:
-    resolution: {integrity: sha512-PEZ2M6eAd+DWlbrE561PumDgwHNYrLUPEcP4P/el+GjT5HnZh1lvr+UecKez547u49EtICPTEwd9VS2u66edTw==}
+  eslint-plugin-react-hooks@5.1.0-rc-77f43893-20241010:
+    resolution: {integrity: sha512-uirkfiSS+wNf61/vBIj1Nqq2A3ZRJllaMHIYpOYoOIgrWK1vCRkhhl/uDkgSF1+tOc1BqH9Qbsc3PLiT3GvUZQ==}
     engines: {node: '>=10'}
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
@@ -5436,7 +5528,7 @@ snapshots:
 
   '@tsconfig/node16@1.0.4': {}
 
-  '@turbo/gen@2.0.6(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5)':
+  '@turbo/gen@2.0.6(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)':
     dependencies:
       '@turbo/workspaces': 2.0.6
       chalk: 2.4.2
@@ -5446,7 +5538,7 @@ snapshots:
       minimatch: 9.0.4
       node-plop: 0.26.3
       proxy-agent: 6.4.0
-      ts-node: 10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5)
+      ts-node: 10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)
       update-check: 1.5.4
       validate-npm-package-name: 5.0.0
     transitivePeerDependencies:
@@ -6363,7 +6455,7 @@ snapshots:
       object.entries: 1.1.8
       object.fromentries: 2.0.8
 
-  eslint-plugin-react-hooks@5.1.0-rc-2d2cc042-20240809(eslint@9.6.0):
+  eslint-plugin-react-hooks@5.1.0-rc-77f43893-20241010(eslint@9.6.0):
     dependencies:
       eslint: 9.6.0
 
@@ -7474,13 +7566,13 @@ snapshots:
       camelcase-css: 2.0.1
       postcss: 8.4.38
 
-  postcss-load-config@4.0.2(postcss@8.4.38)(ts-node@10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5)):
+  postcss-load-config@4.0.2(postcss@8.4.38)(ts-node@10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)):
     dependencies:
       lilconfig: 3.1.1
       yaml: 2.4.1
     optionalDependencies:
       postcss: 8.4.38
-      ts-node: 10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5)
+      ts-node: 10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)
 
   postcss-nested@6.0.1(postcss@8.4.38):
     dependencies:
@@ -7955,11 +8047,11 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.24.4
 
-  tailwindcss-animate@1.0.7(tailwindcss@3.4.3(ts-node@10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5))):
+  tailwindcss-animate@1.0.7(tailwindcss@3.4.3(ts-node@10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5))):
     dependencies:
-      tailwindcss: 3.4.3(ts-node@10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5))
+      tailwindcss: 3.4.3(ts-node@10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5))
 
-  tailwindcss@3.4.3(ts-node@10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5)):
+  tailwindcss@3.4.3(ts-node@10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)):
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
@@ -7978,7 +8070,7 @@ snapshots:
       postcss: 8.4.38
       postcss-import: 15.1.0(postcss@8.4.38)
       postcss-js: 4.0.1(postcss@8.4.38)
-      postcss-load-config: 4.0.2(postcss@8.4.38)(ts-node@10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5))
+      postcss-load-config: 4.0.2(postcss@8.4.38)(ts-node@10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5))
       postcss-nested: 6.0.1(postcss@8.4.38)
       postcss-selector-parser: 6.0.16
       resolve: 1.22.8
@@ -8042,7 +8134,7 @@ snapshots:
       rimraf: 2.7.1
       source-map-support: 0.5.21
       tree-kill: 1.2.2
-      ts-node: 10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5)
+      ts-node: 10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)
       tsconfig: 7.0.0
       typescript: 5.4.5
     transitivePeerDependencies:
@@ -8050,7 +8142,7 @@ snapshots:
       - '@swc/wasm'
       - '@types/node'
 
-  ts-node@10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5):
+  ts-node@10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.10
