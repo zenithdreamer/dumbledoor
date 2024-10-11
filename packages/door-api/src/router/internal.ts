@@ -30,6 +30,35 @@ export const internalRouter = {
     .query(async () => {
       return prisma.door.findMany();
     }),
+  getDoor: internalProcedure
+    .meta({ openapi: { method: "GET", path: "/door" } })
+    .input(z.object({ id: z.string() }))
+    .output(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        access_level: z.number(),
+        created_by: z.string(),
+        created_at: z.date(),
+        updated_at: z.date(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const door = await prisma.door.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+
+      if (!door) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Door not found",
+        });
+      }
+
+      return door;
+    }),
   requestLock: internalProcedure
     .input(
       z.object({
