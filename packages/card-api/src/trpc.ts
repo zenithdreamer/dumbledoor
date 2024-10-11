@@ -18,6 +18,7 @@ import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { initTRPC, TRPCError } from "@trpc/server";
 import jwt from "jsonwebtoken";
 import superjson, { SuperJSON } from "superjson";
+import { OpenApiMeta } from "trpc-to-openapi";
 import { ZodError } from "zod";
 
 import type { InternalAppRouter as AccessAppRouter } from "@dumbledoor/access-api";
@@ -111,28 +112,36 @@ export const createTRPCContext = (opts: {
  * transformer
  */
 type Context = Awaited<ReturnType<typeof createTRPCContext>>;
-const t = initTRPC.context<Context>().create({
-  transformer: superjson,
-  errorFormatter: ({ shape, error }) => ({
-    ...shape,
-    data: {
-      ...shape.data,
-      zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
-    },
-  }),
-});
+const t = initTRPC
+  .meta<OpenApiMeta>()
+  .context<Context>()
+  .create({
+    transformer: superjson,
+    errorFormatter: ({ shape, error }) => ({
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError:
+          error.cause instanceof ZodError ? error.cause.flatten() : null,
+      },
+    }),
+  });
 
 type InternalContext = Awaited<ReturnType<typeof createTRPCContext>>;
-const tInternal = initTRPC.context<InternalContext>().create({
-  transformer: superjson,
-  errorFormatter: ({ shape, error }) => ({
-    ...shape,
-    data: {
-      ...shape.data,
-      zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
-    },
-  }),
-});
+const tInternal = initTRPC
+  .meta<OpenApiMeta>()
+  .context<InternalContext>()
+  .create({
+    transformer: superjson,
+    errorFormatter: ({ shape, error }) => ({
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError:
+          error.cause instanceof ZodError ? error.cause.flatten() : null,
+      },
+    }),
+  });
 
 /**
  * Create a server-side caller
