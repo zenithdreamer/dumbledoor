@@ -18,8 +18,9 @@ import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { initTRPC, TRPCError } from "@trpc/server";
 import jwt from "jsonwebtoken";
 import superjson, { SuperJSON } from "superjson";
-import { ZodError } from "zod";
 import { OpenApiMeta } from "trpc-to-openapi";
+import { ZodError } from "zod";
+
 import type { InternalAppRouter as AccessAppRouter } from "@dumbledoor/access-api";
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
@@ -80,17 +81,16 @@ export const createInternalTRPCContext = (opts: {
   console.log(">>> Internal tRPC Request from", source);
 
   // Remove "Bearer " from the token if it exists
-  // const token = authToken.replace("Bearer ", "");
+  const token = authToken.replace("Bearer ", "");
 
-  // if (token !== env.INTERNAL_API_SECRET) {
-  //   throw new TRPCError({ code: "UNAUTHORIZED" });
-  // }
+  if (token !== env.INTERNAL_API_SECRET) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
 
   return {
-    token: authToken,
+    token,
   };
 };
-
 
 export const createTRPCContext = (opts: {
   queueLog: (userId: string, action: string) => void;
@@ -214,6 +214,29 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
     ctx: {
       // infers the `session` as non-nullable
       session: { ...ctx.session },
+    },
+  });
+});
+
+/**
+ * Internal (authenticated) procedure
+ *
+ * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
+ * the session is valid and guarantees `ctx.session.user` is not null.
+ *
+ * @see https://trpc.io/docs/procedures
+ */
+export const internalProcedure = tInternal.procedure.use(({ ctx, next }) => {
+  //throw new TRPCError({ code: "UNAUTHORIZED" });
+
+  if (!ctx.token) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return next({
+    ctx: {
+      // infers the `token` as non-nullable
+      token: ctx.token,
     },
   });
 });

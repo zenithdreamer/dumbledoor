@@ -68,6 +68,30 @@ import { prisma } from "@dumbledoor/card-db";
 //   };
 // };
 
+export const createInternalTRPCContext = (opts: {
+  headers: IncomingHttpHeaders;
+}) => {
+  const authToken = opts.headers.authorization ?? null;
+
+  if (!authToken) {
+    throw new TRPCError({ code: "BAD_REQUEST" });
+  }
+
+  const source = opts.headers["x-trpc-source"] ?? "unknown";
+  console.log(">>> Internal tRPC Request from", source);
+
+  // Remove "Bearer " from the token if it exists
+  const token = authToken.replace("Bearer ", "");
+
+  if (token !== env.INTERNAL_API_SECRET) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return {
+    token,
+  };
+};
+
 export const createTRPCContext = (opts: {
   queueLog: (userId: string, action: string) => void;
   headers: IncomingHttpHeaders;
@@ -127,7 +151,7 @@ const t = initTRPC
     }),
   });
 
-type InternalContext = Awaited<ReturnType<typeof createTRPCContext>>;
+type InternalContext = Awaited<ReturnType<typeof createInternalTRPCContext>>;
 const tInternal = initTRPC
   .meta<OpenApiMeta>()
   .context<InternalContext>()

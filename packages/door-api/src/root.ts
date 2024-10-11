@@ -1,6 +1,7 @@
 import { adminRouter } from "./router/door";
-import { scannerRouter, scannerInternal } from "./router/scanner";
-import { createTRPCRouter, createInternalTRPCRouter } from "./trpc";
+import { internalRouter } from "./router/internal";
+import { scannerRouter } from "./router/scanner";
+import { createInternalTRPCRouter, createTRPCRouter } from "./trpc";
 
 export const appRouter = createTRPCRouter({
   admin: adminRouter,
@@ -8,8 +9,9 @@ export const appRouter = createTRPCRouter({
 });
 
 export const internalAppRouter = createInternalTRPCRouter({
-  internal: scannerInternal
+  internal: internalRouter,
 });
+
 // export type definition of API
 export type AppRouter = typeof appRouter;
 export type InternalAppRouter = typeof internalAppRouter;

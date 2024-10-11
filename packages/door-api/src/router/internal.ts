@@ -2,19 +2,35 @@ import type { TRPCRouterRecord } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-//import { prisma } from "@dumbledoor/access-db";
 import { prisma } from "@dumbledoor/door-db";
 
-import { internalProcedure } from "../../../access-api/src/trpc";
 import {
   accessClient,
   cardClient,
+  internalProcedure,
   mqttClient,
-  protectedProcedure,
 } from "../trpc";
 
-export const scannerRouter = {
-  requestLock: protectedProcedure
+export const internalRouter = {
+  getAllDoors: internalProcedure
+    .meta({ openapi: { method: "GET", path: "/doors" } })
+    .input(z.void())
+    .output(
+      z.array(
+        z.object({
+          id: z.string(),
+          name: z.string(),
+          access_level: z.number(),
+          created_by: z.string(),
+          created_at: z.date(),
+          updated_at: z.date(),
+        }),
+      ),
+    )
+    .query(async () => {
+      return prisma.door.findMany();
+    }),
+  requestLock: internalProcedure
     .input(
       z.object({
         cardId: z.string(),

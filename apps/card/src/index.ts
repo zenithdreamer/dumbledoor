@@ -9,6 +9,7 @@ import { createOpenApiExpressMiddleware } from "trpc-to-openapi";
 
 import {
   appRouter,
+  createInternalTRPCContext,
   createTRPCContext,
   internalAppRouter,
 } from "@dumbledoor/card-api";
@@ -42,28 +43,22 @@ app.use(
   "/api/trpc-internal",
   trpcExpress.createExpressMiddleware({
     router: internalAppRouter,
-    createContext: ({ req }) =>
-      createTRPCContext({
-        queueLog,
+    createContext: ({ req }: { req: Request }) =>
+      createInternalTRPCContext({
         headers: req.headers,
-        session: null,
       }),
   }),
 );
+
 app.use(
   "/api/internal",
   createOpenApiExpressMiddleware({
     router: internalAppRouter,
     createContext: ({ req }: { req: Request }) =>
-      createTRPCContext({
-        queueLog,
+      createInternalTRPCContext({
         headers: req.headers,
-        session: null,
       }),
     responseMeta: undefined,
-    onError: (err: Error) => {
-      console.error(err);
-    },
     maxBodySize: undefined,
   }),
 );

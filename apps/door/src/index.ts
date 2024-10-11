@@ -1,15 +1,18 @@
 import { fileURLToPath } from "url";
+import type { Request } from "express";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import cors from "cors";
 import express from "express";
-import type { Request } from "express";
 import createJiti from "jiti";
 import { Connection } from "rabbitmq-client";
 import { createOpenApiExpressMiddleware } from "trpc-to-openapi";
 
-import { appRouter, createTRPCContext, 
-   internalAppRouter,
-  createInternalTRPCContext } from "@dumbledoor/door-api";
+import {
+  appRouter,
+  createInternalTRPCContext,
+  createTRPCContext,
+  internalAppRouter,
+} from "@dumbledoor/door-api";
 
 // Import env files to validate at build time. Use jiti so we can load .ts files in here.
 createJiti(fileURLToPath(import.meta.url))("./env");
@@ -41,19 +44,26 @@ app.use(
   createOpenApiExpressMiddleware({
     router: internalAppRouter,
     createContext: ({ req }: { req: Request }) =>
-      createTRPCContext({
-        queueLog,
+      createInternalTRPCContext({
         headers: req.headers,
-        session: null,
       }),
     responseMeta: undefined,
-    onError: (err: Error) => {
-      console.error(err);
-    },
     maxBodySize: undefined,
   }),
 );
 
+app.use(
+  "/api/internal",
+  createOpenApiExpressMiddleware({
+    router: internalAppRouter,
+    createContext: ({ req }: { req: Request }) =>
+      createInternalTRPCContext({
+        headers: req.headers,
+      }),
+    responseMeta: undefined,
+    maxBodySize: undefined,
+  }),
+);
 
 app.listen(process.env.DOOR_SERVICE_PORT, () => {
   console.log(
