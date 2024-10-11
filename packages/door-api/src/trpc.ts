@@ -19,7 +19,7 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import jwt from "jsonwebtoken";
 import superjson, { SuperJSON } from "superjson";
 import { ZodError } from "zod";
-
+import { OpenApiMeta } from "trpc-to-openapi";
 import type { InternalAppRouter as AccessAppRouter } from "@dumbledoor/access-api";
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
@@ -67,6 +67,30 @@ import { prisma } from "@dumbledoor/door-db";
 //     token: authToken,
 //   };
 // };
+export const createInternalTRPCContext = (opts: {
+  headers: IncomingHttpHeaders;
+}) => {
+  const authToken = opts.headers.authorization ?? null;
+
+  if (!authToken) {
+    throw new TRPCError({ code: "BAD_REQUEST" });
+  }
+
+  const source = opts.headers["x-trpc-source"] ?? "unknown";
+  console.log(">>> Internal tRPC Request from", source);
+
+  // Remove "Bearer " from the token if it exists
+  // const token = authToken.replace("Bearer ", "");
+
+  // if (token !== env.INTERNAL_API_SECRET) {
+  //   throw new TRPCError({ code: "UNAUTHORIZED" });
+  // }
+
+  return {
+    token: authToken,
+  };
+};
+
 
 export const createTRPCContext = (opts: {
   queueLog: (userId: string, action: string) => void;
@@ -112,16 +136,20 @@ export const createTRPCContext = (opts: {
  * transformer
  */
 type Context = Awaited<ReturnType<typeof createTRPCContext>>;
-const t = initTRPC.context<Context>().create({
-  transformer: superjson,
-  errorFormatter: ({ shape, error }) => ({
-    ...shape,
-    data: {
-      ...shape.data,
-      zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
-    },
-  }),
-});
+const t = initTRPC
+  .meta<OpenApiMeta>()
+  .context<Context>()
+  .create({
+    transformer: superjson,
+    errorFormatter: ({ shape, error }) => ({
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError:
+          error.cause instanceof ZodError ? error.cause.flatten() : null,
+      },
+    }),
+  });
 
 /**
  * Create a server-side caller
@@ -140,8 +168,24 @@ export const createCallerFactory = t.createCallerFactory;
  * This is how you create new routers and subrouters in your tRPC API
  * @see https://trpc.io/docs/router
  */
-export const createTRPCRouter = t.router;
 
+type InternalContext = Awaited<ReturnType<typeof createInternalTRPCContext>>;
+const tInternal = initTRPC
+  .meta<OpenApiMeta>()
+  .context<InternalContext>()
+  .create({
+    transformer: superjson,
+    errorFormatter: ({ shape, error }) => ({
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError:
+          error.cause instanceof ZodError ? error.cause.flatten() : null,
+      },
+    }),
+  });
+export const createTRPCRouter = t.router;
+export const createInternalTRPCRouter = tInternal.router;
 /**
  * Public (unauthed) procedure
  *
