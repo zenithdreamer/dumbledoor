@@ -1,9 +1,15 @@
 import { mqttRouter } from "./router/mqtt";
-import { createTRPCRouter } from "./trpc";
+import { createInternalTRPCRouter, createTRPCRouter } from "./trpc";
 
-export const appRouter = createTRPCRouter({
-  mqtt: mqttRouter,
+
+
+
+export const internalAppRouter = createInternalTRPCRouter({
+  internal: mqttRouter,
 });
 
+
 // export type definition of API
-export type AppRouter = typeof appRouter;
+
+export type InternalAppRouter = typeof internalAppRouter;
+

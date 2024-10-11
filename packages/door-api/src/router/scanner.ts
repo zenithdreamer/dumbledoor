@@ -5,7 +5,8 @@ import { z } from "zod";
 //import { prisma } from "@dumbledoor/access-db";
 import { prisma } from "@dumbledoor/door-db";
 
-import { accessClient, cardClient, protectedProcedure } from "../trpc";
+import { accessClient, cardClient, protectedProcedure, mqttClient  } from "../trpc";
+
 
 export const scannerRouter = {
   requestLock: protectedProcedure
@@ -42,7 +43,10 @@ export const scannerRouter = {
 
       // If the user has personal access that meets the door's requirement
       if (personalAccessLevel >= doorAccessLevel) {
-        return true; // Access granted based on personal access
+        await mqttClient.internal.unlockDoor.mutate({
+          doorId: input.doorId,
+        });
+        return true; // Access granted baased on personal access
       }
 
       // If person have a role, check if the role has access
@@ -60,6 +64,9 @@ export const scannerRouter = {
         }
 
         if (roleDoor.granted_access_level >= doorAccessLevel) {
+          await mqttClient.internal.unlockDoor.mutate({
+            doorId: '1234',
+          });
           return true; // Access granted based on role access
         }
       }

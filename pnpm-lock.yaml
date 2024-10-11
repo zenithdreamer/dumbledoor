@@ -316,6 +316,73 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
 
+  apps/mqtt:
+    dependencies:
+      '@dumbledoor/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@dumbledoor/mqtt-api':
+        specifier: workspace:*
+        version: link:../../packages/mqtt-api
+      '@dumbledoor/validators':
+        specifier: workspace:*
+        version: link:../../packages/validators
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
+      express:
+        specifier: ^4.19.2
+        version: 4.19.2
+      jsonwebtoken:
+        specifier: ^9.0.2
+        version: 9.0.2
+      rabbitmq-client:
+        specifier: ^4.6.0
+        version: 4.6.0
+      ts-node-dev:
+        specifier: ^2.0.0
+        version: 2.0.0(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)
+      tsx:
+        specifier: ^4.17.0
+        version: 4.17.0
+    devDependencies:
+      '@dumbledoor/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@dumbledoor/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@dumbledoor/tailwind-config':
+        specifier: workspace:*
+        version: link:../../tooling/tailwind
+      '@dumbledoor/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+      '@swc/core':
+        specifier: ^1.4.17
+        version: 1.7.10(@swc/helpers@0.5.12)
+      '@swc/helpers':
+        specifier: ^0.5.11
+        version: 0.5.12
+      '@types/cors':
+        specifier: ^2.8.17
+        version: 2.8.17
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.21
+      '@types/jsonwebtoken':
+        specifier: ^9.0.6
+        version: 9.0.6
+      ts-custom-error:
+        specifier: ^3.3.1
+        version: 3.3.1
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+
   apps/nextjs:
     dependencies:
       '@dumbledoor/access-api':
@@ -730,6 +797,9 @@ importers:
       '@dumbledoor/door-db':
         specifier: workspace:*
         version: link:../door-db
+      '@dumbledoor/mqtt-api':
+        specifier: workspace:*
+        version: link:../mqtt-api
       '@dumbledoor/validators':
         specifier: workspace:*
         version: link:../validators
@@ -905,9 +975,6 @@ importers:
       '@dumbledoor/door-db':
         specifier: workspace:*
         version: link:../door-db
-      '@dumbledoor/mqtt-db':
-        specifier: workspace:*
-        version: link:../mqtt-db
       '@dumbledoor/validators':
         specifier: workspace:*
         version: link:../validators
@@ -942,46 +1009,6 @@ importers:
       prettier:
         specifier: ^3.3.1
         version: 3.3.2
-      typescript:
-        specifier: ^5.4.5
-        version: 5.4.5
-
-  packages/mqtt-db:
-    dependencies:
-      '@prisma/client':
-        specifier: ^5.13.0
-        version: 5.13.0(prisma@5.13.0)
-      '@t3-oss/env-core':
-        specifier: ^0.10.1
-        version: 0.10.1(typescript@5.4.5)(zod@3.23.8)
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
-    devDependencies:
-      '@dumbledoor/eslint-config':
-        specifier: workspace:*
-        version: link:../../tooling/eslint
-      '@dumbledoor/prettier-config':
-        specifier: workspace:*
-        version: link:../../tooling/prettier
-      '@dumbledoor/tsconfig':
-        specifier: workspace:*
-        version: link:../../tooling/typescript
-      dotenv-cli:
-        specifier: ^7.4.2
-        version: 7.4.2
-      eslint:
-        specifier: ^9.4.0
-        version: 9.6.0
-      mysql2:
-        specifier: ^3.9.7
-        version: 3.9.7
-      prettier:
-        specifier: ^3.3.1
-        version: 3.3.2
-      prisma:
-        specifier: ^5.13.0
-        version: 5.13.0
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
@@ -5755,7 +5782,7 @@ snapshots:
       minimatch: 9.0.4
       node-plop: 0.26.3
       proxy-agent: 6.4.0
-      ts-node: 10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)
+      ts-node: 10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5)
       update-check: 1.5.4
       validate-npm-package-name: 5.0.0
     transitivePeerDependencies:
@@ -7943,7 +7970,7 @@ snapshots:
       yaml: 2.4.1
     optionalDependencies:
       postcss: 8.4.38
-      ts-node: 10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)
+      ts-node: 10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5)
 
   postcss-nested@6.0.1(postcss@8.4.38):
     dependencies:
@@ -8541,7 +8568,7 @@ snapshots:
       rimraf: 2.7.1
       source-map-support: 0.5.21
       tree-kill: 1.2.2
-      ts-node: 10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)
+      ts-node: 10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5)
       tsconfig: 7.0.0
       typescript: 5.4.5
     transitivePeerDependencies:
@@ -8549,7 +8576,7 @@ snapshots:
       - '@swc/wasm'
       - '@types/node'
 
-  ts-node@10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5):
+  ts-node@10.9.2(@swc/core@1.7.10)(@types/node@20.14.9)(typescript@5.4.5):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.10

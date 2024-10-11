@@ -24,6 +24,7 @@
     "@dumbledoor/auth": "workspace:*",
     "@dumbledoor/card-api": "workspace:*",
     "@dumbledoor/door-db": "workspace:*",
+    "@dumbledoor/mqtt-api": "workspace:*",
     "@dumbledoor/validators": "workspace:*",
     "@trpc/server": "11.0.0-rc.477",
     "argon2": "^0.40.3",

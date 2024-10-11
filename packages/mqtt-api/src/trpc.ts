@@ -19,13 +19,12 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import jwt from "jsonwebtoken";
 import superjson, { SuperJSON } from "superjson";
 import { ZodError } from "zod";
-
+import { OpenApiMeta } from "trpc-to-openapi";
 import type { InternalAppRouter as AccessAppRouter } from "@dumbledoor/access-api";
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
 import type { InternalAppRouter as CardAppRouter } from "@dumbledoor/card-api";
 import { env } from "@dumbledoor/auth/env";
-import { prisma } from "@dumbledoor/mqtt-db";
 
 // const isomorphicGetSession = async (headers: IncomingHttpHeaders) => {
 //   const authToken = headers.authorization ?? null;
@@ -67,50 +66,52 @@ import { prisma } from "@dumbledoor/mqtt-db";
 //   };
 // };
 
-export const createTRPCContext = (opts: {
-  queueLog: (userId: string, action: string) => void;
+export const createInternalTRPCContext = (opts: {
   headers: IncomingHttpHeaders;
-  session: Session | null;
 }) => {
   const authToken = opts.headers.authorization ?? null;
-  let session = null;
 
-  if (authToken) {
-    // Remove "Bearer " from the token if it exists
-    const token = authToken.replace("Bearer ", "");
-
-    let decoded;
-    try {
-      decoded = jwt.verify(token, env.AUTH_SECRET) as Session;
-    } catch {
-      session = null;
-    }
-
-    if (decoded) {
-      session = { userId: decoded.userId };
-    }
+  if (!authToken) {
+    throw new TRPCError({ code: "BAD_REQUEST" });
   }
 
-  console.log(session);
-
   const source = opts.headers["x-trpc-source"] ?? "unknown";
-  console.log(">>> tRPC Request from", source, "by", session);
+  console.log(">>> Internal tRPC Request from", source);
+
+  // Remove "Bearer " from the token if it exists
+  // const token = authToken.replace("Bearer ", "");
+
+  // if (token !== env.INTERNAL_API_SECRET) {
+  //   throw new TRPCError({ code: "UNAUTHORIZED" });
+  // }
 
   return {
-    queueLog: opts.queueLog,
-    session,
-    prisma,
     token: authToken,
   };
 };
 
+type InternalContext = Awaited<ReturnType<typeof createInternalTRPCContext>>;
+const tInternal = initTRPC
+  .meta<OpenApiMeta>()
+  .context<InternalContext>()
+  .create({
+    transformer: superjson,
+    errorFormatter: ({ shape, error }) => ({
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError:
+          error.cause instanceof ZodError ? error.cause.flatten() : null,
+      },
+    }),
+  });
 /**
  * 2. INITIALIZATION
  *
  * This is where the trpc api is initialized, connecting the context and
  * transformer
  */
-type Context = Awaited<ReturnType<typeof createTRPCContext>>;
+type Context = Awaited<ReturnType<typeof createInternalTRPCContext>>;
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter: ({ shape, error }) => ({
@@ -140,6 +141,7 @@ export const createCallerFactory = t.createCallerFactory;
  * @see https://trpc.io/docs/router
  */
 export const createTRPCRouter = t.router;
+export const createInternalTRPCRouter = tInternal.router;
 
 /**
  * Public (unauthed) procedure
@@ -158,19 +160,58 @@ export const publicProcedure = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+// export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+//   //throw new TRPCError({ code: "UNAUTHORIZED" });
+
+//   if (!ctx.session) {
+//     throw new TRPCError({ code: "UNAUTHORIZED" });
+//   }
+
+//   return next({
+//     ctx: {
+//       // infers the `session` as non-nullable
+//       session: { ...ctx.session },
+//     },
+//   });
+// });
+
+/**
+ * Internal (authenticated) procedure
+ *
+ * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
+ * the session is valid and guarantees `ctx.session.user` is not null.
+ *
+ * @see https://trpc.io/docs/procedures
+ */
+export const internalProcedure = tInternal.procedure.use(({ ctx, next }) => {
   //throw new TRPCError({ code: "UNAUTHORIZED" });
 
-  if (!ctx.session) {
+  if (!ctx.token) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
   return next({
     ctx: {
-      // infers the `session` as non-nullable
-      session: { ...ctx.session },
+      // infers the `token` as non-nullable
+      token: ctx.token,
     },
   });
+});
+
+
+export const mqttClient = createTRPCClient<AccessAppRouter>({
+  links: [
+    httpBatchLink({
+      url: process.env.MQTT_SERVICE_URL + "/api/trpc-internal",
+      headers() {
+        return {
+          authorization: "Bearer " + process.env.INTERNAL_API_SECRET,
+          "x-trpc-source": "log-api",
+        };
+      },
+      transformer: SuperJSON,
+    }),
+  ],
 });
 
 export const accessClient = createTRPCClient<AccessAppRouter>({
