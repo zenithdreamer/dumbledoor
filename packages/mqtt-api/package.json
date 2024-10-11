@@ -28,6 +28,7 @@
     "@dumbledoor/validators": "workspace:*",
     "@trpc/server": "11.0.0-rc.477",
     "argon2": "^0.40.3",
+    "mqtt": "^5.10.1",
     "superjson": "2.2.1",
     "zod": "^3.23.8"
   },

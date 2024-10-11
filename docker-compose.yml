@@ -26,6 +26,17 @@ services:
     networks:
       - backend
 
+  mqtt:
+    image: eclipse-mosquitto
+    container_name: mqtt_dumbledoor
+    volumes:
+    //- '/mosquitto/config/mosquitto.conf:/mosquitto-no-auth.conf'
+    ports:
+      - "1883:1883"  # MQTT Broker port
+      - "9001:9001"  # MQTT WebSocket port
+    networks:
+      - backend  # Corrected to be an array
+      
 volumes:
   postgres_data:
 
