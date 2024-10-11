@@ -6,6 +6,7 @@
     "access-db:push": "pnpm -F access-db push",
     "access-db:studio": "pnpm -F access-db studio",
     "all-db:push": "pnpm log-db:push && pnpm user-db:push && pnpm access-db:push && pnpm door-db:push && pnpm card-db:push && pnpm mqtt-db:push",
+    "all-db:reset": "pnpm log-db:reset && pnpm user-db:reset && pnpm access-db:reset && pnpm door-db:reset && pnpm card-db:reset && pnpm mqtt-db:reset",
     "build": "turbo run build",
     "card-db:generate": "pnpm -F card-db generate",
     "card-db:push": "pnpm -F card-db push",
@@ -32,7 +33,13 @@
     "user-db:studio": "pnpm -F user-db studio",
     "mqtt-db:generate": "pnpm -F mqtt-db generate",
     "mqtt-db:push": "pnpm -F mqtt-db push",
-    "mqtt-db:studio": "pnpm -F mqtt-db studio"
+    "mqtt-db:studio": "pnpm -F mqtt-db studio",
+    "door-db:reset": "pnpm -F door-db reset",
+    "card-db:reset": "pnpm -F card-db reset",
+    "log-db:reset": "pnpm -F log-db reset",
+    "user-db:reset": "pnpm -F user-db reset",
+    "access-db:reset": "pnpm -F access-db reset",
+    "mqtt-db:reset": "pnpm -F mqtt-db reset"
   },
   "prettier": "@dumbledoor/prettier-config",
   "devDependencies": {
