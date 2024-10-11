@@ -30,13 +30,44 @@ export const internalRouter = {
     .query(async () => {
       return prisma.door.findMany();
     }),
+  getDoor: internalProcedure
+    .meta({ openapi: { method: "GET", path: "/door" } })
+    .input(z.object({ id: z.string() }))
+    .output(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        access_level: z.number(),
+        created_by: z.string(),
+        created_at: z.date(),
+        updated_at: z.date(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const door = await prisma.door.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+
+      if (!door) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Door not found",
+        });
+      }
+
+      return door;
+    }),
   requestLock: internalProcedure
+    .meta({ openapi: { method: "GET", path: "/requestLock" } })
     .input(
       z.object({
         cardId: z.string(),
         doorId: z.string(),
       }),
     )
+    .output(z.boolean())
     .mutation(async ({ ctx, input }) => {
       const card = await cardClient.internal.getCards.mutate(input.cardId);
 
@@ -86,7 +117,7 @@ export const internalRouter = {
 
         if (roleDoor.granted_access_level >= doorAccessLevel) {
           await mqttClient.internal.unlockDoor.mutate({
-            doorId: "1234",
+            doorId: input.doorId,
           });
           return true; // Access granted based on role access
         }
