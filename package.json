@@ -19,7 +19,7 @@
     "door-db:studio": "pnpm -F door-db studio",
     "format": "turbo format --continue -- --cache --cache-location node_modules/.cache/.prettiercache",
     "format:fix": "turbo format --continue -- --write --cache --cache-location node_modules/.cache/.prettiercache",
-    "postinstall": "pnpm lint:ws && pnpm log-db:generate && pnpm user-db:generate && pnpm access-db:generate && pnpm door-db:generate && pnpm card-db:generate",
+    "postinstall": "pnpm lint:ws && pnpm log-db:generate && pnpm user-db:generate && pnpm access-db:generate && pnpm door-db:generate && pnpm card-db:generate && pnpm alarm-db:generate",
     "lint": "turbo lint --continue -- --cache --cache-location node_modules/.cache/.eslintcache",
     "lint:fix": "turbo lint --continue -- --fix --cache --cache-location node_modules/.cache/.eslintcache",
     "lint:ws": "pnpm dlx sherif@latest",
