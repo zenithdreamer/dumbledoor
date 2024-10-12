@@ -7,7 +7,7 @@ on:
       - "*"
 
 env:
-  IMAGE_NAME: ghcr.io/zenithdreamer/dumbledoor-user
+  IMAGE_NAME: ghcr.io/zenithdreamer/dumbledoor-access
   USER_SERVICE_PORT: ${{ secrets.USER_SERVICE_PORT }}
   USER_SERVICE_URL: ${{ secrets.USER_SERVICE_URL }}
   ACCESS_SERVICE_PORT: ${{ secrets.ACCESS_SERVICE_PORT }}
@@ -20,6 +20,11 @@ env:
   CARD_SERVICE_URL: ${{ secrets.CARD_SERVICE_URL }}
   MQTT_SERVICE_PORT: ${{ secrets.MQTT_SERVICE_PORT }}
   MQTT_SERVICE_URL: ${{ secrets.MQTT_SERVICE_URL }}
+  ALARM_SERVICE_PORT: ${{ secrets.ALARM_SERVICE_PORT }}
+  ALARM_SERVICE_URL: ${{ secrets.ALARM_SERVICE_URL }}
+  BUTTON_SERVICE_PORT: ${{ secrets.MQTT_SERVICE_PORT }}
+  BUTTON_SERVICE_URL: ${{ secrets.MQTT_SERVICE_URL }}
+  MQTT_BROKER_URL: ${{ secrets.MQTT_BROKER_URL }}
   AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
   INTERNAL_API_SECRET: ${{ secrets.INTERNAL_API_SECRET }}
 jobs:
@@ -51,6 +56,10 @@ jobs:
           LOG_SERVICE_URL: ${{ env.LOG_SERVICE_URL }}
           CARD_SERVICE_PORT: ${{ env.CARD_SERVICE_PORT }}
           CARD_SERVICE_URL: ${{ env.CARD_SERVICE_URL }}
+          ALARM_SERVICE_PORT: ${{ env.ALARM_SERVICE_PORT }}
+          ALARM_SERVICE_URL: ${{ env.ALARM_SERVICE_URL }}
+          BUTTON_SERVICE_PORT: ${{ env.BUTTON_SERVICE_PORT }}
+          BUTTON_SERVICE_URL: ${{ env.BUTTON_SERVICE_URL }}
           MQTT_SERVICE_PORT: ${{ env.MQTT_SERVICE_PORT }}
           MQTT_SERVICE_URL: ${{ env.MQTT_SERVICE_URL }}
           AUTH_SECRET: ${{ env.AUTH_SECRET }}
