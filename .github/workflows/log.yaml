@@ -18,6 +18,8 @@ env:
   LOG_SERVICE_URL: ${{ secrets.LOG_SERVICE_URL }}
   CARD_SERVICE_PORT: ${{ secrets.CARD_SERVICE_PORT }}
   CARD_SERVICE_URL: ${{ secrets.CARD_SERVICE_URL }}
+  MQTT_SERVICE_PORT: ${{ secrets.MQTT_SERVICE_PORT }}
+  MQTT_SERVICE_URL: ${{ secrets.MQTT_SERVICE_URL }}
   AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
   INTERNAL_API_SECRET: ${{ secrets.INTERNAL_API_SECRET }}
 jobs:
@@ -49,6 +51,8 @@ jobs:
           LOG_SERVICE_URL: ${{ env.LOG_SERVICE_URL }}
           CARD_SERVICE_PORT: ${{ env.CARD_SERVICE_PORT }}
           CARD_SERVICE_URL: ${{ env.CARD_SERVICE_URL }}
+          MQTT_SERVICE_PORT: ${{ env.MQTT_SERVICE_PORT }}
+          MQTT_SERVICE_URL: ${{ env.MQTT_SERVICE_URL }}
           AUTH_SECRET: ${{ env.AUTH_SECRET }}
           INTERNAL_API_SECRET: ${{ env.INTERNAL_API_SECRET }}
         with:
