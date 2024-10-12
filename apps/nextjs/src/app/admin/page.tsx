@@ -55,10 +55,12 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen">
-      <div className="h-full w-[15%] bg-pink-700">
+      <div className="fixed h-full w-[15%] bg-[#F0A8D0]">
         <Sidebar onSelect={setSelectedSection} />
       </div>
-      <div className="flex-1 p-4">{renderContent()}</div>
+      <div className="flex-1 p-4 ml-[15%] overflow-auto">
+        {renderContent()}
+      </div>
     </div>
   );
 };

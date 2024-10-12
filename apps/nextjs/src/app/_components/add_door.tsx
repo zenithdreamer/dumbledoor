@@ -139,41 +139,52 @@ const Card: React.FC = () => {
               key={door.id}
               className="relative overflow-hidden rounded-lg border shadow-lg"
             >
-              <div className="flex h-48 w-full flex-col justify-center bg-yellow-500 p-4 text-black">
-                <h2 className="text-xl font-semibold">{door.name}</h2>
-                <p>ID: {door.id}</p>
-                <p>Access Level: {door.access_level}</p>
-                <p>Created By: {door.created_by}</p>
-                <p>
-                  Created At: {new Date(door.created_at).toLocaleDateString()}
-                </p>
-                <p>
-                  Updated At: {new Date(door.updated_at).toLocaleDateString()}
-                </p>
-              </div>
 
-              <div className="absolute right-2 top-2">
-                <button onClick={() => handleEditDoor(door)}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                </button>
-              </div>
+              <div className={`p-2 rounded-lg ${
+                    door.access_level === 0 ? 'bg-[#B7E0FF]' : 
+                    door.access_level === 1 ? 'bg-[#F3C623]' : 
+                    door.access_level === 2 ? 'bg-[#EC8305]' : 
+                    door.access_level === 3 ? 'bg-[#C92E2E]' : 
+                  ''
+                }`}>
+                <div className="flex h-80 w-full flex-col justify-center p-4 text-black rounded-lg border-2 border-gray-500">
+                  <div className="flex items-center justify-center h-28 mb-2">
+                    <img src="/images/door-logo3.png" className="object-contain h-full w-full brightness-0" />
+                  </div>
+                  <h2 className="text-4xl font-bold mb-1">{door.name}</h2>
+                  <p className="text-lg">DID: {door.id}</p>
+                  <p className="text-lg">Access Level: {door.access_level}</p>
+                  <p className="text-lg">
+                    Created At: {new Date(door.created_at).toLocaleDateString()}
+                  </p>
+                  <p className="text-lg">
+                    Updated At: {new Date(door.updated_at).toLocaleDateString()}
+                  </p>
+                  
+                </div>
 
+                <div className="absolute right-2 top-2">
+                  <button onClick={() => handleEditDoor(door)}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
               <div className="p-4">
                 <button
-                  className="w-full rounded-lg bg-pink-600 py-2 text-white hover:bg-pink-700"
+                  className="w-full rounded-lg bg-red-400 py-2 text-white hover:bg-red-500"
                   onClick={() => handleDeleteDoor(door.id)}
                 >
                   Delete this door

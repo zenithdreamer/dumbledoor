@@ -14,7 +14,7 @@ const Card: React.FC = () => {
   const createCard = trpc.card.admin.create.useMutation();
   const updateCard = trpc.card.admin.editCard.useMutation();
   const deleteCard = trpc.card.admin.deleteCard.useMutation();
-
+  
   const [showModal, setShowModal] = useState(false);
   const [newCard, setNewCard] = useState({
     name: "",
@@ -101,16 +101,33 @@ const Card: React.FC = () => {
               key={card.id}
               className="overflow-hidden rounded-lg border shadow-lg"
             >
-              <div className="flex h-48 w-full flex-col justify-center bg-yellow-500 p-4 text-black">
-                <h2 className="text-xl font-semibold">{card.name}</h2>
-                <p>{card.id}</p>
+              <div className={`p-2 ${
+                  card.access.access_level === 0 ? 'bg-gradient-to-b from-[#B7E0FF] from-55% via-white via-60% to-white to-90%' : 
+                  card.access.access_level === 1 ? 'bg-gradient-to-b from-[#F3C623] from-55% via-white via-60% to-white to-90%' : 
+                  card.access.access_level === 2 ? 'bg-gradient-to-b from-[#EC8305] from-55% via-white via-60% to-white to-90%' : 
+                  card.access.access_level === 3 ? 'bg-gradient-to-b from-[#C92E2E] from-55% via-white via-60% to-white to-90%' : 
+                  ''
+                }`}>
+                <div className="flex h-56 w-full flex-col justify-center bg-transparent text-black border-2 border-gray-500 rounded-lg">
+                  <div className="flex justify-between items-center m-1">
+                    <div>
+                      <p className="text-4xl font-bold mb-2">Dumble</p>
+                      <p className="text-4xl font-bold mb-2">Door</p>
+                    </div>
+                    <img src="/images/triangle.png" className="object-contain h-16 w-16 mt-16" />
+                  </div>
+                  <div className="py-3 rounded-b-md m-1">
+                    <h2 className="text-2xl font-bold">{card.name}</h2>
+                    <p className="text-lg mt-1">CID: {card.id}</p>
+                  </div>
+                </div>
               </div>
-
-              <div className="bg-gray-100 p-4">
+              <div className="bg-gray-200 p-4">
                 <h2 className="text-xl font-semibold">
                   {card.user.first_name} {card.user.last_name}
                 </h2>
                 <p>{card.access.role?.name ?? "No role"}</p>
+                <p className="text-gray-500">Access Level: {card.access.access_level}</p>
                 <p className="text-gray-500">
                   Assigned By:{" "}
                   {card.assigned_by_user
@@ -122,21 +139,21 @@ const Card: React.FC = () => {
                 </p>
               </div>
 
-              <div className="p-4">
+              <div className="bg-gray-200 p-4">
                 <button
-                  className="mb-2 w-full rounded-lg bg-pink-600 py-2 text-white hover:bg-pink-700"
+                  className="mb-2 w-full rounded-lg py-2 text-gray-900 bg-[#F7B5CA] hover:bg-[#F0A8D0]"
                   onClick={() => handleSelectCard(card)}
                 >
                   Select this card
                 </button>
                 <button
-                  className="w-full rounded-lg bg-pink-600 py-2 text-white hover:bg-pink-700"
+                  className="w-full rounded-lg py-2 text-gray-900 bg-[#F7B5CA] hover:bg-[#F0A8D0]"
                   onClick={() => handleEditCard(card)}
                 >
                   Edit
                 </button>
                 <button
-                  className="mt-2 w-full rounded-lg bg-red-600 py-2 text-white hover:bg-red-700"
+                  className="mt-2 w-full rounded-lg bg-red-400 py-2 text-white hover:bg-red-500"
                   onClick={() => {
                     void handleDeleteCard(card.id);
                   }}
