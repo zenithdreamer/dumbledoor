@@ -1,0 +1,85 @@
+name: alarm
+
+on:
+  push:
+    branches: ["main", "dev"]
+    tags:
+      - "*"
+
+env:
+  IMAGE_NAME: ghcr.io/zenithdreamer/dumbledoor-alarm
+  USER_SERVICE_PORT: ${{ secrets.USER_SERVICE_PORT }}
+  USER_SERVICE_URL: ${{ secrets.USER_SERVICE_URL }}
+  ACCESS_SERVICE_PORT: ${{ secrets.ACCESS_SERVICE_PORT }}
+  ACCESS_SERVICE_URL: ${{ secrets.ACCESS_SERVICE_URL }}
+  DOOR_SERVICE_PORT: ${{ secrets.DOOR_SERVICE_PORT }}
+  DOOR_SERVICE_URL: ${{ secrets.DOOR_SERVICE_URL }}
+  LOG_SERVICE_PORT: ${{ secrets.LOG_SERVICE_PORT }}
+  LOG_SERVICE_URL: ${{ secrets.LOG_SERVICE_URL }}
+  CARD_SERVICE_PORT: ${{ secrets.CARD_SERVICE_PORT }}
+  CARD_SERVICE_URL: ${{ secrets.CARD_SERVICE_URL }}
+  MQTT_SERVICE_PORT: ${{ secrets.MQTT_SERVICE_PORT }}
+  MQTT_SERVICE_URL: ${{ secrets.MQTT_SERVICE_URL }}
+  ALARM_SERVICE_PORT: ${{ secrets.ALARM_SERVICE_PORT }}
+  ALARM_SERVICE_URL: ${{ secrets.ALARM_SERVICE_URL }}
+  BUTTON_SERVICE_PORT: ${{ secrets.MQTT_SERVICE_PORT }}
+  BUTTON_SERVICE_URL: ${{ secrets.MQTT_SERVICE_URL }}
+  MQTT_BROKER_URL: ${{ secrets.MQTT_BROKER_URL }}
+  AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+  INTERNAL_API_SECRET: ${{ secrets.INTERNAL_API_SECRET }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_IO_USERNAME }}
+          password: ${{ secrets.GHCR_IO_TOKEN }}
+
+      - name: Docker meta
+        id: docker-meta
+        uses: docker/metadata-action@v3
+        env:
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          USER_SERVICE_PORT: ${{ env.USER_SERVICE_PORT }}
+          USER_SERVICE_URL: ${{ env.USER_SERVICE_URL }}
+          ACCESS_SERVICE_PORT: ${{ env.ACCESS_SERVICE_PORT }}
+          ACCESS_SERVICE_URL: ${{ env.ACCESS_SERVICE_URL }}
+          DOOR_SERVICE_PORT: ${{ env.DOOR_SERVICE_PORT }}
+          DOOR_SERVICE_URL: ${{ env.DOOR_SERVICE_URL }}
+          LOG_SERVICE_PORT: ${{ env.LOG_SERVICE_PORT }}
+          LOG_SERVICE_URL: ${{ env.LOG_SERVICE_URL }}
+          CARD_SERVICE_PORT: ${{ env.CARD_SERVICE_PORT }}
+          CARD_SERVICE_URL: ${{ env.CARD_SERVICE_URL }}
+          MQTT_SERVICE_PORT: ${{ env.MQTT_SERVICE_PORT }}
+          MQTT_SERVICE_URL: ${{ env.MQTT_SERVICE_URL }}
+          ALARM_SERVICE_PORT: ${{ env.ALARM_SERVICE_PORT }}
+          ALARM_SERVICE_URL: ${{ env.ALARM_SERVICE_URL }}
+          BUTTON_SERVICE_PORT: ${{ env.BUTTON_SERVICE_PORT }}
+          BUTTON_SERVICE_URL: ${{ env.BUTTON_SERVICE_URL }}
+          AUTH_SECRET: ${{ env.AUTH_SECRET }}
+          INTERNAL_API_SECRET: ${{ env.INTERNAL_API_SECRET }}
+        with:
+          images: |
+            ${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref_type == 'tag' && !contains(github.ref_name, '-') }}
+            type=raw,value=latest-dev,enable=${{ github.ref_type == 'branch' }}
+            type=raw,value=${{ github.ref_name }}
+            type=raw,value=${{ github.sha }},enable=${{ github.ref_type == 'branch' }}
+          flavor: |
+            latest=false
+
+      - name: Docker Build and Push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          file: ./apps/alarm/Dockerfile
+          tags: ${{ steps.docker-meta.outputs.tags }}
+          labels: ${{ steps.docker-meta.outputs.labels }}
