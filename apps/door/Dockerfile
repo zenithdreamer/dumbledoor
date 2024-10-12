@@ -35,6 +35,7 @@ RUN turbo run build --filter=@dumbledoor/user-db
 RUN turbo run build --filter=@dumbledoor/access-db
 RUN turbo run build --filter=@dumbledoor/door-db
 RUN turbo run build --filter=@dumbledoor/card-db
+RUN turbo run build --filter=@dumbledoor/mqtt-db
 
 # Set runtime working current directory
 WORKDIR /app/apps/door
