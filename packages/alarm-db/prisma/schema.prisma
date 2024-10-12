@@ -1,0 +1,19 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/alarm-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("ALARM_DATABASE_URL")
+}
+
+model Alarm {
+  id          String   @id @default(cuid())
+  door_id     String 
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}

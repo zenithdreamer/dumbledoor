@@ -22,3 +22,7 @@ export async function getLogBaseUrl() {
 export async function getCardBaseUrl() {
   return env.CARD_SERVICE_URL ?? "http://localhost:4004";
 }
+
+export async function getAlarmBaseUrl() {
+  return env.ALARM_SERVICE_URL ?? "http://localhost:4006";
+}
