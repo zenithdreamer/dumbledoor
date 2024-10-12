@@ -5,7 +5,6 @@ import { z } from "zod";
 //import { prisma } from "@dumbledoor/access-db";
 import { prisma } from "@dumbledoor/door-db";
 
-import { internalProcedure } from "../../../access-api/src/trpc";
 import {
   accessClient,
   cardClient,
