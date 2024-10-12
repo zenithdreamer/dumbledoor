@@ -38,6 +38,6 @@ RUN turbo run build --filter=@dumbledoor/card-db
 RUN turbo run build --filter=@dumbledoor/alarm-db
 
 # Set runtime working current directory
-WORKDIR /app/apps/mqtt
+WORKDIR /app/apps/alarm
 
 CMD pnpm npx tsx src/index.ts

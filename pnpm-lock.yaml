@@ -461,6 +461,9 @@ importers:
       '@dumbledoor/access-api':
         specifier: workspace:*
         version: link:../../packages/access-api
+      '@dumbledoor/alarm-api':
+        specifier: workspace:*
+        version: link:../../packages/alarm-api
       '@dumbledoor/auth':
         specifier: workspace:*
         version: link:../../packages/auth

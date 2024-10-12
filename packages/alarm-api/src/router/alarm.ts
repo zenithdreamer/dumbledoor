@@ -20,9 +20,10 @@ export const adminRouter = {
     
         return prisma.alarm.findMany
     }),
-    create_alarm: protectedProcedure
+    createAlarm: protectedProcedure
         .input(
             z.object({
+            alarmname: z.string(),
             doorid: z.string(),
         }),
         )
@@ -36,27 +37,34 @@ export const adminRouter = {
                     code: "UNAUTHORIZED",
                     message: "You are not allowed to create an alarm",
                 });
-        const door = await doorClient.internal.getDoor.query({
-            id: input.doorid,
-        });
 
-            if (!door)
-            throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Door not found",
-            });
+                let door;
+                try {
+                    door = await doorClient.internal.getDoor.query({
+                        id: input.doorid,
+                    });    
+                } catch (error) {
+                    console.error(error);
+                }
 
-            const alarm = await prisma.alarm.create({
-            data: {
-            
-                door_id: door.id,
-            },
-        });
+                if(!door) {
+                    throw new TRPCError({
+                        code: "NOT_FOUND",
+                        message: "Door not found",
+                    });
+                }
 
-        ctx.queueLog(ctx.session.userId, `Created alarm for door ${door.name}`);
+                const alarm = await prisma.alarm.create({
+                    data: {
+                        name: input.alarmname,
+                        door_id: door.id,
+                    }
+                });
 
-        return alarm;
-    }),
+                return alarm;
+
+        }
+    ),
 
     delete_alarm: protectedProcedure
         .input(z.string())
@@ -89,7 +97,7 @@ export const adminRouter = {
                 },
             });
 
-            ctx.queueLog(ctx.session.userId, `Deleted alarm for door ${alarm.door_id}`);
+
 
             return alarm;
         }),

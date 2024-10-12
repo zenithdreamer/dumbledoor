@@ -35,6 +35,12 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelect }) => {
         </li>
         <li
           className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-400 cursor-pointer"
+          onClick={() => onSelect("alarms")}
+        >
+          <span className="text-sm font-medium">Alarms</span>
+        </li>
+        <li
+          className="sidebar-item flex items-center px-6 py-3 hover:bg-pink-400 cursor-pointer"
           onClick={() => onSelect("doors")}
         >
           <span className="text-sm font-medium">Doors</span>

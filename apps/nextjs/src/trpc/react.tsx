@@ -11,6 +11,7 @@ import type { AppRouter as CardAppRouter } from "@dumbledoor/card-api";
 import type { AppRouter as DoorAppRouter } from "@dumbledoor/door-api";
 import type { AppRouter as LogAppRouter } from "@dumbledoor/log-api";
 import type { AppRouter as UserAppRouter } from "@dumbledoor/user-api";
+import type { AppRouter as AlarmAppRouter } from "@dumbledoor/alarm-api";
 
 import { env } from "~/env";
 import {
@@ -19,6 +20,7 @@ import {
   getDoorBaseUrl,
   getLogBaseUrl,
   getUserBaseUrl,
+  getAlarmBaseUrl
 } from "~/trpc/getUrls";
 
 const createQueryClient = () =>
@@ -50,6 +52,7 @@ export const trpc = {
   door: createTRPCReact<DoorAppRouter>(),
   log: createTRPCReact<LogAppRouter>(),
   card: createTRPCReact<CardAppRouter>(),
+  alarm: createTRPCReact<AlarmAppRouter>(),
 };
 
 export function UserTRPCReactProvider(props: { children: React.ReactNode }) {
@@ -243,6 +246,70 @@ export function DoorTRPCReactProvider(props: { children: React.ReactNode }) {
         {props.children}
       </QueryClientProvider>
     </trpc.door.Provider>
+  );
+}
+
+export function AlarmTRPCReactProvider(props: { children: React.ReactNode }) {
+  const queryClient = getQueryClient();
+  const [urls, setUrls] = useState<string | null>(null);
+
+  const [alarmTrpcClient, setAlarmTrpcClient] = useState<ReturnType<
+    typeof trpc.alarm.createClient
+  > | null>(null);
+
+  useEffect(() => {
+    async function fetchUrls() {
+      setUrls(await getAlarmBaseUrl());
+    }
+    void fetchUrls();
+  }, []);
+
+  useEffect(() => {
+    const updateAlarmTrpcClient = () => {
+      if (urls) {
+        const newClient = trpc.alarm.createClient({
+          links: [
+            loggerLink({
+              enabled: (op) =>
+                env.NODE_ENV === "development" ||
+                (op.direction === "down" && op.result instanceof Error),
+            }),
+            unstable_httpBatchStreamLink({
+              transformer: SuperJSON,
+              url: urls + "/api/trpc",
+              headers() {
+                console.log("alarmTrpcClient headers");
+                const headers = new Headers();
+                headers.set("x-trpc-source", "nextjs-react");
+                const savedToken = localStorage.getItem("token");
+                if (savedToken) {
+                  headers.set(
+                    "authorization",
+                    `Bearer ${localStorage.getItem("token")}`,
+                  );
+                }
+                return headers;
+              },
+            }),
+          ],
+        });
+        setAlarmTrpcClient(newClient);
+      } else {
+        setAlarmTrpcClient(null);
+      }
+    };
+
+    updateAlarmTrpcClient();
+  }, [urls]);
+
+  if (!urls || !alarmTrpcClient) return null;
+
+  return (
+    <trpc.alarm.Provider client={alarmTrpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        {props.children}
+      </QueryClientProvider>
+    </trpc.alarm.Provider>
   );
 }
 

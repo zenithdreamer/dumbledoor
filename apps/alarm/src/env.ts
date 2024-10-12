@@ -13,10 +13,10 @@ export const env = createEnv({
    * This way you can ensure the app isn't built with invalid env vars.
    */
   server: {
-    MQTT_SERVICE_PORT: z
+    ALARM_SERVICE_PORT: z
       .string()
       .transform((val) => parseInt(val, 10))
-      .default("4005"),
+      .default("4006"),
   },
 
   /**

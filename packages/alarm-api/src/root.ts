@@ -1,7 +1,6 @@
 import { adminRouter } from "./router/alarm";
 import { alarmInternal } from "./router/internal";
 
-import "./router/alarm";
 
 import { createInternalTRPCRouter, createTRPCRouter } from "./trpc";
 

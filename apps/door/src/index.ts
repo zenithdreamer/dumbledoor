@@ -53,15 +53,13 @@ app.use(
 );
 
 app.use(
-  "/api/internal",
-  createOpenApiExpressMiddleware({
+  "/api/trpc-internal",
+  trpcExpress.createExpressMiddleware({
     router: internalAppRouter,
-    createContext: ({ req }: { req: Request }) =>
+    createContext: ({ req }) =>
       createInternalTRPCContext({
-        headers: req.headers,
+        headers: req.headers
       }),
-    responseMeta: undefined,
-    maxBodySize: undefined,
   }),
 );
 

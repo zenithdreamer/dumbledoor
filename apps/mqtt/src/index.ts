@@ -5,7 +5,6 @@ import express from "express";
 import createJiti from "jiti";
 
 import {
-  internalAppRouter as appRouter,
   createInternalTRPCContext,
   internalAppRouter,
 } from "@dumbledoor/mqtt-api";

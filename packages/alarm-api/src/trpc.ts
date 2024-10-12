@@ -94,7 +94,6 @@ export const createInternalTRPCContext = (opts: {
 };
 
 export const createTRPCContext = (opts: {
-  queueLog: (userId: string, action: string) => void;
   headers: IncomingHttpHeaders;
   session: Session | null;
 }) => {
@@ -123,7 +122,6 @@ export const createTRPCContext = (opts: {
   console.log(">>> tRPC Request from", source, "by", session);
 
   return {
-    queueLog: opts.queueLog,
     session,
     prisma,
     token: authToken,
@@ -250,7 +248,7 @@ export const doorClient = createTRPCClient<DoorAppRouter>({
       headers() {
         return {
           authorization: "Bearer " + process.env.INTERNAL_API_SECRET,
-          "x-trpc-source": "alarm-api",
+          "x-trpc-source": "log-api",
         };
       },
       transformer: SuperJSON,

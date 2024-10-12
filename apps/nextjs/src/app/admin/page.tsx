@@ -9,8 +9,10 @@ import Debug from "../_components/debug";
 import Log from "../_components/log";
 import Roles from "../_components/roles";
 import Sidebar from "../_components/sidebar";
+import alarm from "../_components/alarm";
 import Users from "../_components/users";
 import HomePage from "../page";
+import AlarmPage from "../_components/alarm";
 
 const App: React.FC = () => {
   const [selectedSection, setSelectedSection] = useState("user");
@@ -39,6 +41,8 @@ const App: React.FC = () => {
         return <Card />;
       case "debug":
         return <Debug />;
+      case "alarms":
+        return <AlarmPage />;
       case "log":
         return <Log />;
       case "demo":
