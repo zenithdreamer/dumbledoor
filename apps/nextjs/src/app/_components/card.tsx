@@ -102,10 +102,10 @@ const Card: React.FC = () => {
               className="overflow-hidden rounded-lg border shadow-lg"
             >
               <div className={`p-2 ${
-                  card.access.access_level === 0 ? 'bg-gradient-to-b from-[#B7E0FF] from-55% via-white via-60% to-white to-90%' : 
-                  card.access.access_level === 1 ? 'bg-gradient-to-b from-[#F3C623] from-55% via-white via-60% to-white to-90%' : 
-                  card.access.access_level === 2 ? 'bg-gradient-to-b from-[#EC8305] from-55% via-white via-60% to-white to-90%' : 
-                  card.access.access_level === 3 ? 'bg-gradient-to-b from-[#C92E2E] from-55% via-white via-60% to-white to-90%' : 
+                  card.access.access_level === 0 ? 'bg-gradient-to-b from-[#B7E0FF] from-50% via-white via-65% to-white to-90%' : 
+                  card.access.access_level === 1 ? 'bg-gradient-to-b from-[#F3C623] from-50% via-white via-65% to-white to-90%' : 
+                  card.access.access_level === 2 ? 'bg-gradient-to-b from-[#EC8305] from-50% via-white via-65% to-white to-90%' : 
+                  card.access.access_level === 3 ? 'bg-gradient-to-b from-[#C92E2E] from-50% via-white via-65% to-white to-90%' : 
                   ''
                 }`}>
                 <div className="flex h-56 w-full flex-col justify-center bg-transparent text-black border-2 border-gray-500 rounded-lg">
@@ -117,7 +117,7 @@ const Card: React.FC = () => {
                     <img src="/images/triangle.png" className="object-contain h-16 w-16 mt-16" />
                   </div>
                   <div className="py-3 rounded-b-md m-1">
-                    <h2 className="text-2xl font-bold">{card.name}</h2>
+                    <h2 className="text-2xl font-bold">{card.name} Card</h2>
                     <p className="text-lg mt-1">CID: {card.id}</p>
                   </div>
                 </div>
@@ -127,14 +127,14 @@ const Card: React.FC = () => {
                   {card.user.first_name} {card.user.last_name}
                 </h2>
                 <p>{card.access.role?.name ?? "No role"}</p>
-                <p className="text-gray-500">Access Level: {card.access.access_level}</p>
-                <p className="text-gray-500">
+                <p>Access Level: {card.access.access_level}</p>
+                <p>
                   Assigned By:{" "}
                   {card.assigned_by_user
                     ? `${card.assigned_by_user.first_name} ${card.assigned_by_user.last_name}`
                     : card.assigned_by}
                 </p>
-                <p className="text-gray-500" suppressHydrationWarning>
+                <p suppressHydrationWarning>
                   Create Date: {new Date(card.created_at).toLocaleDateString()}
                 </p>
               </div>
