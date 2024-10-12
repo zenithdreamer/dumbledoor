@@ -6,7 +6,7 @@ import { prisma } from "@dumbledoor/door-db";
 
 import {
   accessClient,
-  cardClient, 
+  cardClient,
   internalProcedure,
   mqttClient,
 } from "../trpc";
@@ -68,7 +68,7 @@ export const internalRouter = {
       }),
     )
     .output(z.boolean())
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ input }) => {
       const card = await cardClient.internal.getCards.mutate(input.cardId);
 
       const accessList = await accessClient.internal.getUserAccess.mutate(

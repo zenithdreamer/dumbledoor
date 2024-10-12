@@ -20,7 +20,7 @@ export const scannerRouter = {
         doorId: z.string(),
       }),
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ input }) => {
       const card = await cardClient.internal.getCards.mutate(input.cardId);
 
       const accessList = await accessClient.internal.getUserAccess.mutate(
