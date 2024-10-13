@@ -1,8 +1,10 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+
 import { prisma } from "@dumbledoor/door-db";
-import { accessClient, protectedProcedure, notiClient } from "../trpc";
+
+import { accessClient, notiClient, protectedProcedure } from "../trpc";
 
 export const adminRouter = {
   getAllDoors: protectedProcedure.query(async ({ ctx }) => {
@@ -49,10 +51,9 @@ export const adminRouter = {
         const logMessage = `Created door ${door.name} with access level ${door.access_level}`;
         ctx.queueLog(ctx.session.userId, logMessage);
 
-     
-         await notiClient.internal.sentNotification.mutate({
+        await notiClient.internal.sentNotification.mutate({
           notiText: logMessage,
-        }); 
+        });
 
         return door;
       } catch {
@@ -85,7 +86,7 @@ export const adminRouter = {
 
       await notiClient.internal.sentNotification.mutate({
         notiText: logMessage,
-      }); 
+      });
     }),
 
   editDoor: protectedProcedure

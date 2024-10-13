@@ -7,20 +7,20 @@ import { createTRPCReact } from "@trpc/react-query";
 import SuperJSON from "superjson";
 
 import type { AppRouter as AccessAppRouter } from "@dumbledoor/access-api";
+import type { AppRouter as AlarmAppRouter } from "@dumbledoor/alarm-api";
 import type { AppRouter as CardAppRouter } from "@dumbledoor/card-api";
 import type { AppRouter as DoorAppRouter } from "@dumbledoor/door-api";
 import type { AppRouter as LogAppRouter } from "@dumbledoor/log-api";
 import type { AppRouter as UserAppRouter } from "@dumbledoor/user-api";
-import type { AppRouter as AlarmAppRouter } from "@dumbledoor/alarm-api";
 
 import { env } from "~/env";
 import {
   getAccessBaseUrl,
+  getAlarmBaseUrl,
   getCardBaseUrl,
   getDoorBaseUrl,
   getLogBaseUrl,
   getUserBaseUrl,
-  getAlarmBaseUrl
 } from "~/trpc/getUrls";
 
 const createQueryClient = () =>

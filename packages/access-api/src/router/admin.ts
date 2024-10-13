@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { prisma } from "@dumbledoor/access-db";
 
-import { protectedProcedure,notiClient } from "../trpc";
+import { notiClient, protectedProcedure } from "../trpc";
 
 export const adminRouter = {
   getRoles: protectedProcedure.query(async ({ ctx }) => {

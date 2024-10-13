@@ -22,9 +22,9 @@ import superjson, { SuperJSON } from "superjson";
 import { ZodError } from "zod";
 
 import type { InternalAppRouter as AccessAppRouter } from "@dumbledoor/access-api";
-import type { InternalAppRouter as NotiAppRouter } from "@dumbledoor/noti-api";
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
+import type { InternalAppRouter as NotiAppRouter } from "@dumbledoor/noti-api";
 import { env } from "@dumbledoor/auth/env";
 import { prisma } from "@dumbledoor/user-db";
 

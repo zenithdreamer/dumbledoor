@@ -139,27 +139,41 @@ const Card: React.FC = () => {
               key={door.id}
               className="relative overflow-hidden rounded-lg border shadow-lg"
             >
-              <div className="p-2 rounded-t-lg bg-gray-200">
-                <div className="flex h-80 w-full flex-col justify-center p-4 text-black rounded-lg border-2 border-gray-500 bg-gray-300">
-                  <div className="flex items-center justify-center h-28 mb-2">
-                    <div className={`rounded-t-lg ${
-                      door.access_level === 0 ? 'bg-[#B7E0FF]' : 
-                      door.access_level === 1 ? 'bg-[#F3C623]' : 
-                      door.access_level === 2 ? 'bg-[#EC8305]' : 
-                      door.access_level === 3 ? 'bg-[#C92E2E]' : 
-                    ''
-                    }`}>
-                      <img src="/images/door-logo4.png" className="object-contain w-48" />
+              <div className="rounded-t-lg bg-gray-200 p-2">
+                <div className="flex h-80 w-full flex-col justify-center rounded-lg border-2 border-gray-500 bg-gray-300 p-4 text-black">
+                  <div className="mb-2 flex h-28 items-center justify-center">
+                    <div
+                      className={`rounded-t-lg ${
+                        door.access_level === 0
+                          ? "bg-[#B7E0FF]"
+                          : door.access_level === 1
+                            ? "bg-[#F3C623]"
+                            : door.access_level === 2
+                              ? "bg-[#EC8305]"
+                              : door.access_level === 3
+                                ? "bg-[#C92E2E]"
+                                : ""
+                      }`}
+                    >
+                      <img
+                        src="/images/door-logo4.png"
+                        className="w-48 object-contain"
+                      />
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="flex w-full flex-col justify-center p-4 text-black bg-gray-200">
+              <div className="flex w-full flex-col justify-center bg-gray-200 p-4 text-black">
                 <div>
                   <div className="absolute right-3">
-                    <button onClick={() => handleEditDoor(door)} className="text-3xl">+</button>
+                    <button
+                      onClick={() => handleEditDoor(door)}
+                      className="text-3xl"
+                    >
+                      +
+                    </button>
                   </div>
-                  <h2 className="text-3xl font-bold mb-1">{door.name}</h2>
+                  <h2 className="mb-1 text-3xl font-bold">{door.name}</h2>
                 </div>
                 <p className="text-lg">DID: {door.id}</p>
                 <p>Access Level: {door.access_level}</p>
@@ -170,7 +184,7 @@ const Card: React.FC = () => {
                   Updated At: {new Date(door.updated_at).toLocaleDateString()}
                 </p>
               </div>
-              <div className="p-4 bg-gray-200">
+              <div className="bg-gray-200 p-4">
                 <button
                   className="w-full rounded-lg bg-red-400 py-2 text-white hover:bg-red-500"
                   onClick={() => handleDeleteDoor(door.id)}

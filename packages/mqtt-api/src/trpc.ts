@@ -18,8 +18,9 @@ import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { initTRPC, TRPCError } from "@trpc/server";
 import jwt from "jsonwebtoken";
 import superjson, { SuperJSON } from "superjson";
-import { ZodError } from "zod";
 import { OpenApiMeta } from "trpc-to-openapi";
+import { ZodError } from "zod";
+
 import type { InternalAppRouter as AccessAppRouter } from "@dumbledoor/access-api";
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
@@ -197,7 +198,6 @@ export const internalProcedure = tInternal.procedure.use(({ ctx, next }) => {
     },
   });
 });
-
 
 export const mqttClient = createTRPCClient<AccessAppRouter>({
   links: [

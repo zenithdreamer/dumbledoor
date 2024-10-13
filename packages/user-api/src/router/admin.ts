@@ -5,7 +5,7 @@ import { z } from "zod";
 
 import { prisma } from "@dumbledoor/user-db";
 
-import { accessClient, protectedProcedure,notiClient } from "../trpc";
+import { accessClient, notiClient, protectedProcedure } from "../trpc";
 
 export const adminRouter = {
   getUsers: protectedProcedure.query(async ({ ctx }) => {
@@ -98,7 +98,6 @@ export const adminRouter = {
       await notiClient.internal.sentNotification.mutate({
         notiText: `Created user ${user.username} ${user.id} (${user.first_name} ${user.last_name})`,
       });
-
 
       return user;
     }),

@@ -4,15 +4,15 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Door from "../_components/add_door";
+import alarm from "../_components/alarm";
+import AlarmPage from "../_components/alarm";
 import Card from "../_components/card";
 import Debug from "../_components/debug";
 import Log from "../_components/log";
 import Roles from "../_components/roles";
 import Sidebar from "../_components/sidebar";
-import alarm from "../_components/alarm";
 import Users from "../_components/users";
 import HomePage from "../page";
-import AlarmPage from "../_components/alarm";
 
 const App: React.FC = () => {
   const [selectedSection, setSelectedSection] = useState("user");
@@ -62,9 +62,7 @@ const App: React.FC = () => {
       <div className="fixed h-full w-[15%] bg-[#F0A8D0]">
         <Sidebar onSelect={setSelectedSection} />
       </div>
-      <div className="flex-1 p-4 ml-[15%] overflow-auto">
-        {renderContent()}
-      </div>
+      <div className="ml-[15%] flex-1 overflow-auto p-4">{renderContent()}</div>
     </div>
   );
 };

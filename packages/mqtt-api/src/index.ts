@@ -12,14 +12,12 @@ import { createCallerFactory, createInternalTRPCContext } from "./trpc";
  *       ^? Post[]
  */
 
-
 /**
  * Inference helpers for input types
  * @example
  * type PostByIdInput = RouterInputs['post']['byId']
  *      ^? { id: number }
  **/
-
 
 /**
  * Inference helpers for output types
@@ -29,4 +27,4 @@ import { createCallerFactory, createInternalTRPCContext } from "./trpc";
  **/
 
 export { createInternalTRPCContext, internalAppRouter, createCallerFactory };
-export type { InternalAppRouter};
+export type { InternalAppRouter };

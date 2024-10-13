@@ -1,28 +1,28 @@
 import type { TRPCRouterRecord } from "@trpc/server";
+import fetch from "node-fetch";
 import { z } from "zod";
-import fetch from 'node-fetch';
-import { internalProcedure } from "../trpc";
 
+import { internalProcedure } from "../trpc";
 
 const sendDiscordNotification = async (message: string) => {
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
   try {
     if (!webhookUrl) {
-      throw new Error('DISCORD_WEBHOOK_URL is not defined');
+      throw new Error("DISCORD_WEBHOOK_URL is not defined");
     }
 
     await fetch(webhookUrl, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        content: message, 
+        content: message,
       }),
     });
-    console.log('Notification sent to Discord');
+    console.log("Notification sent to Discord");
   } catch (error) {
-    console.error('Failed to send notification to Discord', error);
+    console.error("Failed to send notification to Discord", error);
   }
 };
 
@@ -32,7 +32,6 @@ export const internalRouter = {
     .mutation(async ({ input }) => {
       console.log("sentNotification", input.notiText);
 
-   
       await sendDiscordNotification(input.notiText);
 
       return true;

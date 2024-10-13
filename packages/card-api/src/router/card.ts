@@ -4,7 +4,12 @@ import { z } from "zod";
 
 import { prisma } from "@dumbledoor/card-db";
 
-import { accessClient, protectedProcedure, userClient, notiClient } from "../trpc";
+import {
+  accessClient,
+  notiClient,
+  protectedProcedure,
+  userClient,
+} from "../trpc";
 
 export const adminRouter = {
   getAllCards: protectedProcedure.query(async ({ ctx }) => {
