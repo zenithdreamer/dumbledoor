@@ -18,7 +18,7 @@ export const adminRouter = {
             message: "You are not allowed to view alarms",
         });
     
-        return prisma.alarm.findMany
+        return prisma.alarm.findMany();
     }),
     createAlarm: protectedProcedure
         .input(

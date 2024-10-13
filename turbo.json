@@ -85,6 +85,7 @@
     "BUTTON_SERVICE_URL",
     "MQTT_SERVICE_URL",
     "MQTT_BROKER_URL",
+    "NOTI_SERVICE_URL",
     "INTERNAL_API_SECRET"
   ],
   "globalPassThroughEnv": [

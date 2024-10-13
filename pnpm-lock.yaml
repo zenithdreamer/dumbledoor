@@ -893,6 +893,9 @@ importers:
       '@dumbledoor/door-api':
         specifier: workspace:*
         version: link:../door-api
+      '@dumbledoor/mqtt-api':
+        specifier: workspace:*
+        version: link:../mqtt-api
       '@dumbledoor/noti-api':
         specifier: workspace:*
         version: link:../noti-api
@@ -1429,9 +1432,6 @@ importers:
 
   packages/noti-api:
     dependencies:
-      '@dumbledoor/access-api':
-        specifier: workspace:*
-        version: link:../access-api
       '@dumbledoor/auth':
         specifier: workspace:*
         version: link:../auth

@@ -25,6 +25,7 @@
     "@dumbledoor/auth": "workspace:*",
     "@dumbledoor/card-db": "workspace:*",
     "@dumbledoor/door-api": "workspace:*",
+    "@dumbledoor/mqtt-api": "workspace:*",
     "@dumbledoor/noti-api": "workspace:*",
     "@dumbledoor/user-api": "workspace:*",
     "@dumbledoor/validators": "workspace:*",

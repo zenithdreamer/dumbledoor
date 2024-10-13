@@ -1,22 +1,17 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { prisma } from "@dumbledoor/alarm-db";
-
-import { internalProcedure } from "../trpc";
+import { internalProcedure, mqttClient } from "../trpc";
 
 export const alarmInternal = {
-
-	activateAlarms: internalProcedure
-		.input(z.void())
-		.mutation(async () => {
-			console.log("Activating alarms");
-		}),
-	deactivateAlarms: internalProcedure
-		.input(z.void())
-		.mutation(async () => {
-			console.log("Deactivating alarms");
-		}),
-
+  activateAlarms: internalProcedure
+    .input(z.string())
+    .mutation(async ({ input }) => {
+      await mqttClient.internal.triggerAlarm.mutate({ alarmId: input });
+    }),
+  deactivateAlarms: internalProcedure
+    .input(z.string())
+    .mutation(async ({ input }) => {
+      await mqttClient.internal.resetAlarm.mutate({ alarmId: input });
+    }),
 } satisfies TRPCRouterRecord;
