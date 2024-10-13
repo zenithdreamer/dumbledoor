@@ -1,5 +1,5 @@
 {
-  "name": "@dumbledoor/log-api",
+  "name": "@dumbledoor/noti-api",
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
@@ -22,18 +22,21 @@
   "dependencies": {
     "@dumbledoor/access-api": "workspace:*",
     "@dumbledoor/auth": "workspace:*",
-    "@dumbledoor/log-db": "workspace:*",
-    "@dumbledoor/noti-api": "workspace:*",
+    "@dumbledoor/user-api": "workspace:*",
     "@dumbledoor/validators": "workspace:*",
     "@trpc/server": "11.0.0-rc.477",
     "argon2": "^0.40.3",
+    "jsonwebtoken": "^9.0.2",
+    "node-fetch": "^3.3.2",
     "superjson": "2.2.1",
+    "trpc-to-openapi": "^2.0.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@dumbledoor/eslint-config": "workspace:*",
     "@dumbledoor/prettier-config": "workspace:*",
     "@dumbledoor/tsconfig": "workspace:*",
+    "@types/jsonwebtoken": "^9.0.6",
     "eslint": "^9.4.0",
     "prettier": "^3.3.1",
     "typescript": "^5.4.5"

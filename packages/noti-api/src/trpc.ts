@@ -14,21 +14,16 @@
  */
 //import type * as trpcExpress from "@trpc/server/adapters/express";
 import type { IncomingHttpHeaders } from "http";
+import type { OpenApiMeta } from "trpc-to-openapi";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { initTRPC, TRPCError } from "@trpc/server";
 import jwt from "jsonwebtoken";
 import superjson, { SuperJSON } from "superjson";
-import { OpenApiMeta } from "trpc-to-openapi";
 import { ZodError } from "zod";
 
-import type { InternalAppRouter as AccessAppRouter } from "@dumbledoor/access-api";
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
-import type { InternalAppRouter as CardAppRouter } from "@dumbledoor/card-api";
-import type { InternalAppRouter as mqttRouter } from "@dumbledoor/mqtt-api";
-import type { InternalAppRouter as notiRouter } from "@dumbledoor/noti-api";
 import { env } from "@dumbledoor/auth/env";
-import { prisma } from "@dumbledoor/door-db";
 
 // const isomorphicGetSession = async (headers: IncomingHttpHeaders) => {
 //   const authToken = headers.authorization ?? null;
@@ -69,6 +64,7 @@ import { prisma } from "@dumbledoor/door-db";
 //     token: authToken,
 //   };
 // };
+
 export const createInternalTRPCContext = (opts: {
   headers: IncomingHttpHeaders;
 }) => {
@@ -94,7 +90,6 @@ export const createInternalTRPCContext = (opts: {
 };
 
 export const createTRPCContext = (opts: {
-  queueLog: (userId: string, action: string) => void;
   headers: IncomingHttpHeaders;
   session: Session | null;
 }) => {
@@ -117,15 +112,11 @@ export const createTRPCContext = (opts: {
     }
   }
 
-  console.log(session);
-
   const source = opts.headers["x-trpc-source"] ?? "unknown";
   console.log(">>> tRPC Request from", source, "by", session);
 
   return {
-    queueLog: opts.queueLog,
     session,
-    prisma,
     token: authToken,
   };
 };
@@ -140,6 +131,22 @@ type Context = Awaited<ReturnType<typeof createTRPCContext>>;
 const t = initTRPC
   .meta<OpenApiMeta>()
   .context<Context>()
+  .create({
+    transformer: superjson,
+    errorFormatter: ({ shape, error }) => ({
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError:
+          error.cause instanceof ZodError ? error.cause.flatten() : null,
+      },
+    }),
+  });
+
+type InternalContext = Awaited<ReturnType<typeof createInternalTRPCContext>>;
+const tInternal = initTRPC
+  .meta<OpenApiMeta>()
+  .context<InternalContext>()
   .create({
     transformer: superjson,
     errorFormatter: ({ shape, error }) => ({
@@ -169,24 +176,9 @@ export const createCallerFactory = t.createCallerFactory;
  * This is how you create new routers and subrouters in your tRPC API
  * @see https://trpc.io/docs/router
  */
-
-type InternalContext = Awaited<ReturnType<typeof createInternalTRPCContext>>;
-const tInternal = initTRPC
-  .meta<OpenApiMeta>()
-  .context<InternalContext>()
-  .create({
-    transformer: superjson,
-    errorFormatter: ({ shape, error }) => ({
-      ...shape,
-      data: {
-        ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
-    }),
-  });
 export const createTRPCRouter = t.router;
 export const createInternalTRPCRouter = tInternal.router;
+
 /**
  * Public (unauthed) procedure
  *
@@ -240,64 +232,4 @@ export const internalProcedure = tInternal.procedure.use(({ ctx, next }) => {
       token: ctx.token,
     },
   });
-});
-
-export const accessClient = createTRPCClient<AccessAppRouter>({
-  links: [
-    httpBatchLink({
-      url: process.env.ACCESS_SERVICE_URL + "/api/trpc-internal",
-      headers() {
-        return {
-          authorization: "Bearer " + process.env.INTERNAL_API_SECRET,
-          "x-trpc-source": "log-api",
-        };
-      },
-      transformer: SuperJSON,
-    }),
-  ],
-});
-
-export const mqttClient = createTRPCClient<mqttRouter>({
-  links: [
-    httpBatchLink({
-      url: process.env.MQTT_SERVICE_URL + "/api/trpc-internal",
-      headers() {
-        return {
-          authorization: "Bearer " + process.env.INTERNAL_API_SECRET,
-          "x-trpc-source": "log-api",
-        };
-      },
-      transformer: SuperJSON,
-    }),
-  ],
-});
-
-export const cardClient = createTRPCClient<CardAppRouter>({
-  links: [
-    httpBatchLink({
-      url: process.env.CARD_SERVICE_URL + "/api/trpc-internal",
-      headers() {
-        return {
-          authorization: "Bearer " + process.env.INTERNAL_API_SECRET,
-          "x-trpc-source": "log-api",
-        };
-      },
-      transformer: SuperJSON,
-    }),
-  ],
-});
-
-export const notiClient = createTRPCClient<notiRouter>({
-  links: [
-    httpBatchLink({
-      url: process.env.NOTI_SERVICE_URL + "/api/trpc-internal",
-      headers() {
-        return {
-          authorization: "Bearer " + process.env.INTERNAL_API_SECRET,
-          "x-trpc-source": "log-api",
-        };
-      },
-      transformer: SuperJSON,
-    }),
-  ],
 });

@@ -635,6 +635,85 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
 
+  apps/noti:
+    dependencies:
+      '@dumbledoor/access-api':
+        specifier: workspace:*
+        version: link:../../packages/access-api
+      '@dumbledoor/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@dumbledoor/button-api':
+        specifier: workspace:*
+        version: link:../../packages/button-api
+      '@dumbledoor/card-db':
+        specifier: workspace:*
+        version: link:../../packages/card-db
+      '@dumbledoor/noti-api':
+        specifier: workspace:*
+        version: link:../../packages/noti-api
+      '@dumbledoor/validators':
+        specifier: workspace:*
+        version: link:../../packages/validators
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
+      express:
+        specifier: ^4.19.2
+        version: 4.19.2
+      jsonwebtoken:
+        specifier: ^9.0.2
+        version: 9.0.2
+      rabbitmq-client:
+        specifier: ^4.6.0
+        version: 4.6.0
+      trpc-to-openapi:
+        specifier: ^2.0.1
+        version: 2.0.1(@trpc/server@11.0.0-rc.477)(@types/express@4.17.21)(@types/node@20.14.9)(zod@3.23.8)
+      ts-node-dev:
+        specifier: ^2.0.0
+        version: 2.0.0(@swc/core@1.7.10(@swc/helpers@0.5.12))(@types/node@20.14.9)(typescript@5.4.5)
+      tsx:
+        specifier: ^4.17.0
+        version: 4.17.0
+    devDependencies:
+      '@dumbledoor/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@dumbledoor/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@dumbledoor/tailwind-config':
+        specifier: workspace:*
+        version: link:../../tooling/tailwind
+      '@dumbledoor/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+      '@swc/core':
+        specifier: ^1.4.17
+        version: 1.7.10(@swc/helpers@0.5.12)
+      '@swc/helpers':
+        specifier: ^0.5.11
+        version: 0.5.12
+      '@types/cors':
+        specifier: ^2.8.17
+        version: 2.8.17
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.21
+      '@types/jsonwebtoken':
+        specifier: ^9.0.6
+        version: 9.0.6
+      ts-custom-error:
+        specifier: ^3.3.1
+        version: 3.3.1
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+
   apps/user:
     dependencies:
       '@dumbledoor/auth':
@@ -1114,6 +1193,9 @@ importers:
       '@dumbledoor/mqtt-api':
         specifier: workspace:*
         version: link:../mqtt-api
+      '@dumbledoor/noti-api':
+        specifier: workspace:*
+        version: link:../noti-api
       '@dumbledoor/validators':
         specifier: workspace:*
         version: link:../validators
@@ -1203,6 +1285,9 @@ importers:
       '@dumbledoor/log-db':
         specifier: workspace:*
         version: link:../log-db
+      '@dumbledoor/noti-api':
+        specifier: workspace:*
+        version: link:../noti-api
       '@dumbledoor/validators':
         specifier: workspace:*
         version: link:../validators
@@ -1320,6 +1405,64 @@ importers:
       '@dumbledoor/tsconfig':
         specifier: workspace:*
         version: link:../../tooling/typescript
+      eslint:
+        specifier: ^9.4.0
+        version: 9.6.0
+      prettier:
+        specifier: ^3.3.1
+        version: 3.3.2
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+
+  packages/noti-api:
+    dependencies:
+      '@dumbledoor/access-api':
+        specifier: workspace:*
+        version: link:../access-api
+      '@dumbledoor/auth':
+        specifier: workspace:*
+        version: link:../auth
+      '@dumbledoor/user-api':
+        specifier: workspace:*
+        version: link:../user-api
+      '@dumbledoor/validators':
+        specifier: workspace:*
+        version: link:../validators
+      '@trpc/server':
+        specifier: 11.0.0-rc.477
+        version: 11.0.0-rc.477
+      argon2:
+        specifier: ^0.40.3
+        version: 0.40.3
+      jsonwebtoken:
+        specifier: ^9.0.2
+        version: 9.0.2
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
+      superjson:
+        specifier: 2.2.1
+        version: 2.2.1
+      trpc-to-openapi:
+        specifier: ^2.0.1
+        version: 2.0.1(@trpc/server@11.0.0-rc.477)(@types/express@4.17.21)(@types/node@20.14.9)(zod@3.23.8)
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      '@dumbledoor/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@dumbledoor/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@dumbledoor/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+      '@types/jsonwebtoken':
+        specifier: ^9.0.6
+        version: 9.0.6
       eslint:
         specifier: ^9.4.0
         version: 9.6.0
@@ -3044,6 +3187,10 @@ packages:
   damerau-levenshtein@1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
 
+  data-uri-to-buffer@4.0.1:
+    resolution: {integrity: sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==}
+    engines: {node: '>= 12'}
+
   data-uri-to-buffer@6.0.2:
     resolution: {integrity: sha512-7hvf7/GW8e86rW0ptuwS3OcBGDjIi6SZva7hCyWC0yYry2cOPmLIjXAUHI6DK2HsnwJd9ifmt57i8eV2n4YNpw==}
     engines: {node: '>= 14'}
@@ -3401,6 +3548,10 @@ packages:
   fastq@1.17.1:
     resolution: {integrity: sha512-sRVD3lWVIXWg6By68ZN7vho9a1pQcN/WBFaAAsDDFzlJjvoGx0P8z7V1t72grFJfJhu3YPZBuu25f7Kaw2jN1w==}
 
+  fetch-blob@3.2.0:
+    resolution: {integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==}
+    engines: {node: ^12.20 || >= 14.13}
+
   figures@3.2.0:
     resolution: {integrity: sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg==}
     engines: {node: '>=8'}
@@ -3434,6 +3585,10 @@ packages:
   foreground-child@3.1.1:
     resolution: {integrity: sha512-TMKDUnIte6bfb5nWv7V/caI169OHgvwjb7V4WkeUvbQQdjr5rWKqHFiKWb/fcOwB+CzBT+qbWjvj+DVwRskpIg==}
     engines: {node: '>=14'}
+
+  formdata-polyfill@4.0.10:
+    resolution: {integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==}
+    engines: {node: '>=12.20.0'}
 
   forwarded@0.2.0:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
@@ -4164,8 +4319,16 @@ packages:
     resolution: {integrity: sha512-yBY+qqWSv3dWKGODD6OGE6GnTX7Q2r+4+DfpqxHSHh8x0B4EKP9+wVGLS6U/AM1vxSNNmUEuIV5EGhYwPpfOwQ==}
     engines: {node: ^18 || ^20 || >= 21}
 
+  node-domexception@1.0.0:
+    resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
+    engines: {node: '>=10.5.0'}
+
   node-fetch-native@1.6.4:
     resolution: {integrity: sha512-IhOigYzAKHd244OC0JIMIUrjzctirCmPkaIfhDeGcEETWof5zKYUW7e7MYvChGWh/4CJeXEgsRyGzuF334rOOQ==}
+
+  node-fetch@3.3.2:
+    resolution: {integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   node-gyp-build@4.8.0:
     resolution: {integrity: sha512-u6fs2AEUljNho3EYTJNBfImO5QTo/J/1Etd+NVdCj7qWKUSN/bSLkZwhDv7I+w/MSC6qJ4cknepkAYykDdK8og==}
@@ -5168,6 +5331,10 @@ packages:
 
   wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
+
+  web-streams-polyfill@3.3.3:
+    resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
+    engines: {node: '>= 8'}
 
   which-boxed-primitive@1.0.2:
     resolution: {integrity: sha512-bwZdv0AKLpplFY2KZRX6TvyuN7ojjr7lwkg6ml0roIy9YeuSr7JS372qlNW18UQYzgYK9ziGcerWqZOmEn9VNg==}
@@ -6736,6 +6903,8 @@ snapshots:
 
   damerau-levenshtein@1.0.8: {}
 
+  data-uri-to-buffer@4.0.1: {}
+
   data-uri-to-buffer@6.0.2: {}
 
   data-view-buffer@1.0.1:
@@ -7254,6 +7423,11 @@ snapshots:
     dependencies:
       reusify: 1.0.4
 
+  fetch-blob@3.2.0:
+    dependencies:
+      node-domexception: 1.0.0
+      web-streams-polyfill: 3.3.3
+
   figures@3.2.0:
     dependencies:
       escape-string-regexp: 1.0.5
@@ -7298,6 +7472,10 @@ snapshots:
     dependencies:
       cross-spawn: 7.0.3
       signal-exit: 4.1.0
+
+  formdata-polyfill@4.0.10:
+    dependencies:
+      fetch-blob: 3.2.0
 
   forwarded@0.2.0: {}
 
@@ -8042,7 +8220,15 @@ snapshots:
 
   node-addon-api@8.1.0: {}
 
+  node-domexception@1.0.0: {}
+
   node-fetch-native@1.6.4: {}
+
+  node-fetch@3.3.2:
+    dependencies:
+      data-uri-to-buffer: 4.0.1
+      fetch-blob: 3.2.0
+      formdata-polyfill: 4.0.10
 
   node-gyp-build@4.8.0: {}
 
@@ -9108,6 +9294,8 @@ snapshots:
   wcwidth@1.0.1:
     dependencies:
       defaults: 1.0.4
+
+  web-streams-polyfill@3.3.3: {}
 
   which-boxed-primitive@1.0.2:
     dependencies:

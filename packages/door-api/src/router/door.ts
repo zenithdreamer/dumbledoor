@@ -1,10 +1,8 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-
 import { prisma } from "@dumbledoor/door-db";
-
-import { accessClient, protectedProcedure } from "../trpc";
+import { accessClient, protectedProcedure, notiClient } from "../trpc";
 
 export const adminRouter = {
   getAllDoors: protectedProcedure.query(async ({ ctx }) => {
@@ -20,6 +18,7 @@ export const adminRouter = {
 
     return prisma.door.findMany();
   }),
+
   create: protectedProcedure
     .input(
       z.object({
@@ -47,10 +46,13 @@ export const adminRouter = {
           },
         });
 
-        ctx.queueLog(
-          ctx.session.userId,
-          `Created door ${door.name} with access level ${door.access_level}`,
-        );
+        const logMessage = `Created door ${door.name} with access level ${door.access_level}`;
+        ctx.queueLog(ctx.session.userId, logMessage);
+
+     
+         await notiClient.internal.sentNotification.mutate({
+          notiText: logMessage,
+        }); 
 
         return door;
       } catch {
@@ -60,6 +62,7 @@ export const adminRouter = {
         });
       }
     }),
+
   deleteDoor: protectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
@@ -70,14 +73,19 @@ export const adminRouter = {
       if (!isAdmin)
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "You are not allowed to create a door",
+          message: "You are not allowed to delete a door",
         });
 
       await prisma.door.delete({
         where: { id: input },
       });
 
-      ctx.queueLog(ctx.session.userId, `Deleted door ${input}`);
+      const logMessage = `Deleted door ${input}`;
+      ctx.queueLog(ctx.session.userId, logMessage);
+
+      await notiClient.internal.sentNotification.mutate({
+        notiText: logMessage,
+      }); 
     }),
 
   editDoor: protectedProcedure
@@ -108,10 +116,11 @@ export const adminRouter = {
           },
         });
 
-        ctx.queueLog(
-          ctx.session.userId,
-          `Edited door ${door.name} (${door.id}) with access level ${door.access_level}`,
-        );
+        const logMessage = `Edited door ${door.name} (${door.id}) with access level ${door.access_level}`;
+        ctx.queueLog(ctx.session.userId, logMessage);
+        await notiClient.internal.sentNotification.mutate({
+          notiText: logMessage,
+        });
 
         return door;
       } catch {
