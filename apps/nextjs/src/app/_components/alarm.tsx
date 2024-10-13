@@ -66,6 +66,7 @@ const AlarmPage: React.FC = () => {
           >
             <h2 className="text-xl font-bold">{alarm.name}</h2>
             <p className="text-gray-800">Door: {alarm.name}</p>
+            <p className="text-gray-800">Id: {alarm.id}</p>
             <button
               className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
               onClick={() => handleDeleteAlarm(alarm)}
