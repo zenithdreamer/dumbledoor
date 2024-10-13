@@ -80,6 +80,6 @@ jobs:
         with:
           context: .
           push: true
-          file: ./apps/card/Dockerfile
+          file: ./apps/button/Dockerfile
           tags: ${{ steps.docker-meta.outputs.tags }}
           labels: ${{ steps.docker-meta.outputs.labels }}
