@@ -3,12 +3,13 @@ import * as trpcExpress from "@trpc/server/adapters/express";
 import cors from "cors";
 import express from "express";
 import createJiti from "jiti";
+import { createOpenApiExpressMiddleware } from "trpc-to-openapi";
 
 import {
   appRouter,
-  internalAppRouter,
   createInternalTRPCContext,
   createTRPCContext,
+  internalAppRouter,
 } from "@dumbledoor/alarm-api";
 
 // Import env files to validate at build time. Use jiti so we can load .ts files in here.
@@ -35,12 +36,14 @@ app.use(
 
 app.use(
   "/api/internal",
-  trpcExpress.createExpressMiddleware({
+  createOpenApiExpressMiddleware({
     router: internalAppRouter,
-    createContext: ({ req }) =>
+    createContext: ({ req }: { req: Request }) =>
       createInternalTRPCContext({
         headers: req.headers,
       }),
+    responseMeta: undefined,
+    maxBodySize: undefined,
   }),
 );
 
