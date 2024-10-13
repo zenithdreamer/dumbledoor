@@ -890,9 +890,6 @@ importers:
       '@dumbledoor/card-db':
         specifier: workspace:*
         version: link:../card-db
-      '@dumbledoor/door-api':
-        specifier: workspace:*
-        version: link:../door-api
       '@dumbledoor/mqtt-api':
         specifier: workspace:*
         version: link:../mqtt-api

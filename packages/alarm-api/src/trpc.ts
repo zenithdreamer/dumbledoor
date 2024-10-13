@@ -24,7 +24,6 @@ import { ZodError } from "zod";
 import type { InternalAppRouter as AccessAppRouter } from "@dumbledoor/access-api";
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
-import type { InternalAppRouter as DoorAppRouter } from "@dumbledoor/door-api";
 import type { InternalAppRouter as MqttAppRouter } from "@dumbledoor/mqtt-api";
 import type { InternalAppRouter as NotiAppRouter } from "@dumbledoor/noti-api";
 import type { InternalAppRouter as UserAppRouter } from "@dumbledoor/user-api";
@@ -241,21 +240,6 @@ export const internalProcedure = tInternal.procedure.use(({ ctx, next }) => {
       token: ctx.token,
     },
   });
-});
-
-export const doorClient = createTRPCClient<DoorAppRouter>({
-  links: [
-    httpBatchLink({
-      url: process.env.DOOR_SERVICE_URL + "/api/trpc-internal",
-      headers() {
-        return {
-          authorization: "Bearer " + process.env.INTERNAL_API_SECRET,
-          "x-trpc-source": "log-api",
-        };
-      },
-      transformer: SuperJSON,
-    }),
-  ],
 });
 
 export const accessClient = createTRPCClient<AccessAppRouter>({
