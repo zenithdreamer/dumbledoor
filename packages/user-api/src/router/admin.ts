@@ -5,7 +5,7 @@ import { z } from "zod";
 
 import { prisma } from "@dumbledoor/user-db";
 
-import { accessClient, protectedProcedure } from "../trpc";
+import { accessClient, protectedProcedure,notiClient } from "../trpc";
 
 export const adminRouter = {
   getUsers: protectedProcedure.query(async ({ ctx }) => {
@@ -94,6 +94,12 @@ export const adminRouter = {
         Created a new user ${user.username} ${newUser.user_id} (${user.first_name} ${user.last_name}) ${input.role ? `with role ${input.role}` : ""} ${input.accessLevel ? `with access level ${input.accessLevel}` : ""} ${input.admin ? "as admin" : ""}  
       `,
       );
+
+      await notiClient.internal.sentNotification.mutate({
+        notiText: `Created user ${user.username} ${user.id} (${user.first_name} ${user.last_name})`,
+      });
+
+
       return user;
     }),
   updateUser: protectedProcedure
@@ -167,6 +173,10 @@ export const adminRouter = {
       `,
       );
 
+      await notiClient.internal.sentNotification.mutate({
+        notiText: `Updated user ${oldUser.username} ${oldUser.id} (${oldUser.first_name} ${oldUser.last_name})`,
+      });
+
       return user;
     }),
   deleteUser: protectedProcedure
@@ -197,6 +207,10 @@ export const adminRouter = {
       });
 
       ctx.queueLog(input, `Deleted user ${input}`);
+
+      await notiClient.internal.sentNotification.mutate({
+        notiText: `Deleted user ${input}`,
+      });
 
       return true;
     }),
@@ -234,6 +248,10 @@ export const adminRouter = {
       ctx.session.userId,
       `Ran a debug command: Purged ${invalidUserIds.length} invalid users`,
     );
+
+    await notiClient.internal.sentNotification.mutate({
+      notiText: `Purged ${invalidUserIds.length} invalid users`,
+    });
 
     return true;
   }),

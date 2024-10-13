@@ -25,6 +25,7 @@ import type { InternalAppRouter as AccessAppRouter } from "@dumbledoor/access-ap
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
 import type { InternalAppRouter as UserAppRouter } from "@dumbledoor/user-api";
+import type { InternalAppRouter as NotiAppRouter } from "@dumbledoor/noti-api";
 import { env } from "@dumbledoor/auth/env";
 import { prisma } from "@dumbledoor/card-db";
 
@@ -261,6 +262,22 @@ export const userClient = createTRPCClient<UserAppRouter>({
   links: [
     httpBatchLink({
       url: process.env.USER_SERVICE_URL + "/api/trpc-internal",
+
+      headers() {
+        return {
+          authorization: "Bearer " + process.env.INTERNAL_API_SECRET,
+          "x-trpc-source": "card-api",
+        };
+      },
+      transformer: SuperJSON,
+    }),
+  ],
+});
+
+export const notiClient = createTRPCClient<NotiAppRouter>({
+  links: [
+    httpBatchLink({
+      url: process.env.NOTI_SERVICE_URL + "/api/trpc-internal",
 
       headers() {
         return {

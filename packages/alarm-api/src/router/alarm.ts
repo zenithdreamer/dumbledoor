@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { prisma } from "@dumbledoor/alarm-db";
 
-import { internalProcedure, protectedProcedure, accessClient, doorClient } from "../trpc";
+import { internalProcedure, protectedProcedure, accessClient, doorClient, notiClient } from "../trpc";
 
 export const adminRouter = {
     getAllAlarms: protectedProcedure.query(async ({ ctx }) => {
@@ -61,6 +61,10 @@ export const adminRouter = {
                     }
                 });
 
+                await notiClient.internal.sentNotification.mutate({
+                    notiText: `Created alarm ${alarm.name} for door ${door.name}`,
+                });
+
                 return alarm;
 
         }
@@ -95,6 +99,10 @@ export const adminRouter = {
                 where: {
                     id: input,
                 },
+            });
+
+            await notiClient.internal.sentNotification.mutate({
+                notiText: `Deleted alarm ${alarm.name}`,
             });
 
 

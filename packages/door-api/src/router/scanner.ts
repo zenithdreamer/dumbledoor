@@ -10,6 +10,8 @@ import {
   cardClient,
   mqttClient,
   protectedProcedure,
+  userClient,
+  notiClient,
 } from "../trpc";
 
 export const scannerRouter = {
@@ -45,11 +47,19 @@ export const scannerRouter = {
       const personalAccessLevel = userAccess.access_level;
       const doorAccessLevel = door.access_level;
 
+      const user = await userClient.internal.getUser.query(card.user_id);
+
       // If the user has personal access that meets the door's requirement
       if (personalAccessLevel >= doorAccessLevel) {
         await mqttClient.internal.unlockDoor.mutate({
           doorId: input.doorId,
         });
+
+        if (user) {
+          await notiClient.internal.sentNotification.mutate({
+            notiText: `Door ${door.name} unlocked by card ${card.id} with user ${user.username}`,
+          });
+        }
         return true; // Access granted baased on personal access
       }
 
@@ -64,6 +74,8 @@ export const scannerRouter = {
         );
 
         if (!roleDoor) {
+          await notiClient.internal.sentNotification.mutate({
+            notiText: `Door ${door.name} failed to unlock by card ${card.id}` });
           return false; // Access denied
         }
 
@@ -71,10 +83,19 @@ export const scannerRouter = {
           await mqttClient.internal.unlockDoor.mutate({
             doorId: "1234",
           });
+          
+        if (user) {
+          await notiClient.internal.sentNotification.mutate({
+            notiText: `Door ${door.name} unlocked by card ${card.id} with user ${user.username}`,
+          });
+        }
+
           return true; // Access granted based on role access
         }
       }
 
+      await notiClient.internal.sentNotification.mutate({
+        notiText: `Door ${door.name} failed to unlock by card ${card.id}` });
       return false; // Access denied
     }),
 } satisfies TRPCRouterRecord;

@@ -16,14 +16,15 @@
 import type { IncomingHttpHeaders } from "http";
 import { initTRPC, TRPCError } from "@trpc/server";
 import jwt from "jsonwebtoken";
-import superjson from "superjson";
-import { ZodError } from "zod";
 
+import { ZodError } from "zod";
+import { createTRPCClient, httpBatchLink } from "@trpc/client";
+import superjson, { SuperJSON } from "superjson";
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
 import { prisma } from "@dumbledoor/access-db";
 import { env } from "@dumbledoor/auth/env";
-
+import { InternalAppRouter as NotiAppRouter } from "@dumbledoor/noti-api";
 // const isomorphicGetSession = async (headers: IncomingHttpHeaders) => {
 //   const authToken = headers.authorization ?? null;
 //   if (authToken) return validateToken(authToken);
@@ -225,4 +226,20 @@ export const internalProcedure = tInternal.procedure.use(({ ctx, next }) => {
       token: ctx.token,
     },
   });
+});
+
+export const notiClient = createTRPCClient<NotiAppRouter>({
+  links: [
+    httpBatchLink({
+      url: process.env.NOTI_SERVICE_URL + "/api/trpc-internal",
+
+      headers() {
+        return {
+          authorization: "Bearer " + process.env.INTERNAL_API_SECRET,
+          "x-trpc-source": "alarm-api",
+        };
+      },
+      transformer: SuperJSON,
+    }),
+  ],
 });

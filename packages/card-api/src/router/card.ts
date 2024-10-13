@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { prisma } from "@dumbledoor/card-db";
 
-import { accessClient, protectedProcedure, userClient } from "../trpc";
+import { accessClient, protectedProcedure, userClient, notiClient } from "../trpc";
 
 export const adminRouter = {
   getAllCards: protectedProcedure.query(async ({ ctx }) => {
@@ -52,6 +52,7 @@ export const adminRouter = {
 
     return data;
   }),
+
   create: protectedProcedure
     .input(
       z.object({
@@ -91,6 +92,10 @@ export const adminRouter = {
           `Created card ${door.name} (${door.id}) for user ${door.user_id}`,
         );
 
+        await notiClient.internal.sentNotification.mutate({
+          notiText: `Created card ${door.name} (${door.id}) for user ${door.user_id}`,
+        });
+
         return door;
       } catch {
         throw new TRPCError({
@@ -99,6 +104,7 @@ export const adminRouter = {
         });
       }
     }),
+
   deleteCard: protectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {

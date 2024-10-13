@@ -21,6 +21,7 @@
   "dependencies": {
     "@dumbledoor/access-db": "workspace:*",
     "@dumbledoor/auth": "workspace:*",
+    "@dumbledoor/noti-api": "workspace:*",
     "@dumbledoor/validators": "workspace:*",
     "@trpc/server": "11.0.0-rc.477",
     "argon2": "^0.40.3",

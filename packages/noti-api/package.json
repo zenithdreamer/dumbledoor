@@ -20,9 +20,7 @@
   },
   "prettier": "@dumbledoor/prettier-config",
   "dependencies": {
-    "@dumbledoor/access-api": "workspace:*",
     "@dumbledoor/auth": "workspace:*",
-    "@dumbledoor/user-api": "workspace:*",
     "@dumbledoor/validators": "workspace:*",
     "@trpc/server": "11.0.0-rc.477",
     "argon2": "^0.40.3",

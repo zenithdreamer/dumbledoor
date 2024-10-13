@@ -22,6 +22,7 @@ import superjson, { SuperJSON } from "superjson";
 import { ZodError } from "zod";
 
 import type { InternalAppRouter as AccessAppRouter } from "@dumbledoor/access-api";
+import type { InternalAppRouter as NotiAppRouter } from "@dumbledoor/noti-api";
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
 import { env } from "@dumbledoor/auth/env";
@@ -232,6 +233,22 @@ export const accessClient = createTRPCClient<AccessAppRouter>({
   links: [
     httpBatchLink({
       url: process.env.ACCESS_SERVICE_URL + "/api/trpc-internal",
+
+      headers(): HTTPHeaders {
+        return {
+          authorization: "Bearer " + process.env.INTERNAL_API_SECRET,
+          "x-trpc-source": "log-api",
+        };
+      },
+      transformer: SuperJSON,
+    }),
+  ],
+});
+
+export const notiClient = createTRPCClient<NotiAppRouter>({
+  links: [
+    httpBatchLink({
+      url: process.env.NOTI_SERVICE_URL + "/api/trpc-internal",
 
       headers(): HTTPHeaders {
         return {

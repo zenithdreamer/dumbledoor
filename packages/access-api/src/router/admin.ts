@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { prisma } from "@dumbledoor/access-db";
 
-import { protectedProcedure } from "../trpc";
+import { protectedProcedure,notiClient } from "../trpc";
 
 export const adminRouter = {
   getRoles: protectedProcedure.query(async ({ ctx }) => {
@@ -100,6 +100,10 @@ export const adminRouter = {
 
       ctx.queueLog(ctx.session.userId, `Created a new role: ${role.name}`);
 
+      await notiClient.internal.sentNotification.mutate({
+        notiText: `Created a new role: ${role.name}`,
+      });
+
       return role;
     }),
 
@@ -175,6 +179,10 @@ export const adminRouter = {
         `Updated a role: ${role.name} (${role.id}) with a name: ${input.name} and description: ${input.description}`,
       );
 
+      await notiClient.internal.sentNotification.mutate({
+        notiText: `Updated role: ${role.name} (${role.id}) with a name: ${input.name} and description: ${input.description}`,
+      });
+
       return role;
     }),
 
@@ -212,6 +220,10 @@ export const adminRouter = {
         ctx.session.userId,
         `Deleted a role ${input}, changed ${deletedUserAccess.count} user access to no role, and  ${deletedRoleDoor.count} doors were affected`,
       );
+
+      await notiClient.internal.sentNotification.mutate({
+        notiText: `Deleted a role ${input}, changed ${deletedUserAccess.count} user access to no role, and  ${deletedRoleDoor.count} doors were affected`,
+      });
       return true;
     }),
 } satisfies TRPCRouterRecord;

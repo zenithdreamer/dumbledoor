@@ -23,6 +23,7 @@
     "@dumbledoor/access-api": "workspace:*",
     "@dumbledoor/auth": "workspace:*",
     "@dumbledoor/card-db": "workspace:*",
+    "@dumbledoor/noti-api": "workspace:*",
     "@dumbledoor/user-api": "workspace:*",
     "@dumbledoor/validators": "workspace:*",
     "@trpc/server": "11.0.0-rc.477",
