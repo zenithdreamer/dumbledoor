@@ -1193,6 +1193,9 @@ importers:
       '@dumbledoor/access-api':
         specifier: workspace:*
         version: link:../access-api
+      '@dumbledoor/alarm-api':
+        specifier: workspace:*
+        version: link:../alarm-api
       '@dumbledoor/auth':
         specifier: workspace:*
         version: link:../auth

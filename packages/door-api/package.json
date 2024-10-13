@@ -21,6 +21,7 @@
   "prettier": "@dumbledoor/prettier-config",
   "dependencies": {
     "@dumbledoor/access-api": "workspace:*",
+    "@dumbledoor/alarm-api": "workspace:*",
     "@dumbledoor/auth": "workspace:*",
     "@dumbledoor/card-api": "workspace:*",
     "@dumbledoor/door-db": "workspace:*",

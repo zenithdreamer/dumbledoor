@@ -7,11 +7,12 @@ import { prisma } from "@dumbledoor/door-db";
 
 import {
   accessClient,
+  alarmClient,
   cardClient,
   mqttClient,
+  notiClient,
   protectedProcedure,
   userClient,
-  notiClient,
 } from "../trpc";
 
 export const scannerRouter = {
@@ -60,6 +61,8 @@ export const scannerRouter = {
             notiText: `Door ${door.name} unlocked by card ${card.id} with user ${user.username}`,
           });
         }
+
+        void alarmClient.internal.deactivateAlarms.mutate(door.id);
         return true; // Access granted baased on personal access
       }
 
@@ -75,7 +78,10 @@ export const scannerRouter = {
 
         if (!roleDoor) {
           await notiClient.internal.sentNotification.mutate({
-            notiText: `Door ${door.name} failed to unlock by card ${card.id}` });
+            notiText: `Door ${door.name} failed to unlock by card ${card.id}`,
+          });
+
+          void alarmClient.internal.activateAlarms.mutate(door.id);
           return false; // Access denied
         }
 
@@ -83,19 +89,24 @@ export const scannerRouter = {
           await mqttClient.internal.unlockDoor.mutate({
             doorId: "1234",
           });
-          
-        if (user) {
-          await notiClient.internal.sentNotification.mutate({
-            notiText: `Door ${door.name} unlocked by card ${card.id} with user ${user.username}`,
-          });
-        }
 
+          if (user) {
+            await notiClient.internal.sentNotification.mutate({
+              notiText: `Door ${door.name} unlocked by card ${card.id} with user ${user.username}`,
+            });
+          }
+
+          void alarmClient.internal.deactivateAlarms.mutate(door.id);
           return true; // Access granted based on role access
         }
       }
 
       await notiClient.internal.sentNotification.mutate({
-        notiText: `Door ${door.name} failed to unlock by card ${card.id}` });
+        notiText: `Door ${door.name} failed to unlock by card ${card.id}`,
+      });
+
+      void alarmClient.internal.activateAlarms.mutate(door.id);
+
       return false; // Access denied
     }),
 } satisfies TRPCRouterRecord;

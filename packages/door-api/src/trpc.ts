@@ -22,6 +22,7 @@ import { OpenApiMeta } from "trpc-to-openapi";
 import { ZodError } from "zod";
 
 import type { InternalAppRouter as AccessAppRouter } from "@dumbledoor/access-api";
+import type { InternalAppRouter as AlarmAppRouter } from "@dumbledoor/alarm-api";
 //import type { Session } from "@dumbledoor/auth";
 import type { Session } from "@dumbledoor/auth";
 import type { InternalAppRouter as CardAppRouter } from "@dumbledoor/card-api";
@@ -241,6 +242,21 @@ export const internalProcedure = tInternal.procedure.use(({ ctx, next }) => {
       token: ctx.token,
     },
   });
+});
+
+export const alarmClient = createTRPCClient<AlarmAppRouter>({
+  links: [
+    httpBatchLink({
+      url: process.env.ALARM_SERVICE_URL + "/api/trpc-internal",
+      headers() {
+        return {
+          authorization: "Bearer " + process.env.INTERNAL_API_SECRET,
+          "x-trpc-source": "log-api",
+        };
+      },
+      transformer: SuperJSON,
+    }),
+  ],
 });
 
 export const accessClient = createTRPCClient<AccessAppRouter>({
