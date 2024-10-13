@@ -1,17 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AlarmTRPCReactProvider, DoorTRPCReactProvider, trpc } from "~/trpc/react";
 
 const AlarmPage: React.FC = () => {
     const [currentAlarm, setCurrentAlarm] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [newAlarm, setNewAlarm] = useState({ name: "", doorId: "" });
-    const [alarms, setAlarms] = useState<any[]>([]);
 
-    const createAlarm = trpc.alarm.admin.createAlarm.useMutation();
+    const { data: alarms, refetch: refetchAlarms } = trpc.alarm.admin.getAllAlarms.useQuery();
+    
 
-    const handleSelectAlarm = (alarm: any) => {
+
+    const createAlarm = trpc.alarm.admin.createAlarm.useMutation({
+        onSuccess: () => {
+            refetchAlarms();
+        },
+    });
+
+    const deleteAlarm = trpc.alarm.admin.deleteAlarm.useMutation({
+        onSuccess: () => {
+            refetchAlarms();
+        },
+    });
+
+    const handleDeleteAlarm = async (alarm: any) => {
         setCurrentAlarm(alarm.id);
-        console.log("Selected alarm data:", alarm);
+        try {
+            await deleteAlarm.mutateAsync(alarm.id); 
+            console.log("Deleted alarm:", alarm);
+        } catch (error) {
+            console.error("Failed to delete alarm:", error);
+        }
     };
 
     const handleAddAlarm = () => {
@@ -37,21 +55,19 @@ const AlarmPage: React.FC = () => {
     return (
         <div className="container mx-auto p-6">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-                {alarms.map((alarm) => (
-                    <div key={alarm.id} className="overflow-hidden rounded-lg border shadow-lg">
-                        <div className="p-4 bg-red-400">
-                            <h2 className="text-xl font-bold">{alarm.name}</h2>
-                            <p>Door: {alarm.door}</p>
-                            <p>Created At: {new Date(alarm.created_at).toLocaleDateString()}</p>
-                        </div>
-                        <div className="bg-gray-200 p-4">
-                            <button
-                                className="w-full rounded-lg py-2 text-gray-900 bg-blue-400 hover:bg-blue-500"
-                                onClick={() => handleSelectAlarm(alarm)}
-                            >
-                                Select this alarm
-                            </button>
-                        </div>
+                {alarms?.map((alarm) => (
+                    <div
+                        key={alarm.id}
+                        className="rounded-lg bg-yellow-500 p-4 shadow-md"
+                    >
+                        <h2 className="text-xl font-bold">{alarm.name}</h2>
+                        <p className="text-gray-800">Door: {alarm.name}</p>
+                        <button
+                            className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                            onClick={() => handleDeleteAlarm(alarm)}
+                        >
+                            Delete
+                        </button>
                     </div>
                 ))}
             </div>

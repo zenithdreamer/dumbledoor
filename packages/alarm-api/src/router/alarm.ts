@@ -18,8 +18,11 @@ export const adminRouter = {
             message: "You are not allowed to view alarms",
         });
     
-        return prisma.alarm.findMany();
+        const alarms = await prisma.alarm.findMany();
+        return alarms;
+      
     }),
+    
     createAlarm: protectedProcedure
         .input(
             z.object({
@@ -70,7 +73,7 @@ export const adminRouter = {
         }
     ),
 
-    delete_alarm: protectedProcedure
+    deleteAlarm: protectedProcedure
         .input(z.string())
         .mutation(async ({ ctx, input }) => {
             const isAdmin = await accessClient.internal.isAdmin.mutate(
@@ -104,8 +107,6 @@ export const adminRouter = {
             await notiClient.internal.sentNotification.mutate({
                 notiText: `Deleted alarm ${alarm.name}`,
             });
-
-
 
             return alarm;
         }),
