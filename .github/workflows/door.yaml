@@ -7,7 +7,7 @@ on:
       - "*"
 
 env:
-  IMAGE_NAME: ghcr.io/zenithdreamer/dumbledoor-access
+  IMAGE_NAME: ghcr.io/zenithdreamer/dumbledoor-door
   USER_SERVICE_PORT: ${{ secrets.USER_SERVICE_PORT }}
   USER_SERVICE_URL: ${{ secrets.USER_SERVICE_URL }}
   ACCESS_SERVICE_PORT: ${{ secrets.ACCESS_SERVICE_PORT }}
