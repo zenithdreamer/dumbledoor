@@ -6,6 +6,23 @@ import { prisma } from "@dumbledoor/alarm-db";
 import { internalProcedure, mqttClient } from "../trpc";
 
 export const alarmInternal = {
+  getAllAlarms: internalProcedure
+    .meta({ openapi: { method: "GET", path: "/alarms" } })
+    .input(z.void())
+    .output(
+      z.array(
+        z.object({
+          id: z.string(),
+          name: z.string(),
+          door_id: z.string(),
+          created_at: z.date(),
+          updated_at: z.date(),
+        }),
+      ),
+    )
+    .query(async () => {
+      return prisma.alarm.findMany();
+    }),
   activateAlarms: internalProcedure
     .input(z.string())
     .mutation(async ({ input }) => {

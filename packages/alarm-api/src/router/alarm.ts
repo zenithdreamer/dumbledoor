@@ -4,12 +4,7 @@ import { z } from "zod";
 
 import { prisma } from "@dumbledoor/alarm-db";
 
-import {
-  accessClient,
-  internalProcedure,
-  notiClient,
-  protectedProcedure,
-} from "../trpc";
+import { accessClient, notiClient, protectedProcedure } from "../trpc";
 
 export const adminRouter = {
   getAllAlarms: protectedProcedure.query(async ({ ctx }) => {
