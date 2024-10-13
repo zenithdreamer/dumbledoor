@@ -63,7 +63,7 @@ export const internalRouter = {
       return door;
     }),
   requestLock: internalProcedure
-    .meta({ openapi: { method: "POST", path: "/requestLock" } })
+    .meta({ openapi: { method: "GET", path: "/requestLock" } })
     .input(
       z.object({
         cardId: z.string(),
