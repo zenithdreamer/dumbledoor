@@ -63,12 +63,14 @@ export const internalRouter = {
       return door;
     }),
   requestLock: internalProcedure
+    .meta({ openapi: { method: "POST", path: "/requestLock" } })
     .input(
       z.object({
         cardId: z.string(),
         doorId: z.string(),
       }),
     )
+    .output(z.boolean())
     .mutation(async ({ input }) => {
       const card = await cardClient.internal.getCards.mutate(input.cardId);
 
