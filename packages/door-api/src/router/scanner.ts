@@ -87,7 +87,7 @@ export const scannerRouter = {
 
         if (roleDoor.granted_access_level >= doorAccessLevel) {
           await mqttClient.internal.unlockDoor.mutate({
-            doorId: "1234",
+            doorId: input.doorId,
           });
 
           if (user) {
