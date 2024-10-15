@@ -1,0 +1,4 @@
+name: DumbleDoorMinecraft
+version: '1.0'
+main: nyan.meow.dumbleDoorMinecraft.Main
+api-version: '1.21'
