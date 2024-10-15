@@ -12,57 +12,83 @@ import {
 } from "../trpc";
 
 export const adminRouter = {
-  getAllCards: protectedProcedure.query(async ({ ctx }) => {
-    const isAdmin = await accessClient.internal.isAdmin.mutate(
-      ctx.session.userId,
-    );
-
-    if (!isAdmin)
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "You are not allowed to view cards",
-      });
-
-    const cards = await prisma.card.findMany();
-    const allAccess = await accessClient.internal.getAllUserAccess.query();
-    const allUsers = await userClient.internal.getUsers.query();
-    console.log(allUsers);
-
-    type CardWithUserWithAccess = ((typeof cards)[0] & {
-      user: (typeof allUsers)[0];
-      access: (typeof allAccess)[0];
-      assigned_by_user?: (typeof allUsers)[0];
-    })[];
-    const data: CardWithUserWithAccess = [];
-
-    for (const card of cards) {
-      const user = allUsers.find((user) => user.id === card.user_id);
-      const access = allAccess.find(
-        (access) => access.user_id === card.user_id,
+  getAllCards: protectedProcedure
+    .meta({ openapi: { method: "PUT", path: "/cards" } })
+    .input(z.void())
+    .output(
+      z.array(
+        z.object({
+          id: z.string(),
+          name: z.string(),
+          user_id: z.string(),
+          assigned_by: z.string(),
+          created_at: z.date(),
+          updated_at: z.date(),
+        }),
+      ),
+    )
+    .query(async ({ ctx }) => {
+      const isAdmin = await accessClient.internal.isAdmin.mutate(
+        ctx.session.userId,
       );
 
-      const assigned_by_user = allUsers.find(
-        (user) => user.id === card.assigned_by,
-      );
+      if (!isAdmin)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not allowed to view cards",
+        });
 
-      if (!user || !access) continue;
+      const cards = await prisma.card.findMany();
+      const allAccess = await accessClient.internal.getAllUserAccess.query();
+      const allUsers = await userClient.internal.getUsers.query();
+      console.log(allUsers);
 
-      data.push({
-        ...card,
-        user,
-        access,
-        assigned_by_user,
-      });
-    }
+      type CardWithUserWithAccess = ((typeof cards)[0] & {
+        user: (typeof allUsers)[0];
+        access: (typeof allAccess)[0];
+        assigned_by_user?: (typeof allUsers)[0];
+      })[];
+      const data: CardWithUserWithAccess = [];
 
-    return data;
-  }),
+      for (const card of cards) {
+        const user = allUsers.find((user) => user.id === card.user_id);
+        const access = allAccess.find(
+          (access) => access.user_id === card.user_id,
+        );
+
+        const assigned_by_user = allUsers.find(
+          (user) => user.id === card.assigned_by,
+        );
+
+        if (!user || !access) continue;
+
+        data.push({
+          ...card,
+          user,
+          access,
+          assigned_by_user,
+        });
+      }
+
+      return data;
+    }),
 
   create: protectedProcedure
+    .meta({ openapi: { method: "POST", path: "/card" } })
     .input(
       z.object({
         name: z.string(),
         userId: z.string(),
+      }),
+    )
+    .output(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        user_id: z.string(),
+        assigned_by: z.string(),
+        created_at: z.date(),
+        updated_at: z.date(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -108,6 +134,29 @@ export const adminRouter = {
           message: "Failed to create card",
         });
       }
+    }),
+
+  _deleteCard: protectedProcedure
+    .meta({ openapi: { method: "DELETE", path: "/card" } })
+    .input(z.object({ id: z.string() }))
+    .output(z.boolean())
+    .mutation(async ({ ctx, input }) => {
+      const isAdmin = await accessClient.internal.isAdmin.mutate(
+        ctx.session.userId,
+      );
+
+      if (!isAdmin)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not allowed to delete a card",
+        });
+
+      await prisma.card.delete({
+        where: { id: input.id },
+      });
+
+      ctx.queueLog(ctx.session.userId, `Deleted card ${input.id}`);
+      return true;
     }),
 
   deleteCard: protectedProcedure

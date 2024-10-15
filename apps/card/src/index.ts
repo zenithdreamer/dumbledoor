@@ -40,6 +40,21 @@ app.use(
 );
 
 app.use(
+  "/api/openapi",
+  createOpenApiExpressMiddleware({
+    router: appRouter,
+    createContext: ({ req }: { req: Request }) =>
+      createTRPCContext({
+        queueLog,
+        headers: req.headers,
+        session: null,
+      }),
+    responseMeta: undefined,
+    maxBodySize: undefined,
+  }),
+);
+
+app.use(
   "/api/trpc-internal",
   trpcExpress.createExpressMiddleware({
     router: internalAppRouter,
