@@ -12,7 +12,53 @@ import {
 } from "../trpc";
 
 export const adminRouter = {
-  getAllCards: protectedProcedure
+  getAllCards: protectedProcedure.query(async ({ ctx }) => {
+    const isAdmin = await accessClient.internal.isAdmin.mutate(
+      ctx.session.userId,
+    );
+
+    if (!isAdmin)
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You are not allowed to view cards",
+      });
+
+    const cards = await prisma.card.findMany();
+    const allAccess = await accessClient.internal.getAllUserAccess.query();
+    const allUsers = await userClient.internal.getUsers.query();
+    console.log(allUsers);
+
+    type CardWithUserWithAccess = ((typeof cards)[0] & {
+      user: (typeof allUsers)[0];
+      access: (typeof allAccess)[0];
+      assigned_by_user?: (typeof allUsers)[0];
+    })[];
+    const data: CardWithUserWithAccess = [];
+
+    for (const card of cards) {
+      const user = allUsers.find((user) => user.id === card.user_id);
+      const access = allAccess.find(
+        (access) => access.user_id === card.user_id,
+      );
+
+      const assigned_by_user = allUsers.find(
+        (user) => user.id === card.assigned_by,
+      );
+
+      if (!user || !access) continue;
+
+      data.push({
+        ...card,
+        user,
+        access,
+        assigned_by_user,
+      });
+    }
+
+    return data;
+  }),
+
+  _getAllCards: protectedProcedure
     .meta({ openapi: { method: "PUT", path: "/cards" } })
     .input(z.void())
     .output(
@@ -39,38 +85,7 @@ export const adminRouter = {
         });
 
       const cards = await prisma.card.findMany();
-      const allAccess = await accessClient.internal.getAllUserAccess.query();
-      const allUsers = await userClient.internal.getUsers.query();
-      console.log(allUsers);
-
-      type CardWithUserWithAccess = ((typeof cards)[0] & {
-        user: (typeof allUsers)[0];
-        access: (typeof allAccess)[0];
-        assigned_by_user?: (typeof allUsers)[0];
-      })[];
-      const data: CardWithUserWithAccess = [];
-
-      for (const card of cards) {
-        const user = allUsers.find((user) => user.id === card.user_id);
-        const access = allAccess.find(
-          (access) => access.user_id === card.user_id,
-        );
-
-        const assigned_by_user = allUsers.find(
-          (user) => user.id === card.assigned_by,
-        );
-
-        if (!user || !access) continue;
-
-        data.push({
-          ...card,
-          user,
-          access,
-          assigned_by_user,
-        });
-      }
-
-      return data;
+      return cards;
     }),
 
   create: protectedProcedure
